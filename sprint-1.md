@@ -3,7 +3,7 @@
 **Goal:** Basic task board with CRUD operations and file persistence.
 
 **Started:** 2026-01-26
-**Status:** In Progress
+**Status:** Complete ✅
 
 ---
 
@@ -14,12 +14,12 @@
 | US-101 | Project scaffolding with dev container | ✅ Complete | |
 | US-102 | Task file schema and parser | ✅ Complete | gray-matter, 15 unit tests |
 | US-103 | REST API for task CRUD | ✅ Complete | Full CRUD + archive + zod validation |
-| US-104 | Kanban board UI shell | ⏳ Todo | Scaffolded, needs data binding |
-| US-105 | Task card component | ⏳ Todo | Scaffolded |
-| US-106 | Create task dialog | ⏳ Todo | Scaffolded |
-| US-107 | Task detail panel | ⏳ Todo | |
-| US-108 | Drag and drop between columns | ⏳ Todo | |
-| US-109 | Push to GitHub repositories | ⏳ Todo | |
+| US-104 | Kanban board UI shell | ✅ Complete | Loading skeleton, 4 columns |
+| US-105 | Task card component | ✅ Complete | Icons, colors, tooltip, click handler |
+| US-106 | Create task dialog | ✅ Complete | All fields, validation |
+| US-107 | Task detail panel | ✅ Complete | Sheet, auto-save, delete confirmation |
+| US-108 | Drag and drop between columns | ✅ Complete | @dnd-kit, visual feedback |
+| US-109 | Push to GitHub repositories | ⏳ In Progress | |
 
 ---
 
@@ -60,3 +60,44 @@
 - Zod validation schemas
 - Proper error handling and status codes
 - Vite proxy configured for frontend → API
+
+**US-104: Kanban board UI shell** ✅
+- 4 columns: To Do, In Progress, Review, Done
+- Dark theme via shadcn/ui
+- Column headers with task count badges
+- Empty state message per column
+- Loading skeleton while fetching
+
+**US-105: Task card component** ✅
+- Type icons (Code, Search, FileText, Zap)
+- Color-coded left border by type
+- Priority badges with color coding
+- Project tag display
+- Tooltip on hover for full title
+- Click opens task detail panel
+
+**US-106: Create task dialog** ✅
+- Modal dialog with form
+- Fields: title (required), description, type, priority, project
+- Type defaults to 'code', priority to 'medium'
+- Create button disabled until title entered
+- Closes on successful creation
+- New task appears in To Do column
+
+**US-107: Task detail panel** ✅
+- Slide-out Sheet component from right
+- Inline editing for title and description
+- Dropdowns for type, status, priority
+- Tags input (comma-separated)
+- Debounced auto-save (500ms delay)
+- Delete button with confirmation dialog
+- Close button and Escape key to close
+- Metadata display (created/updated dates, ID)
+
+**US-108: Drag and drop between columns** ✅
+- @dnd-kit for drag and drop
+- Visual feedback: ring highlight on target column
+- Ghost card with rotation effect while dragging
+- Updates task status on drop
+- Persists change to file via API
+- Smooth transitions
