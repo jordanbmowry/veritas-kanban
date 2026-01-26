@@ -34,11 +34,12 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useUpdateTask, useDeleteTask } from '@/hooks/useTasks';
-import { Trash2, Code, Search, FileText, Zap, Calendar, Clock, GitBranch, Bot, FileDiff } from 'lucide-react';
-import type { Task, TaskType, TaskStatus, TaskPriority, ReviewComment } from '@veritas-kanban/shared';
+import { Trash2, Code, Search, FileText, Zap, Calendar, Clock, GitBranch, Bot, FileDiff, ClipboardCheck } from 'lucide-react';
+import type { Task, TaskType, TaskStatus, TaskPriority, ReviewComment, ReviewState } from '@veritas-kanban/shared';
 import { GitSection } from './GitSection';
 import { AgentPanel } from './AgentPanel';
 import { DiffViewer } from './DiffViewer';
+import { ReviewPanel } from './ReviewPanel';
 
 interface TaskDetailPanelProps {
   task: Task | null;
@@ -98,6 +99,7 @@ function useDebouncedSave(task: Task | null, updateTask: ReturnType<typeof useUp
           tags: localTask.tags,
           git: localTask.git,
           reviewComments: localTask.reviewComments,
+          review: localTask.review,
         },
       });
       setIsDirty(false);
@@ -173,7 +175,7 @@ export function TaskDetailPanel({ task, open, onOpenChange }: TaskDetailPanelPro
         </SheetHeader>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden mt-4">
-          <TabsList className={`grid w-full ${isCodeTask ? 'grid-cols-4' : 'grid-cols-1'}`}>
+          <TabsList className={`grid w-full ${isCodeTask ? 'grid-cols-5' : 'grid-cols-1'}`}>
             <TabsTrigger value="details">Details</TabsTrigger>
             {isCodeTask && (
               <>
@@ -188,6 +190,10 @@ export function TaskDetailPanel({ task, open, onOpenChange }: TaskDetailPanelPro
                 <TabsTrigger value="changes" disabled={!hasWorktree} className="flex items-center gap-1">
                   <FileDiff className="h-3 w-3" />
                   Changes
+                </TabsTrigger>
+                <TabsTrigger value="review" className="flex items-center gap-1">
+                  <ClipboardCheck className="h-3 w-3" />
+                  Review
                 </TabsTrigger>
               </>
             )}
@@ -356,6 +362,18 @@ export function TaskDetailPanel({ task, open, onOpenChange }: TaskDetailPanelPro
                   onRemoveComment={(commentId: string) => {
                     const newComments = (localTask.reviewComments || []).filter(c => c.id !== commentId);
                     updateField('reviewComments', newComments.length > 0 ? newComments : undefined);
+                  }}
+                />
+              </TabsContent>
+            )}
+
+            {/* Review Tab */}
+            {isCodeTask && (
+              <TabsContent value="review" className="mt-0">
+                <ReviewPanel
+                  task={localTask}
+                  onReview={(review: ReviewState) => {
+                    updateField('review', Object.keys(review).length > 0 ? review : undefined);
                   }}
                 />
               </TabsContent>

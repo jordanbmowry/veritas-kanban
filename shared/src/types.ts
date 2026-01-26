@@ -44,6 +44,9 @@ export interface Task {
 
   // Review comments (for code tasks)
   reviewComments?: ReviewComment[];
+
+  // Review state
+  review?: ReviewState;
 }
 
 export interface ReviewComment {
@@ -52,6 +55,14 @@ export interface ReviewComment {
   line: number;
   content: string;
   created: string;
+}
+
+export type ReviewDecision = 'approved' | 'changes-requested' | 'rejected';
+
+export interface ReviewState {
+  decision?: ReviewDecision;
+  decidedAt?: string;
+  summary?: string;
 }
 
 // API Types
@@ -76,6 +87,7 @@ export interface UpdateTaskInput {
   git?: Partial<TaskGit>;
   attempt?: TaskAttempt;
   reviewComments?: ReviewComment[];
+  review?: ReviewState;
 }
 
 export interface TaskFilters {

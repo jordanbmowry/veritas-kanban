@@ -41,6 +41,12 @@ const reviewCommentSchema = z.object({
   created: z.string(),
 });
 
+const reviewStateSchema = z.object({
+  decision: z.enum(['approved', 'changes-requested', 'rejected']).optional(),
+  decidedAt: z.string().optional(),
+  summary: z.string().optional(),
+});
+
 const updateTaskSchema = z.object({
   title: z.string().min(1).max(200).optional(),
   description: z.string().optional(),
@@ -52,6 +58,7 @@ const updateTaskSchema = z.object({
   git: gitSchema,
   attempt: attemptSchema,
   reviewComments: z.array(reviewCommentSchema).optional(),
+  review: reviewStateSchema.optional(),
 });
 
 // GET /api/tasks - List all tasks
