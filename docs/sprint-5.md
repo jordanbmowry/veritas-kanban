@@ -3,7 +3,7 @@
 **Goal:** Veritas can manage tasks programmatically and spawn sub-agents.
 
 **Started:** 2026-01-26
-**Status:** In Progress
+**Status:** Complete ✅
 
 ---
 
@@ -15,7 +15,7 @@
 | US-502 | MCP server for external clients | ✅ Complete | stdio transport, 8 tools, 3 resources |
 | US-503 | Veritas sub-agent integration | ✅ Complete | automation endpoints, CLI, MCP tools |
 | US-504 | Memory system sync | ✅ Complete | summary endpoints, CLI vk memory, MCP tools |
-| US-505 | Teams notification integration | ⏳ Todo | |
+| US-505 | Teams notification integration | ✅ Complete | CLI notify commands, Tasks channel |
 
 ---
 
@@ -101,6 +101,29 @@
 vk memory -o ~/clawd/memory/$(date +%Y-%m-%d).md
 ```
 
+**US-505: Teams notification integration** ✅
+- Notification system with types:
+  - ✅ agent_complete | ❌ agent_failed | 👀 needs_review
+  - 🎉 task_done | 🔴 high_priority | ⚠️ error | 🏆 milestone | ℹ️ info
+- API endpoints:
+  - `POST /api/notifications` - create notification
+  - `GET /api/notifications` - list all
+  - `GET /api/notifications/pending` - Teams-formatted
+  - `POST /api/notifications/mark-sent` - mark as sent
+  - `POST /api/notifications/check` - scan tasks for alerts
+  - `DELETE /api/notifications` - clear all
+- CLI commands:
+  - `vk notify <message>` - create notification
+  - `vk notify:check` - scan for tasks needing attention
+  - `vk notify:pending` - get Teams-formatted messages
+  - `vk notify:list` - view all notifications
+  - `vk notify:clear` - clear notifications
+- MCP tools:
+  - `create_notification`
+  - `get_pending_notifications`
+  - `check_notifications`
+- Teams Tasks channel integration working
+
 ---
 
 ## Commits
@@ -109,3 +132,4 @@ vk memory -o ~/clawd/memory/$(date +%Y-%m-%d).md
 - `751a3bc` feat(US-502): MCP server for external clients
 - `6112517` feat(US-503): Veritas sub-agent integration
 - `7d7e92e` feat(US-504): Memory system sync
+- `809bf4d` feat(US-505): Teams notification integration
