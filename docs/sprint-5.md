@@ -13,7 +13,7 @@
 |----|-------|--------|-------|
 | US-501 | CLI for task management | ✅ Complete | `vk` command globally available |
 | US-502 | MCP server for external clients | ✅ Complete | stdio transport, 8 tools, 3 resources |
-| US-503 | Veritas sub-agent integration | ⏳ Todo | |
+| US-503 | Veritas sub-agent integration | ✅ Complete | automation endpoints, CLI, MCP tools |
 | US-504 | Memory system sync | ⏳ Todo | |
 | US-505 | Teams notification integration | ⏳ Todo | |
 
@@ -59,9 +59,33 @@
 - Stdio transport for Claude Desktop
 - Updated README with MCP config instructions
 
+**US-503: Veritas sub-agent integration** ✅
+- Added 'veritas' to AgentType enum
+- New Task.automation field:
+  - `sessionKey` - Clawdbot session key
+  - `spawnedAt` - when sub-agent started
+  - `completedAt` - when sub-agent finished
+  - `result` - result summary
+- API endpoints:
+  - `POST /api/automation/:id/start` - start automation
+  - `POST /api/automation/:id/complete` - complete automation
+  - `GET /api/automation/pending` - list pending
+  - `GET /api/automation/running` - list running
+- CLI commands:
+  - `vk automation:pending` (alias: ap)
+  - `vk automation:running` (alias: ar)
+  - `vk automation:start <id>` (alias: as)
+  - `vk automation:complete <id>` (alias: ac)
+- MCP tools:
+  - `list_pending_automation`
+  - `list_running_automation`
+  - `start_automation`
+  - `complete_automation`
+
 ---
 
 ## Commits
 
 - `bec40a0` feat(US-501): CLI for task management
 - `751a3bc` feat(US-502): MCP server for external clients
+- `6112517` feat(US-503): Veritas sub-agent integration
