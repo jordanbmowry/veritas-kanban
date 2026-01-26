@@ -36,3 +36,10 @@ tasks/archive/*.md
 coverage/
 .nyc_output/
 .veritas-kanban/worktrees/
+
+# TypeScript build info
+*.tsbuildinfo
+
+# Vite generated
+vite.config.d.ts
+vite.config.js

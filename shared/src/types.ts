@@ -96,6 +96,12 @@ export interface UpdateTaskInput {
   attempt?: TaskAttempt;
   reviewComments?: ReviewComment[];
   review?: ReviewState;
+  automation?: {
+    sessionKey?: string;
+    spawnedAt?: string;
+    completedAt?: string;
+    result?: string;
+  };
 }
 
 export interface TaskFilters {
