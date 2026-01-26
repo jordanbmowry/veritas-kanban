@@ -5,7 +5,8 @@ import { EventEmitter } from 'events';
 import { nanoid } from 'nanoid';
 import { ConfigService } from './config-service.js';
 import { TaskService } from './task-service.js';
-import type { Task, AgentType, TaskAttempt, AttemptStatus } from '@veritas-kanban/shared';
+import { getTelemetryService, type TelemetryService } from './telemetry-service.js';
+import type { Task, AgentType, TaskAttempt, AttemptStatus, RunTelemetryEvent } from '@veritas-kanban/shared';
 
 const PROJECT_ROOT = path.resolve(process.cwd(), '..');
 const LOGS_DIR = path.join(PROJECT_ROOT, '.veritas-kanban', 'logs');
@@ -34,16 +35,20 @@ const runningAgents = new Map<string, {
   agent: AgentType;
   logPath: string;
   emitter: EventEmitter;
+  startedAt: string;
+  project?: string;
 }>();
 
 export class AgentService {
   private configService: ConfigService;
   private taskService: TaskService;
+  private telemetry: TelemetryService;
   private logsDir: string;
 
   constructor() {
     this.configService = new ConfigService();
     this.taskService = new TaskService();
+    this.telemetry = getTelemetryService();
     this.logsDir = LOGS_DIR;
     this.ensureLogsDir();
   }
@@ -134,10 +139,21 @@ export class AgentService {
       agent,
       logPath,
       emitter,
+      startedAt,
+      project: task.project,
     });
 
     // Initialize log file
     await this.initLogFile(logPath, task, agent, prompt);
+
+    // Emit telemetry event for run started
+    await this.telemetry.emit<RunTelemetryEvent>({
+      type: 'run.started',
+      taskId,
+      attemptId,
+      agent,
+      project: task.project,
+    });
 
     // Handle stdout
     childProcess.stdout?.on('data', async (data: Buffer) => {
@@ -169,6 +185,13 @@ export class AgentService {
     childProcess.on('exit', async (code, signal) => {
       const endedAt = new Date().toISOString();
       const status: AttemptStatus = code === 0 ? 'complete' : 'failed';
+      const success = code === 0;
+
+      // Calculate duration
+      const running = runningAgents.get(taskId);
+      const durationMs = running 
+        ? new Date(endedAt).getTime() - new Date(running.startedAt).getTime()
+        : 0;
 
       // Update task attempt
       await this.updateTaskAttempt(taskId, attemptId, {
@@ -179,6 +202,18 @@ export class AgentService {
       // Update task status
       await this.taskService.updateTask(taskId, {
         status: 'review',
+      });
+
+      // Emit telemetry event for run completed
+      await this.telemetry.emit<RunTelemetryEvent>({
+        type: 'run.completed',
+        taskId,
+        attemptId,
+        agent,
+        project: task.project,
+        durationMs,
+        exitCode: code ?? undefined,
+        success,
       });
 
       // Emit completion
@@ -193,6 +228,17 @@ export class AgentService {
 
     // Handle errors
     childProcess.on('error', async (error) => {
+      // Emit telemetry event for run error
+      await this.telemetry.emit<RunTelemetryEvent>({
+        type: 'run.error',
+        taskId,
+        attemptId,
+        agent,
+        project: task.project,
+        error: error.message,
+        success: false,
+      });
+
       emitter.emit('error', error);
       await this.appendToLog(logPath, 'system', `\n---\nAgent error: ${error.message}`);
       runningAgents.delete(taskId);
