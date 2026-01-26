@@ -2,7 +2,8 @@ import fs from 'fs/promises';
 import path from 'path';
 import matter from 'gray-matter';
 import { nanoid } from 'nanoid';
-import type { Task, CreateTaskInput, UpdateTaskInput, ReviewComment, Subtask } from '@veritas-kanban/shared';
+import type { Task, CreateTaskInput, UpdateTaskInput, ReviewComment, Subtask, TaskTelemetryEvent } from '@veritas-kanban/shared';
+import { getTelemetryService, type TelemetryService } from './telemetry-service.js';
 
 // Simple slug function to avoid CJS/ESM issues with slugify
 function makeSlug(text: string): string {
@@ -21,15 +22,18 @@ const DEFAULT_ARCHIVE_DIR = path.join(DEFAULT_PROJECT_ROOT, 'tasks', 'archive');
 export interface TaskServiceOptions {
   tasksDir?: string;
   archiveDir?: string;
+  telemetryService?: TelemetryService;
 }
 
 export class TaskService {
   private tasksDir: string;
   private archiveDir: string;
+  private telemetry: TelemetryService;
 
   constructor(options: TaskServiceOptions = {}) {
     this.tasksDir = options.tasksDir || DEFAULT_TASKS_DIR;
     this.archiveDir = options.archiveDir || DEFAULT_ARCHIVE_DIR;
+    this.telemetry = options.telemetryService || getTelemetryService();
     this.ensureDirectories();
   }
 
@@ -152,12 +156,24 @@ export class TaskService {
     
     await fs.writeFile(filepath, content, 'utf-8');
     
+    // Emit telemetry event
+    await this.telemetry.emit<TaskTelemetryEvent>({
+      type: 'task.created',
+      taskId: task.id,
+      project: task.project,
+      status: task.status,
+    });
+    
     return task;
   }
 
   async updateTask(id: string, input: UpdateTaskInput): Promise<Task | null> {
     const task = await this.getTask(id);
     if (!task) return null;
+
+    // Track if status changed for telemetry
+    const previousStatus = task.status;
+    const statusChanged = input.status !== undefined && input.status !== previousStatus;
 
     // Handle git field separately to merge properly
     const { git: gitUpdate, ...restInput } = input;
@@ -182,6 +198,17 @@ export class TaskService {
     
     await fs.writeFile(filepath, content, 'utf-8');
     
+    // Emit telemetry event if status changed
+    if (statusChanged) {
+      await this.telemetry.emit<TaskTelemetryEvent>({
+        type: 'task.status_changed',
+        taskId: updatedTask.id,
+        project: updatedTask.project,
+        status: updatedTask.status,
+        previousStatus,
+      });
+    }
+    
     return updatedTask;
   }
 
@@ -204,6 +231,14 @@ export class TaskService {
     const destPath = path.join(this.archiveDir, filename);
     
     await fs.rename(sourcePath, destPath);
+    
+    // Emit telemetry event
+    await this.telemetry.emit<TaskTelemetryEvent>({
+      type: 'task.archived',
+      taskId: task.id,
+      project: task.project,
+      status: task.status,
+    });
     
     return true;
   }
@@ -253,6 +288,14 @@ export class TaskService {
     
     const content = this.taskToMarkdown(restoredTask);
     await fs.writeFile(destPath, content, 'utf-8');
+    
+    // Emit telemetry event
+    await this.telemetry.emit<TaskTelemetryEvent>({
+      type: 'task.restored',
+      taskId: restoredTask.id,
+      project: restoredTask.project,
+      status: restoredTask.status,
+    });
     
     return restoredTask;
   }
