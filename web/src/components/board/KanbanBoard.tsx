@@ -6,7 +6,7 @@ import { TaskDetailPanel } from '@/components/task/TaskDetailPanel';
 import type { TaskStatus, Task } from '@veritas-kanban/shared';
 import { useFeatureSettings } from '@/hooks/useFeatureSettings';
 import { DndContext, DragOverlay, closestCorners } from '@dnd-kit/core';
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, lazy, Suspense } from 'react';
 import { TaskCard } from '@/components/task/TaskCard';
 import { useKeyboard } from '@/hooks/useKeyboard';
 import {
@@ -18,8 +18,14 @@ import {
 } from './FilterBar';
 import { BulkActionsBar } from './BulkActionsBar';
 import { ArchiveSuggestionBanner } from './ArchiveSuggestionBanner';
-import { DashboardSection } from '@/components/dashboard/DashboardSection';
 import FeatureErrorBoundary from '@/components/shared/FeatureErrorBoundary';
+
+// Lazy-load DashboardSection to split recharts + d3 (~800KB) out of main bundle
+const DashboardSection = lazy(() =>
+  import('@/components/dashboard/DashboardSection').then(mod => ({
+    default: mod.DashboardSection,
+  }))
+);
 
 const COLUMNS: { id: TaskStatus; title: string }[] = [
   { id: 'todo', title: 'To Do' },
@@ -197,7 +203,15 @@ export function KanbanBoard() {
           </div>
         )}
 
-        {featureSettings.board.showDashboard && <DashboardSection />}
+        {featureSettings.board.showDashboard && (
+          <Suspense fallback={
+            <div className="mt-6 border-t pt-4 flex items-center justify-center py-8 text-muted-foreground">
+              Loading dashboard…
+            </div>
+          }>
+            <DashboardSection />
+          </Suspense>
+        )}
       </FeatureErrorBoundary>
 
       <TaskDetailPanel

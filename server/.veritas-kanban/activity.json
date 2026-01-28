@@ -1,5 +1,49 @@
 [
   {
+    "id": "activity_1769641818570_u5pb6k93a",
+    "type": "status_changed",
+    "taskId": "task_20260128_uUydZN",
+    "taskTitle": "QUALITY: Add request ID middleware for request tracing",
+    "details": {
+      "from": "todo",
+      "status": "in-progress"
+    },
+    "timestamp": "2026-01-28T23:10:18.570Z"
+  },
+  {
+    "id": "activity_1769641790370_38yvkyi66",
+    "type": "comment_added",
+    "taskId": "task_20260128_eH_S3Q",
+    "taskTitle": "SECURITY: Sanitize Content-Disposition header in attachment downloads",
+    "details": {
+      "author": "Veritas",
+      "preview": "Replaced raw string interpolation in Content-Dispo..."
+    },
+    "timestamp": "2026-01-28T23:09:50.370Z"
+  },
+  {
+    "id": "activity_1769641785270_wd8qg1v3m",
+    "type": "status_changed",
+    "taskId": "task_20260128_eH_S3Q",
+    "taskTitle": "SECURITY: Sanitize Content-Disposition header in attachment downloads",
+    "details": {
+      "from": "in-progress",
+      "status": "done"
+    },
+    "timestamp": "2026-01-28T23:09:45.270Z"
+  },
+  {
+    "id": "activity_1769641783882_z8lz7tg6d",
+    "type": "status_changed",
+    "taskId": "task_20260128_8DUobI",
+    "taskTitle": "PERF: Reduce frontend bundle size from 1.2MB main chunk",
+    "details": {
+      "from": "todo",
+      "status": "in-progress"
+    },
+    "timestamp": "2026-01-28T23:09:43.882Z"
+  },
+  {
     "id": "activity_1769641756408_28h6sbmhl",
     "type": "comment_added",
     "taskId": "task_20260128_2H7USQ",
