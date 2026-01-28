@@ -53,6 +53,56 @@ export interface Comment {
   timestamp: string;
 }
 
+export interface Attachment {
+  id: string;
+  filename: string;          // Sanitized filename stored on disk
+  originalName: string;      // Original filename from upload
+  mimeType: string;
+  size: number;              // File size in bytes
+  uploaded: string;          // ISO timestamp
+}
+
+export interface AttachmentLimits {
+  maxFileSize: number;       // Max size per file in bytes
+  maxFilesPerTask: number;   // Max number of attachments per task
+  maxTotalSize: number;      // Max total size for all attachments per task
+}
+
+// Default attachment limits
+export const DEFAULT_ATTACHMENT_LIMITS: AttachmentLimits = {
+  maxFileSize: 10 * 1024 * 1024,      // 10MB per file
+  maxFilesPerTask: 20,                 // 20 files per task
+  maxTotalSize: 50 * 1024 * 1024,     // 50MB total per task
+};
+
+// Allowed MIME types for attachments
+export const ALLOWED_MIME_TYPES = [
+  // Documents
+  'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/vnd.ms-excel',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  'text/plain',
+  'text/markdown',
+  'text/html',
+  'text/csv',
+  
+  // Images
+  'image/jpeg',
+  'image/png',
+  'image/gif',
+  'image/webp',
+  'image/svg+xml',
+  
+  // Code & Config
+  'application/json',
+  'application/xml',
+  'text/xml',
+  'application/yaml',
+  'text/yaml',
+];
+
 export interface Task {
   id: string;
   title: string;
@@ -100,6 +150,9 @@ export interface Task {
 
   // Comments
   comments?: Comment[];
+
+  // Attachments
+  attachments?: Attachment[];
 }
 
 export interface ReviewComment {
@@ -154,6 +207,7 @@ export interface UpdateTaskInput {
   };
   timeTracking?: TimeTracking;
   comments?: Comment[];
+  attachments?: Attachment[];
 }
 
 export interface TaskFilters {

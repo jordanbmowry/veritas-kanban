@@ -106,6 +106,7 @@ export class TaskService {
       blockedBy: data.blockedBy,
       automation: data.automation,
       timeTracking: data.timeTracking,
+      attachments: data.attachments,
     };
   }
 
@@ -221,6 +222,11 @@ export class TaskService {
     const filename = this.taskToFilename(task);
     await fs.unlink(path.join(this.tasksDir, filename));
     
+    // Delete attachments
+    const { getAttachmentService } = await import('./attachment-service.js');
+    const attachmentService = getAttachmentService();
+    await attachmentService.deleteAllAttachments(id);
+    
     return true;
   }
 
@@ -233,6 +239,11 @@ export class TaskService {
     const destPath = path.join(this.archiveDir, filename);
     
     await fs.rename(sourcePath, destPath);
+    
+    // Move attachments to archive
+    const { getAttachmentService } = await import('./attachment-service.js');
+    const attachmentService = getAttachmentService();
+    await attachmentService.archiveAttachments(id);
     
     // Emit telemetry event
     await this.telemetry.emit<TaskTelemetryEvent>({
@@ -280,6 +291,11 @@ export class TaskService {
     
     // Move back to active and set status to done
     await fs.rename(sourcePath, destPath);
+    
+    // Restore attachments from archive
+    const { getAttachmentService } = await import('./attachment-service.js');
+    const attachmentService = getAttachmentService();
+    await attachmentService.restoreAttachments(id);
     
     // Update status to done
     const restoredTask: Task = {

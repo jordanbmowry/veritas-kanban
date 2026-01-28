@@ -34,7 +34,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useUpdateTask, useDeleteTask } from '@/hooks/useTasks';
-import { Trash2, Code, Search, FileText, Zap, Calendar, Clock, GitBranch, Bot, FileDiff, ClipboardCheck, Monitor, FileCode } from 'lucide-react';
+import { Trash2, Code, Search, FileText, Zap, Calendar, Clock, GitBranch, Bot, FileDiff, ClipboardCheck, Monitor, FileCode, Paperclip } from 'lucide-react';
 import type { Task, TaskType, TaskStatus, TaskPriority, ReviewComment, ReviewState } from '@veritas-kanban/shared';
 import { GitSection } from './GitSection';
 import { AgentPanel } from './AgentPanel';
@@ -45,6 +45,7 @@ import { DependenciesSection } from './DependenciesSection';
 import { PreviewPanel } from './PreviewPanel';
 import { TimeTrackingSection } from './TimeTrackingSection';
 import { CommentsSection } from './CommentsSection';
+import { AttachmentsSection } from './AttachmentsSection';
 import { ApplyTemplateDialog } from './ApplyTemplateDialog';
 
 interface TaskDetailPanelProps {
@@ -183,8 +184,12 @@ export function TaskDetailPanel({ task, open, onOpenChange }: TaskDetailPanelPro
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden mt-4">
           <div className="flex items-center gap-2">
-            <TabsList className={`grid flex-1 ${isCodeTask ? 'grid-cols-5' : 'grid-cols-1'}`}>
+            <TabsList className={`grid flex-1 ${isCodeTask ? 'grid-cols-6' : 'grid-cols-2'}`}>
               <TabsTrigger value="details">Details</TabsTrigger>
+              <TabsTrigger value="attachments" className="flex items-center gap-1">
+                <Paperclip className="h-3 w-3" />
+                Attachments
+              </TabsTrigger>
               {isCodeTask && (
                 <>
                   <TabsTrigger value="git" className="flex items-center gap-1">
@@ -386,6 +391,11 @@ export function TaskDetailPanel({ task, open, onOpenChange }: TaskDetailPanelPro
                   </AlertDialogContent>
                 </AlertDialog>
               </div>
+            </TabsContent>
+
+            {/* Attachments Tab */}
+            <TabsContent value="attachments" className="mt-0">
+              <AttachmentsSection task={localTask} />
             </TabsContent>
 
             {/* Git Tab */}

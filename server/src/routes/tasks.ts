@@ -631,4 +631,65 @@ router.delete('/:id/time/entry/:entryId', async (req, res) => {
   }
 });
 
+// === Attachment Context Route ===
+
+// GET /api/tasks/:id/context - Get full task context for agent consumption
+router.get('/:id/context', async (req, res) => {
+  try {
+    const { getAttachmentService } = await import('../services/attachment-service.js');
+    const attachmentService = getAttachmentService();
+    
+    const task = await taskService.getTask(req.params.id);
+    if (!task) {
+      return res.status(404).json({ error: 'Task not found' });
+    }
+
+    // Collect all extracted text and image paths
+    const attachments = task.attachments || [];
+    const extractedTexts: { filename: string; text: string }[] = [];
+    const imagePaths: string[] = [];
+
+    for (const attachment of attachments) {
+      // Get extracted text if available
+      const text = await attachmentService.getExtractedText(task.id, attachment.id);
+      if (text) {
+        extractedTexts.push({
+          filename: attachment.originalName,
+          text,
+        });
+      }
+
+      // Collect image paths
+      if (attachment.mimeType.startsWith('image/')) {
+        const filepath = attachmentService.getAttachmentPath(task.id, attachment.filename);
+        imagePaths.push(filepath);
+      }
+    }
+
+    // Build context object
+    const context = {
+      taskId: task.id,
+      title: task.title,
+      description: task.description,
+      type: task.type,
+      status: task.status,
+      priority: task.priority,
+      project: task.project,
+      tags: task.tags,
+      attachments: {
+        count: attachments.length,
+        documents: extractedTexts,
+        images: imagePaths,
+      },
+      created: task.created,
+      updated: task.updated,
+    };
+
+    res.json(context);
+  } catch (error: any) {
+    console.error('Error getting task context:', error);
+    res.status(500).json({ error: error.message || 'Failed to get task context' });
+  }
+});
+
 export { router as taskRoutes };

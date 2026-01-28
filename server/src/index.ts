@@ -17,6 +17,7 @@ import conflictRoutes from './routes/conflicts.js';
 import telemetryRoutes from './routes/telemetry.js';
 import metricsRoutes from './routes/metrics.js';
 import tracesRoutes from './routes/traces.js';
+import attachmentRoutes from './routes/attachments.js';
 import { getTelemetryService } from './services/telemetry-service.js';
 import type { AgentOutput } from './services/agent-service.js';
 
@@ -34,6 +35,7 @@ app.get('/health', (_req, res) => {
 
 // API Routes
 app.use('/api/tasks', taskRoutes);
+app.use('/api/tasks', attachmentRoutes);
 app.use('/api/config', configRoutes);
 app.use('/api/agents', agentRoutes);
 app.use('/api/diff', diffRoutes);

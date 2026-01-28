@@ -1,5 +1,252 @@
 [
   {
+    "id": "activity_1769572121032_uswxnnxmh",
+    "type": "comment_added",
+    "taskId": "task_20260128_7_9GhV",
+    "taskTitle": "US-912: Task attachments for agent context",
+    "details": {
+      "author": "Veritas",
+      "preview": "US-912 implemented: attachment service with config..."
+    },
+    "timestamp": "2026-01-28T03:48:41.032Z"
+  },
+  {
+    "id": "activity_1769572010594_as8tlu7ls",
+    "type": "task_created",
+    "taskId": "task_20260128_XvmMga",
+    "taskTitle": "Research Kimi K2.5",
+    "details": {
+      "type": "research",
+      "priority": "medium",
+      "project": "brain"
+    },
+    "timestamp": "2026-01-28T03:46:50.594Z"
+  },
+  {
+    "id": "activity_1769571594717_kfw5df7xm",
+    "type": "status_changed",
+    "taskId": "task_20260128_7_9GhV",
+    "taskTitle": "US-912: Task attachments for agent context",
+    "details": {
+      "from": "todo",
+      "status": "in-progress"
+    },
+    "timestamp": "2026-01-28T03:39:54.717Z"
+  },
+  {
+    "id": "activity_1769571492987_2d3me4i1f",
+    "type": "task_deleted",
+    "taskId": "task_20260128_uce0T_",
+    "taskTitle": "US-918: Custom board columns (managed statuses)",
+    "timestamp": "2026-01-28T03:38:12.987Z"
+  },
+  {
+    "id": "activity_1769571492977_zp7zg69cd",
+    "type": "task_deleted",
+    "taskId": "task_20260128_qhrcxp",
+    "taskTitle": "US-917: Custom priority levels with managed list",
+    "timestamp": "2026-01-28T03:38:12.977Z"
+  },
+  {
+    "id": "activity_1769571477157_2dzg8i6r2",
+    "type": "task_updated",
+    "taskId": "task_20260128_uce0T_",
+    "taskTitle": "US-918: Custom board columns (managed statuses)",
+    "timestamp": "2026-01-28T03:37:57.157Z"
+  },
+  {
+    "id": "activity_1769571477149_wn0lluokq",
+    "type": "task_updated",
+    "taskId": "task_20260128_qhrcxp",
+    "taskTitle": "US-917: Custom priority levels with managed list",
+    "timestamp": "2026-01-28T03:37:57.149Z"
+  },
+  {
+    "id": "activity_1769571477141_9zkjsrcqi",
+    "type": "task_updated",
+    "taskId": "task_20260128_gVorh6",
+    "taskTitle": "US-916: Tag management with managed list",
+    "timestamp": "2026-01-28T03:37:57.141Z"
+  },
+  {
+    "id": "activity_1769571477132_xdkzil61q",
+    "type": "task_updated",
+    "taskId": "task_20260128_UWrGIB",
+    "taskTitle": "US-914: Project management with dropdown selection",
+    "timestamp": "2026-01-28T03:37:57.132Z"
+  },
+  {
+    "id": "activity_1769571477123_onbf9cie3",
+    "type": "task_updated",
+    "taskId": "task_20260128_WOCpqE",
+    "taskTitle": "US-913: Custom task type management",
+    "timestamp": "2026-01-28T03:37:57.123Z"
+  },
+  {
+    "id": "activity_1769571458764_hahi3v44f",
+    "type": "task_created",
+    "taskId": "task_20260128_uce0T_",
+    "taskTitle": "US-918: Custom board columns (managed statuses)",
+    "details": {
+      "type": "code",
+      "priority": "medium",
+      "project": "veritas-kanban"
+    },
+    "timestamp": "2026-01-28T03:37:38.764Z"
+  },
+  {
+    "id": "activity_1769571438316_ilcp9ijxp",
+    "type": "task_created",
+    "taskId": "task_20260128_qhrcxp",
+    "taskTitle": "US-917: Custom priority levels with managed list",
+    "details": {
+      "type": "code",
+      "priority": "medium",
+      "project": "veritas-kanban"
+    },
+    "timestamp": "2026-01-28T03:37:18.316Z"
+  },
+  {
+    "id": "activity_1769571421434_1edrdry8x",
+    "type": "task_created",
+    "taskId": "task_20260128_gVorh6",
+    "taskTitle": "US-916: Tag management with managed list",
+    "details": {
+      "type": "code",
+      "priority": "medium",
+      "project": "veritas-kanban"
+    },
+    "timestamp": "2026-01-28T03:37:01.434Z"
+  },
+  {
+    "id": "activity_1769571401737_kcexl5kol",
+    "type": "task_created",
+    "taskId": "task_20260128_Oq5P-O",
+    "taskTitle": "US-915: ManagedListService — reusable foundation for managed entity lists",
+    "details": {
+      "type": "code",
+      "priority": "high",
+      "project": "veritas-kanban"
+    },
+    "timestamp": "2026-01-28T03:36:41.737Z"
+  },
+  {
+    "id": "activity_1769571166857_5jkorblpx",
+    "type": "task_created",
+    "taskId": "task_20260128_UWrGIB",
+    "taskTitle": "US-914: Project management with dropdown selection",
+    "details": {
+      "type": "code",
+      "priority": "high",
+      "project": "veritas-kanban"
+    },
+    "timestamp": "2026-01-28T03:32:46.857Z"
+  },
+  {
+    "id": "activity_1769571139313_9ymdoc8js",
+    "type": "task_created",
+    "taskId": "task_20260128_WOCpqE",
+    "taskTitle": "US-913: Custom task type management",
+    "details": {
+      "type": "code",
+      "priority": "high",
+      "project": "veritas-kanban"
+    },
+    "timestamp": "2026-01-28T03:32:19.313Z"
+  },
+  {
+    "id": "activity_1769570875642_t0cd74fll",
+    "type": "task_updated",
+    "taskId": "task_20260128_7_9GhV",
+    "taskTitle": "US-912: Task attachments for agent context",
+    "timestamp": "2026-01-28T03:27:55.642Z"
+  },
+  {
+    "id": "activity_1769570732976_ve80a0vkz",
+    "type": "task_updated",
+    "taskId": "task_20260128_Foonyv",
+    "taskTitle": "FEATURE REQUEST: Settings Panel with Feaeture Toggles",
+    "timestamp": "2026-01-28T03:25:32.976Z"
+  },
+  {
+    "id": "activity_1769570732138_bcfio71n9",
+    "type": "task_updated",
+    "taskId": "task_20260128_Foonyv",
+    "taskTitle": "FEATURE REQUEST: Settings Panel with Feaeture Toggles",
+    "timestamp": "2026-01-28T03:25:32.138Z"
+  },
+  {
+    "id": "activity_1769570731383_k774pal8h",
+    "type": "task_updated",
+    "taskId": "task_20260128_Foonyv",
+    "taskTitle": "FEATURE REQUEST: Settings Panel with Feaeture Toggles",
+    "timestamp": "2026-01-28T03:25:31.383Z"
+  },
+  {
+    "id": "activity_1769570708315_lc62jyp2d",
+    "type": "task_created",
+    "taskId": "task_20260128_Foonyv",
+    "taskTitle": "FEATURE REQUEST: Settings Panel with Feaeture Toggles",
+    "details": {
+      "type": "code",
+      "priority": "medium",
+      "project": "veritas-kanban"
+    },
+    "timestamp": "2026-01-28T03:25:08.315Z"
+  },
+  {
+    "id": "activity_1769570215339_pps4dxads",
+    "type": "task_updated",
+    "taskId": "task_20260128_7_9GhV",
+    "taskTitle": "US-912: Task attachments for agent context",
+    "timestamp": "2026-01-28T03:16:55.339Z"
+  },
+  {
+    "id": "activity_1769569613168_mqmdn2q0l",
+    "type": "comment_added",
+    "taskId": "task_20260128_nfa0sK",
+    "taskTitle": "US-911: Task comments system for agent activity logs",
+    "details": {
+      "author": "Veritas",
+      "preview": "Implemented full comments system: shared Comment t..."
+    },
+    "timestamp": "2026-01-28T03:06:53.168Z"
+  },
+  {
+    "id": "activity_1769569532951_8idfviw61",
+    "type": "task_created",
+    "taskId": "task_20260128_7_9GhV",
+    "taskTitle": "BACKLOG: Task attachments (for reference / context)",
+    "details": {
+      "type": "code",
+      "priority": "medium",
+      "project": "veritas-kanban"
+    },
+    "timestamp": "2026-01-28T03:05:32.951Z"
+  },
+  {
+    "id": "activity_1769569524424_vhdar7yq8",
+    "type": "status_changed",
+    "taskId": "task_20260128_nfa0sK",
+    "taskTitle": "US-911: Task comments system for agent activity logs",
+    "details": {
+      "from": "in-progress",
+      "status": "done"
+    },
+    "timestamp": "2026-01-28T03:05:24.424Z"
+  },
+  {
+    "id": "activity_1769569520998_ud581icqj",
+    "type": "comment_added",
+    "taskId": "task_20260128_nfa0sK",
+    "taskTitle": "US-911: Task comments system for agent activity logs",
+    "details": {
+      "author": "Veritas",
+      "preview": "Implemented full comments system: shared types (Co..."
+    },
+    "timestamp": "2026-01-28T03:05:20.998Z"
+  },
+  {
     "id": "activity_1769569223758_n8utzjbkn",
     "type": "status_changed",
     "taskId": "task_20260128_nfa0sK",
@@ -742,247 +989,5 @@
     "taskId": "task_20260126_vfkPKg",
     "taskTitle": "US-808: Optional Traces (Stretch)",
     "timestamp": "2026-01-26T18:34:07.669Z"
-  },
-  {
-    "id": "activity_1769451602570_zx3w886dz",
-    "type": "status_changed",
-    "taskId": "task_20260126_pSMY_Y",
-    "taskTitle": "US-807: Dashboard Placement",
-    "details": {
-      "from": "in-progress",
-      "status": "done"
-    },
-    "timestamp": "2026-01-26T18:20:02.570Z"
-  },
-  {
-    "id": "activity_1769451602491_8bi00zf3z",
-    "type": "status_changed",
-    "taskId": "task_20260126_caioxm",
-    "taskTitle": "US-806: Dashboard Component",
-    "details": {
-      "from": "in-progress",
-      "status": "done"
-    },
-    "timestamp": "2026-01-26T18:20:02.491Z"
-  },
-  {
-    "id": "activity_1769451497215_igxkrg9na",
-    "type": "status_changed",
-    "taskId": "task_20260126_pSMY_Y",
-    "taskTitle": "US-807: Dashboard Placement",
-    "details": {
-      "from": "todo",
-      "status": "in-progress"
-    },
-    "timestamp": "2026-01-26T18:18:17.215Z"
-  },
-  {
-    "id": "activity_1769451497144_jiq8ikslt",
-    "type": "task_updated",
-    "taskId": "task_20260126_pSMY_Y",
-    "taskTitle": "US-807: Dashboard Placement",
-    "timestamp": "2026-01-26T18:18:17.144Z"
-  },
-  {
-    "id": "activity_1769451493089_118u0n0z1",
-    "type": "status_changed",
-    "taskId": "task_20260126_caioxm",
-    "taskTitle": "US-806: Dashboard Component",
-    "details": {
-      "from": "todo",
-      "status": "in-progress"
-    },
-    "timestamp": "2026-01-26T18:18:13.089Z"
-  },
-  {
-    "id": "activity_1769451491938_3x38sc3pg",
-    "type": "task_updated",
-    "taskId": "task_20260126_caioxm",
-    "taskTitle": "US-806: Dashboard Component",
-    "timestamp": "2026-01-26T18:18:11.938Z"
-  },
-  {
-    "id": "activity_1769451484871_9uajpr7l7",
-    "type": "status_changed",
-    "taskId": "task_20260126_HCSqiT",
-    "taskTitle": "US-805: Metrics API",
-    "details": {
-      "from": "in-progress",
-      "status": "done"
-    },
-    "timestamp": "2026-01-26T18:18:04.872Z"
-  },
-  {
-    "id": "activity_1769451413836_poc77g6kk",
-    "type": "status_changed",
-    "taskId": "task_20260126_HCSqiT",
-    "taskTitle": "US-805: Metrics API",
-    "details": {
-      "from": "todo",
-      "status": "in-progress"
-    },
-    "timestamp": "2026-01-26T18:16:53.836Z"
-  },
-  {
-    "id": "activity_1769451412830_v9nww3xfb",
-    "type": "task_updated",
-    "taskId": "task_20260126_HCSqiT",
-    "taskTitle": "US-805: Metrics API",
-    "timestamp": "2026-01-26T18:16:52.830Z"
-  },
-  {
-    "id": "activity_1769451406712_fi23jwbqr",
-    "type": "status_changed",
-    "taskId": "task_20260126_8SKJ8t",
-    "taskTitle": "US-804: Token Usage Tracking",
-    "details": {
-      "from": "in-progress",
-      "status": "done"
-    },
-    "timestamp": "2026-01-26T18:16:46.712Z"
-  },
-  {
-    "id": "activity_1769451370078_2pgsz7dp8",
-    "type": "status_changed",
-    "taskId": "task_20260126_8SKJ8t",
-    "taskTitle": "US-804: Token Usage Tracking",
-    "details": {
-      "from": "todo",
-      "status": "in-progress"
-    },
-    "timestamp": "2026-01-26T18:16:10.078Z"
-  },
-  {
-    "id": "activity_1769451368906_dn12oop49",
-    "type": "task_updated",
-    "taskId": "task_20260126_8SKJ8t",
-    "taskTitle": "US-804: Token Usage Tracking",
-    "timestamp": "2026-01-26T18:16:08.906Z"
-  },
-  {
-    "id": "activity_1769451363216_z3o9d64mc",
-    "type": "status_changed",
-    "taskId": "task_20260126_aBQTa1",
-    "taskTitle": "US-803: Emit Run Events",
-    "details": {
-      "from": "in-progress",
-      "status": "done"
-    },
-    "timestamp": "2026-01-26T18:16:03.216Z"
-  },
-  {
-    "id": "activity_1769451312599_79qujupwm",
-    "type": "status_changed",
-    "taskId": "task_20260126_aBQTa1",
-    "taskTitle": "US-803: Emit Run Events",
-    "details": {
-      "from": "todo",
-      "status": "in-progress"
-    },
-    "timestamp": "2026-01-26T18:15:12.599Z"
-  },
-  {
-    "id": "activity_1769451307395_4sg4ltnrt",
-    "type": "status_changed",
-    "taskId": "task_20260126_kgLjM8",
-    "taskTitle": "US-802: Emit Task Events",
-    "details": {
-      "from": "in-progress",
-      "status": "done"
-    },
-    "timestamp": "2026-01-26T18:15:07.395Z"
-  },
-  {
-    "id": "activity_1769451243067_iewp0heay",
-    "type": "status_changed",
-    "taskId": "task_20260126_kgLjM8",
-    "taskTitle": "US-802: Emit Task Events",
-    "details": {
-      "from": "todo",
-      "status": "in-progress"
-    },
-    "timestamp": "2026-01-26T18:14:03.067Z"
-  },
-  {
-    "id": "activity_1769451237699_1kzi8vxr5",
-    "type": "task_updated",
-    "taskId": "task_20260126_aBQTa1",
-    "taskTitle": "US-803: Emit Run Events",
-    "timestamp": "2026-01-26T18:13:57.699Z"
-  },
-  {
-    "id": "activity_1769451237676_klh0bdovk",
-    "type": "task_updated",
-    "taskId": "task_20260126_kgLjM8",
-    "taskTitle": "US-802: Emit Task Events",
-    "timestamp": "2026-01-26T18:13:57.676Z"
-  },
-  {
-    "id": "activity_1769451228567_56nk8m0fr",
-    "type": "status_changed",
-    "taskId": "task_20260126_desyd5",
-    "taskTitle": "US-801: Telemetry Service",
-    "details": {
-      "from": "review",
-      "status": "done"
-    },
-    "timestamp": "2026-01-26T18:13:48.567Z"
-  },
-  {
-    "id": "activity_1769450526308_5rj5szulf",
-    "type": "status_changed",
-    "taskId": "task_20260126_desyd5",
-    "taskTitle": "US-801: Telemetry Service",
-    "details": {
-      "from": "in-progress",
-      "status": "review"
-    },
-    "timestamp": "2026-01-26T18:02:06.308Z"
-  },
-  {
-    "id": "activity_1769450349617_dmxopagt4",
-    "type": "status_changed",
-    "taskId": "task_20260126_desyd5",
-    "taskTitle": "US-801: Telemetry Service",
-    "details": {
-      "from": "todo",
-      "status": "in-progress"
-    },
-    "timestamp": "2026-01-26T17:59:09.617Z"
-  },
-  {
-    "id": "activity_1769450341746_gt7ekh3rx",
-    "type": "task_updated",
-    "taskId": "task_20260126_desyd5",
-    "taskTitle": "US-801: Telemetry Service",
-    "timestamp": "2026-01-26T17:59:01.746Z"
-  },
-  {
-    "id": "activity_1769450290443_ehy6y16h4",
-    "type": "task_updated",
-    "taskId": "task_20260126_vfkPKg",
-    "taskTitle": "US-808: Optional Traces (Stretch)",
-    "timestamp": "2026-01-26T17:58:10.443Z"
-  },
-  {
-    "id": "activity_1769450290429_jpgcematc",
-    "type": "task_updated",
-    "taskId": "task_20260126_pSMY_Y",
-    "taskTitle": "US-807: Dashboard Placement",
-    "timestamp": "2026-01-26T17:58:10.429Z"
-  },
-  {
-    "id": "activity_1769450290415_2cqmlxoov",
-    "type": "task_updated",
-    "taskId": "task_20260126_caioxm",
-    "taskTitle": "US-806: Dashboard Component",
-    "timestamp": "2026-01-26T17:58:10.415Z"
-  },
-  {
-    "id": "activity_1769450290401_hq35eyk7j",
-    "type": "task_updated",
-    "taskId": "task_20260126_HCSqiT",
-    "taskTitle": "US-805: Metrics API",
-    "timestamp": "2026-01-26T17:58:10.401Z"
   }
 ]

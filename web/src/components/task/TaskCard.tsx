@@ -7,7 +7,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import type { Task, TaskType, TaskPriority } from '@veritas-kanban/shared';
-import { Code, Search, FileText, Zap, Check, Ban, Clock, Timer, Loader2 } from 'lucide-react';
+import { Code, Search, FileText, Zap, Check, Ban, Clock, Timer, Loader2, Paperclip } from 'lucide-react';
 import { useBulkActions } from '@/hooks/useBulkActions';
 import { formatDuration } from '@/hooks/useTimeTracking';
 
@@ -179,6 +179,13 @@ export function TaskCard({ task, isDragging, onClick, isSelected, isBlocked, blo
               {task.tags && task.tags.length > 0 && (
                 <span className="text-xs text-muted-foreground">
                   +{task.tags.length} tags
+                </span>
+              )}
+              {/* Attachment indicator */}
+              {task.attachments && task.attachments.length > 0 && (
+                <span className="text-xs px-1.5 py-0.5 rounded bg-muted text-muted-foreground flex items-center gap-1">
+                  <Paperclip className="h-3 w-3" />
+                  {task.attachments.length}
                 </span>
               )}
               {/* Time tracking indicator */}
