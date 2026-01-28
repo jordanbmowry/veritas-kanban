@@ -1,5 +1,48 @@
 [
   {
+    "id": "activity_1769579225675_ofqxy3zg6",
+    "type": "task_created",
+    "taskId": "task_20260128_346aMO",
+    "taskTitle": "BUG: Can't add or remove sprintsI have no way of adding and removing sprints either. Add a similar workflow like you gave me for projects and task types for sprint number management.",
+    "details": {
+      "type": "bug-GdN5rT",
+      "priority": "medium",
+      "project": "veritas-kanban"
+    },
+    "timestamp": "2026-01-28T05:47:05.675Z"
+  },
+  {
+    "id": "activity_1769579145963_687t2bm9c",
+    "type": "task_created",
+    "taskId": "task_20260128_tDh8SO",
+    "taskTitle": "BUG: You can't view or restore archived tasks",
+    "details": {
+      "type": "bug-GdN5rT",
+      "priority": "medium",
+      "project": "veritas-kanban"
+    },
+    "timestamp": "2026-01-28T05:45:45.963Z"
+  },
+  {
+    "id": "activity_1769579030098_h175dl0j8",
+    "type": "task_updated",
+    "taskId": "task_20260128_Zk4oV0",
+    "taskTitle": "BUG: Kanban requires refresh to see progress",
+    "timestamp": "2026-01-28T05:43:50.098Z"
+  },
+  {
+    "id": "activity_1769579002695_t5z62shib",
+    "type": "task_created",
+    "taskId": "task_20260128_rP6NHe",
+    "taskTitle": "Create backlog of sprints, and sprint tasks",
+    "details": {
+      "type": "automation",
+      "priority": "low",
+      "project": "veritas-kanban"
+    },
+    "timestamp": "2026-01-28T05:43:22.695Z"
+  },
+  {
     "id": "activity_1769578663969_jhi3rdr91",
     "type": "task_updated",
     "taskId": "task_20260128_fL0JN1",
@@ -874,37 +917,5 @@
     "taskId": "task_20260128_qcy3FJ",
     "taskTitle": "US-907: Apply template to existing task",
     "timestamp": "2026-01-28T02:41:15.614Z"
-  },
-  {
-    "id": "activity_1769568028093_94k9mk402",
-    "type": "task_updated",
-    "taskId": "task_20260128_qcy3FJ",
-    "taskTitle": "US-907: Apply template to existing task",
-    "timestamp": "2026-01-28T02:40:28.093Z"
-  },
-  {
-    "id": "activity_1769567987042_i1odnhqgj",
-    "type": "task_updated",
-    "taskId": "task_20260128_qcy3FJ",
-    "taskTitle": "US-907: Apply template to existing task",
-    "timestamp": "2026-01-28T02:39:47.042Z"
-  },
-  {
-    "id": "activity_1769567916278_x73ysfm8g",
-    "type": "task_updated",
-    "taskId": "task_20260128_qcy3FJ",
-    "taskTitle": "US-907: Apply template to existing task",
-    "timestamp": "2026-01-28T02:38:36.278Z"
-  },
-  {
-    "id": "activity_1769567791644_0ze9p6hxo",
-    "type": "status_changed",
-    "taskId": "task_20260128_qcy3FJ",
-    "taskTitle": "US-907: Apply template to existing task",
-    "details": {
-      "from": "todo",
-      "status": "in-progress"
-    },
-    "timestamp": "2026-01-28T02:36:31.644Z"
   }
 ]

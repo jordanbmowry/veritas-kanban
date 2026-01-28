@@ -393,6 +393,7 @@ export function TaskDetailPanel({ task, open, onOpenChange }: TaskDetailPanelPro
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="__none__">No Sprint</SelectItem>
+                    <SelectItem value="US-100">US-100</SelectItem>
                     <SelectItem value="US-200">US-200</SelectItem>
                     <SelectItem value="US-300">US-300</SelectItem>
                     <SelectItem value="US-400">US-400</SelectItem>
