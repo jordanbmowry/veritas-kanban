@@ -1,3 +1,4 @@
+import { memo, useMemo } from 'react';
 import { 
   FileCode,
   FilePlus,
@@ -23,11 +24,11 @@ interface FileTreeProps {
   comments: ReviewComment[];
 }
 
-export function FileTree({ files, selectedFile, onSelectFile, comments }: FileTreeProps) {
-  const commentsByFile = comments.reduce((acc, c) => {
+export const FileTree = memo(function FileTree({ files, selectedFile, onSelectFile, comments }: FileTreeProps) {
+  const commentsByFile = useMemo(() => comments.reduce((acc, c) => {
     acc[c.file] = (acc[c.file] || 0) + 1;
     return acc;
-  }, {} as Record<string, number>);
+  }, {} as Record<string, number>), [comments]);
 
   return (
     <div className="space-y-1">
@@ -61,4 +62,4 @@ export function FileTree({ files, selectedFile, onSelectFile, comments }: FileTr
       ))}
     </div>
   );
-}
+});

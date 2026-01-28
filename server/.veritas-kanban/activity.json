@@ -1,5 +1,38 @@
 [
   {
+    "id": "activity_1769603654345_x6t8uc64f",
+    "type": "status_changed",
+    "taskId": "task_20260128_ksQUvs",
+    "taskTitle": "RF-20: Frontend Performance Optimization",
+    "details": {
+      "from": "todo",
+      "status": "in-progress"
+    },
+    "timestamp": "2026-01-28T12:34:14.345Z"
+  },
+  {
+    "id": "activity_1769603622409_5thybkvj9",
+    "type": "comment_added",
+    "taskId": "task_20260128_VnO-L8",
+    "taskTitle": "RF-12: Extract Shared WebSocket Hook",
+    "details": {
+      "author": "Veritas",
+      "preview": "Created useWebSocket.ts with connection lifecycle,..."
+    },
+    "timestamp": "2026-01-28T12:33:42.409Z"
+  },
+  {
+    "id": "activity_1769603614328_ci4tk6yfp",
+    "type": "status_changed",
+    "taskId": "task_20260128_VnO-L8",
+    "taskTitle": "RF-12: Extract Shared WebSocket Hook",
+    "details": {
+      "from": "in-progress",
+      "status": "done"
+    },
+    "timestamp": "2026-01-28T12:33:34.329Z"
+  },
+  {
     "id": "activity_1769603542408_0wffse0lg",
     "type": "status_changed",
     "taskId": "task_20260128_VnO-L8",

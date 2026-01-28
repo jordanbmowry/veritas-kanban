@@ -1,3 +1,4 @@
+import { memo, useMemo } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { cn } from '@/lib/utils';
@@ -40,7 +41,7 @@ const priorityColors: Record<TaskPriority, string> = {
   low: 'bg-slate-500/20 text-slate-400',
 };
 
-export function TaskCard({ task, isDragging, onClick, isSelected, isBlocked, blockerTitles }: TaskCardProps) {
+export const TaskCard = memo(function TaskCard({ task, isDragging, onClick, isSelected, isBlocked, blockerTitles }: TaskCardProps) {
   const { taskTypes, projects, sprints } = useTaskConfig();
   const {
     attributes,
@@ -79,22 +80,34 @@ export function TaskCard({ task, isDragging, onClick, isSelected, isBlocked, blo
 
   const isAgentRunning = task.attempt?.status === 'running';
   
-  // Get type info dynamically
-  const typeConfig = taskTypes.find(t => t.id === task.type);
-  const typeIconName = typeConfig?.icon || 'Code';
-  const typeLabel = typeConfig?.label || task.type;
-  const TypeIconComponent = getTypeIcon(typeIconName);
-  const typeColor = getTypeColor(taskTypes, task.type);
+  // Memoize type info
+  const { typeLabel, TypeIconComponent, typeColor } = useMemo(() => {
+    const typeConfig = taskTypes.find(t => t.id === task.type);
+    const iconName = typeConfig?.icon || 'Code';
+    return {
+      typeLabel: typeConfig?.label || task.type,
+      TypeIconComponent: getTypeIcon(iconName),
+      typeColor: getTypeColor(taskTypes, task.type),
+    };
+  }, [taskTypes, task.type]);
   
-  // Get project info dynamically
-  const projectColor = task.project ? getProjectColor(projects, task.project) : 'bg-muted';
-  const projectLabel = task.project ? getProjectLabel(projects, task.project) : '';
+  // Memoize project info
+  const { projectColor, projectLabel } = useMemo(() => ({
+    projectColor: task.project ? getProjectColor(projects, task.project) : 'bg-muted',
+    projectLabel: task.project ? getProjectLabel(projects, task.project) : '',
+  }), [projects, task.project]);
 
-  // Subtask progress
-  const subtasks = task.subtasks || [];
-  const subtaskTotal = subtasks.length;
-  const subtaskCompleted = subtasks.filter(s => s.completed).length;
-  const allSubtasksDone = subtaskTotal > 0 && subtaskCompleted === subtaskTotal;
+  // Memoize subtask progress
+  const { subtaskTotal, subtaskCompleted, allSubtasksDone } = useMemo(() => {
+    const subtasks = task.subtasks || [];
+    const total = subtasks.length;
+    const completed = subtasks.filter(s => s.completed).length;
+    return {
+      subtaskTotal: total,
+      subtaskCompleted: completed,
+      allSubtasksDone: total > 0 && completed === total,
+    };
+  }, [task.subtasks]);
 
   return (
     <TooltipProvider>
@@ -265,4 +278,4 @@ export function TaskCard({ task, isDragging, onClick, isSelected, isBlocked, blo
       </Tooltip>
     </TooltipProvider>
   );
-}
+});

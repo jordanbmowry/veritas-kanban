@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useState, useMemo, useCallback } from 'react';
 import { useDiffSummary } from '@/hooks/useDiff';
 import { FileTree } from './diff/FileTree';
 import { FileDiffView } from './diff/FileDiffView';
@@ -12,12 +12,16 @@ interface DiffViewerProps {
   onRemoveComment: (commentId: string) => void;
 }
 
-export function DiffViewer({ task, onAddComment, onRemoveComment }: DiffViewerProps) {
+export const DiffViewer = memo(function DiffViewer({ task, onAddComment, onRemoveComment }: DiffViewerProps) {
   const hasWorktree = !!task.git?.worktreePath;
   const { data: summary, isLoading, error } = useDiffSummary(task.id, hasWorktree);
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
 
-  const comments = task.reviewComments || [];
+  const comments = useMemo(() => task.reviewComments || [], [task.reviewComments]);
+
+  const handleSelectFile = useCallback((file: string | null) => {
+    setSelectedFile(file);
+  }, []);
 
   if (!hasWorktree) {
     return (
@@ -79,7 +83,7 @@ export function DiffViewer({ task, onAddComment, onRemoveComment }: DiffViewerPr
             <FileTree
               files={summary.files}
               selectedFile={selectedFile}
-              onSelectFile={setSelectedFile}
+              onSelectFile={handleSelectFile}
               comments={comments}
             />
           </div>
@@ -105,4 +109,4 @@ export function DiffViewer({ task, onAddComment, onRemoveComment }: DiffViewerPr
       </div>
     </FeatureErrorBoundary>
   );
-}
+});

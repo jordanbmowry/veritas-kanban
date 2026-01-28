@@ -1,3 +1,4 @@
+import { memo, useMemo } from 'react';
 import { Plus, MessageSquare } from 'lucide-react';
 import { CommentInput, CommentDisplay } from './ReviewComment';
 import type { DiffLine } from '@/lib/api';
@@ -14,7 +15,7 @@ interface DiffLineProps {
   onRemoveComment: (commentId: string) => void;
 }
 
-export function DiffLineView({
+export const DiffLineView = memo(function DiffLineView({
   line,
   comments,
   addingCommentAtLine,
@@ -24,7 +25,10 @@ export function DiffLineView({
   onRemoveComment,
 }: DiffLineProps) {
   const lineNumber = line.newNumber || line.oldNumber;
-  const lineComments = comments.filter(c => c.line === lineNumber);
+  const lineComments = useMemo(
+    () => comments.filter(c => c.line === lineNumber),
+    [comments, lineNumber]
+  );
   const isAddingHere = addingCommentAtLine === lineNumber;
   
   return (
@@ -94,4 +98,4 @@ export function DiffLineView({
       )}
     </>
   );
-}
+});

@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { DiffLineView } from './DiffLine';
 import type { DiffHunk } from '@/lib/api';
 import type { ReviewComment } from '@veritas-kanban/shared';
@@ -12,7 +13,7 @@ interface DiffHunkProps {
   onRemoveComment: (commentId: string) => void;
 }
 
-export function DiffHunkView({
+export const DiffHunkView = memo(function DiffHunkView({
   hunk,
   comments,
   addingCommentAtLine,
@@ -43,4 +44,4 @@ export function DiffHunkView({
       </div>
     </div>
   );
-}
+});

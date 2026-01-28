@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useState, useMemo, useCallback } from 'react';
 import { useFileDiff } from '@/hooks/useDiff';
 import { DiffHunkView } from './DiffHunk';
 import { 
@@ -29,7 +29,7 @@ interface FileDiffViewProps {
   onRemoveComment: (commentId: string) => void;
 }
 
-export function FileDiffView({
+export const FileDiffView = memo(function FileDiffView({
   taskId,
   filePath,
   comments,
@@ -39,9 +39,12 @@ export function FileDiffView({
   const { data: diff, isLoading, error } = useFileDiff(taskId, filePath);
   const [addingCommentAtLine, setAddingCommentAtLine] = useState<number | null>(null);
 
-  const fileComments = comments.filter(c => c.file === filePath);
+  const fileComments = useMemo(
+    () => comments.filter(c => c.file === filePath),
+    [comments, filePath]
+  );
 
-  const handleSubmitComment = (content: string) => {
+  const handleSubmitComment = useCallback((content: string) => {
     if (addingCommentAtLine === null) return;
     
     const comment: ReviewComment = {
@@ -54,7 +57,9 @@ export function FileDiffView({
     
     onAddComment(comment);
     setAddingCommentAtLine(null);
-  };
+  }, [addingCommentAtLine, filePath, onAddComment]);
+
+  const handleCancelComment = useCallback(() => setAddingCommentAtLine(null), []);
 
   if (isLoading) {
     return (
@@ -110,11 +115,11 @@ export function FileDiffView({
             addingCommentAtLine={addingCommentAtLine}
             onStartAddComment={setAddingCommentAtLine}
             onSubmitComment={handleSubmitComment}
-            onCancelComment={() => setAddingCommentAtLine(null)}
+            onCancelComment={handleCancelComment}
             onRemoveComment={onRemoveComment}
           />
         ))}
       </div>
     </div>
   );
-}
+});
