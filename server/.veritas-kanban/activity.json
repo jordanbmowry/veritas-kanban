@@ -1,5 +1,141 @@
 [
   {
+    "id": "activity_1769590226849_pj4gxcgf9",
+    "type": "task_updated",
+    "taskId": "task_20260128_Q78_6y",
+    "taskTitle": "US-1151: Extract Settings tab components from monolith",
+    "timestamp": "2026-01-28T08:50:26.849Z"
+  },
+  {
+    "id": "activity_1769590166795_2kk4ua4tk",
+    "type": "status_changed",
+    "taskId": "task_20260128_Q78_6y",
+    "taskTitle": "US-1151: Extract Settings tab components from monolith",
+    "details": {
+      "from": "todo",
+      "status": "in-progress"
+    },
+    "timestamp": "2026-01-28T08:49:26.795Z"
+  },
+  {
+    "id": "activity_1769589885558_p754qy6ot",
+    "type": "task_created",
+    "taskId": "task_20260128_8HU2XD",
+    "taskTitle": "US-1158: Replace alert() calls with toast notifications",
+    "details": {
+      "type": "code",
+      "priority": "low",
+      "project": "veritas-kanban"
+    },
+    "timestamp": "2026-01-28T08:44:45.558Z"
+  },
+  {
+    "id": "activity_1769589878257_3ffqbousc",
+    "type": "task_created",
+    "taskId": "task_20260128_CnogQO",
+    "taskTitle": "US-1157: Sanitize settings import against prototype pollution",
+    "details": {
+      "type": "code",
+      "priority": "medium",
+      "project": "veritas-kanban"
+    },
+    "timestamp": "2026-01-28T08:44:38.257Z"
+  },
+  {
+    "id": "activity_1769589871074_en1h4id50",
+    "type": "task_created",
+    "taskId": "task_20260128_F-XLhL",
+    "taskTitle": "US-1156: Settings accessibility (WCAG 2.1 AA)",
+    "details": {
+      "type": "code",
+      "priority": "medium",
+      "project": "veritas-kanban"
+    },
+    "timestamp": "2026-01-28T08:44:31.074Z"
+  },
+  {
+    "id": "activity_1769589861607_14bhx2k5g",
+    "type": "task_created",
+    "taskId": "task_20260128_-KNOy3",
+    "taskTitle": "US-1155: Settings performance — memoization & lazy loading",
+    "details": {
+      "type": "code",
+      "priority": "medium",
+      "project": "veritas-kanban"
+    },
+    "timestamp": "2026-01-28T08:44:21.607Z"
+  },
+  {
+    "id": "activity_1769589851638_rj39j8yaz",
+    "type": "task_created",
+    "taskId": "task_20260128_6SbOnv",
+    "taskTitle": "US-1154: Add test coverage for settings features",
+    "details": {
+      "type": "code",
+      "priority": "high",
+      "project": "veritas-kanban"
+    },
+    "timestamp": "2026-01-28T08:44:11.638Z"
+  },
+  {
+    "id": "activity_1769589842836_6guypgz4i",
+    "type": "task_created",
+    "taskId": "task_20260128_NrvUWe",
+    "taskTitle": "US-1153: Harden template import validation & security",
+    "details": {
+      "type": "code",
+      "priority": "high",
+      "project": "veritas-kanban"
+    },
+    "timestamp": "2026-01-28T08:44:02.836Z"
+  },
+  {
+    "id": "activity_1769589834742_skz4qpgwq",
+    "type": "task_created",
+    "taskId": "task_20260128_SFb0-u",
+    "taskTitle": "US-1152: Add error boundaries to Settings dialog",
+    "details": {
+      "type": "code",
+      "priority": "high",
+      "project": "veritas-kanban"
+    },
+    "timestamp": "2026-01-28T08:43:54.742Z"
+  },
+  {
+    "id": "activity_1769589827001_9gfz0vpqx",
+    "type": "task_created",
+    "taskId": "task_20260128_Q78_6y",
+    "taskTitle": "US-1151: Extract Settings tab components from monolith",
+    "details": {
+      "type": "code",
+      "priority": "high",
+      "project": "veritas-kanban"
+    },
+    "timestamp": "2026-01-28T08:43:47.001Z"
+  },
+  {
+    "id": "activity_1769589376876_l09szmsnu",
+    "type": "comment_added",
+    "taskId": "task_20260128_njhuR8",
+    "taskTitle": "US-1110: Settings import/export & reset",
+    "details": {
+      "author": "Veritas",
+      "preview": "Settings import/export & reset complete: export to..."
+    },
+    "timestamp": "2026-01-28T08:36:16.876Z"
+  },
+  {
+    "id": "activity_1769589376846_5f3t59f1k",
+    "type": "status_changed",
+    "taskId": "task_20260128_njhuR8",
+    "taskTitle": "US-1110: Settings import/export & reset",
+    "details": {
+      "from": "in-progress",
+      "status": "done"
+    },
+    "timestamp": "2026-01-28T08:36:16.846Z"
+  },
+  {
     "id": "activity_1769589334140_qw71wwjrf",
     "type": "status_changed",
     "taskId": "task_20260128_njhuR8",
