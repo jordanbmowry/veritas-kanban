@@ -802,7 +802,7 @@ export interface AgentOutput {
 
 // Global agent status (not per-task)
 export interface GlobalAgentStatus {
-  status: 'idle' | 'working' | 'thinking' | 'error';
+  status: 'idle' | 'working' | 'thinking' | 'sub-agent' | 'error';
   subAgentCount: number;
   activeTask?: string;
   activeTaskTitle?: string;

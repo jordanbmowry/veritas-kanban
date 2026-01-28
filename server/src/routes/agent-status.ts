@@ -135,8 +135,15 @@ const updateStatusSchema = z.object({
 });
 
 // GET /api/agent/status - Get current agent status
+// Flatten activeTask for frontend compatibility
 router.get('/', asyncHandler(async (_req, res) => {
-  res.json(currentStatus);
+  const { activeTask, errorMessage, ...rest } = currentStatus;
+  res.json({
+    ...rest,
+    activeTask: activeTask?.id,
+    activeTaskTitle: activeTask?.title,
+    error: errorMessage,
+  });
 }));
 
 // POST /api/agent/status - Update agent status

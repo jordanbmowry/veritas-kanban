@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import helmet from 'helmet';
+import compression from 'compression';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { WebSocketServer, WebSocket } from 'ws';
@@ -98,6 +99,13 @@ app.use(
     crossOriginEmbedderPolicy: false,
   })
 );
+
+// ============================================
+// Performance: Response Compression (gzip/deflate)
+// ============================================
+// Compress responses > 1KB at level 6 (good balance of speed vs size).
+// Placed after Helmet so security headers are set first.
+app.use(compression({ level: 6, threshold: 1024 }));
 
 // ============================================
 // Security: CORS Configuration
@@ -418,6 +426,7 @@ server.listen(PORT, () => {
 ║  ${authLine.padEnd(42)}║
 ║  ${corsLine.padEnd(42)}║
 ║  Helmet:     ON (CSP + security headers)       ║
+║  Compress:   ON (gzip, threshold 1KB)          ║
 ║  Rate Limit: 100 req/min                      ║
 ║  Body Limit: 1MB                              ║
 ╚═══════════════════════════════════════════════╝
