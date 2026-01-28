@@ -36,4 +36,5 @@ export {
 } from './useTimeTracking';
 // formatDuration from useTimeTracking takes seconds; use useMetrics.formatDuration (takes ms) via barrel
 export * from './useToast';
+export * from './useWebSocket';
 export * from './useWorktree';

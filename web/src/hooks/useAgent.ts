@@ -1,6 +1,7 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api, AgentOutput } from '@/lib/api';
+import { useWebSocket, type WebSocketMessage } from './useWebSocket';
 import type { AgentType } from '@veritas-kanban/shared';
 
 export function useAgentStatus(taskId: string | undefined) {
@@ -63,68 +64,39 @@ export function useAgentLog(taskId: string | undefined, attemptId: string | unde
 // WebSocket hook for real-time agent output
 export function useAgentStream(taskId: string | undefined) {
   const [outputs, setOutputs] = useState<AgentOutput[]>([]);
-  const [isConnected, setIsConnected] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
-  const wsRef = useRef<WebSocket | null>(null);
   const queryClient = useQueryClient();
 
-  useEffect(() => {
-    if (!taskId) {
-      setOutputs([]);
-      return;
+  const handleMessage = useCallback((message: WebSocketMessage) => {
+    if (message.type === 'subscribed') {
+      setIsRunning(message.running as boolean);
+    } else if (message.type === 'agent:output') {
+      setOutputs(prev => [...prev, {
+        type: message.outputType as AgentOutput['type'],
+        content: message.content as string,
+        timestamp: message.timestamp as string,
+      }]);
+    } else if (message.type === 'agent:complete') {
+      setIsRunning(false);
+      queryClient.invalidateQueries({ queryKey: ['agent', 'status', taskId] });
+      queryClient.invalidateQueries({ queryKey: ['tasks'] });
+    } else if (message.type === 'agent:error') {
+      setIsRunning(false);
+      queryClient.invalidateQueries({ queryKey: ['agent', 'status', taskId] });
     }
-
-    // Connect to WebSocket
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${protocol}//${window.location.hostname}:3001/ws`;
-    
-    const ws = new WebSocket(wsUrl);
-    wsRef.current = ws;
-
-    ws.onopen = () => {
-      setIsConnected(true);
-      // Subscribe to task's agent output
-      ws.send(JSON.stringify({ type: 'subscribe', taskId }));
-    };
-
-    ws.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        
-        if (data.type === 'subscribed') {
-          setIsRunning(data.running);
-        } else if (data.type === 'agent:output') {
-          setOutputs(prev => [...prev, {
-            type: data.type === 'agent:output' ? data.type : data.type,
-            content: data.content,
-            timestamp: data.timestamp,
-          } as AgentOutput]);
-        } else if (data.type === 'agent:complete') {
-          setIsRunning(false);
-          queryClient.invalidateQueries({ queryKey: ['agent', 'status', taskId] });
-          queryClient.invalidateQueries({ queryKey: ['tasks'] });
-        } else if (data.type === 'agent:error') {
-          setIsRunning(false);
-          queryClient.invalidateQueries({ queryKey: ['agent', 'status', taskId] });
-        }
-      } catch (e) {
-        console.error('WebSocket message parse error:', e);
-      }
-    };
-
-    ws.onclose = () => {
-      setIsConnected(false);
-    };
-
-    ws.onerror = (error) => {
-      console.error('WebSocket error:', error);
-    };
-
-    return () => {
-      ws.close();
-      wsRef.current = null;
-    };
   }, [taskId, queryClient]);
+
+  // Clear outputs when taskId changes
+  useEffect(() => {
+    setOutputs([]);
+  }, [taskId]);
+
+  const { isConnected } = useWebSocket({
+    autoConnect: !!taskId,
+    onOpen: taskId ? { type: 'subscribe', taskId } : undefined,
+    onMessage: handleMessage,
+    reconnectDelay: 0, // Don't reconnect for agent streams
+  });
 
   const clearOutputs = useCallback(() => {
     setOutputs([]);

@@ -1,5 +1,38 @@
 [
   {
+    "id": "activity_1769603542408_0wffse0lg",
+    "type": "status_changed",
+    "taskId": "task_20260128_VnO-L8",
+    "taskTitle": "RF-12: Extract Shared WebSocket Hook",
+    "details": {
+      "from": "todo",
+      "status": "in-progress"
+    },
+    "timestamp": "2026-01-28T12:32:22.408Z"
+  },
+  {
+    "id": "activity_1769603526556_yx9ze60cc",
+    "type": "comment_added",
+    "taskId": "task_20260128_Qh60Ao",
+    "taskTitle": "RF-22: TypeScript Strictness & Linting",
+    "details": {
+      "author": "Veritas",
+      "preview": "Added ESLint with TypeScript and React plugins. Al..."
+    },
+    "timestamp": "2026-01-28T12:32:06.556Z"
+  },
+  {
+    "id": "activity_1769603518646_2mawe9n8u",
+    "type": "status_changed",
+    "taskId": "task_20260128_Qh60Ao",
+    "taskTitle": "RF-22: TypeScript Strictness & Linting",
+    "details": {
+      "from": "in-progress",
+      "status": "done"
+    },
+    "timestamp": "2026-01-28T12:31:58.646Z"
+  },
+  {
     "id": "activity_1769603388688_4hoz7af0m",
     "type": "status_changed",
     "taskId": "task_20260128_Qh60Ao",
