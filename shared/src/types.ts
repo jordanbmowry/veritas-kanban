@@ -385,6 +385,11 @@ export interface ProjectConfig extends ManagedListItem {
   color?: string;  // Tailwind bg color class for badges (e.g., "bg-blue-500/20")
 }
 
+/** Sprint configuration */
+export interface SprintConfig extends ManagedListItem {
+  description?: string;
+}
+
 // ============ Template Types ============
 
 /** Subtask template for pre-defined subtask lists */

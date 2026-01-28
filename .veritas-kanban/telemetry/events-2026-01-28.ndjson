@@ -164,3 +164,16 @@
 {"type":"task.archived","taskId":"task_20260128_ot4jGs","project":"veritas-kanban","status":"done","id":"evt_bReE5mBxdpSE","timestamp":"2026-01-28T06:07:10.423Z"}
 {"type":"task.archived","taskId":"task_20260128_BECmyk","project":"veritas-kanban","status":"done","id":"evt_fmpldO9T9bpf","timestamp":"2026-01-28T06:07:10.427Z"}
 {"type":"task.archived","taskId":"task_20260128_2dCzyR","project":"veritas-kanban","status":"done","id":"evt_9lizljDiy4sa","timestamp":"2026-01-28T06:07:10.428Z"}
+{"type":"task.created","taskId":"task_20260128_9_qdSV","project":"veritas-kanban","status":"todo","id":"evt_RjGgFBBNUJqb","timestamp":"2026-01-28T06:14:56.898Z"}
+{"type":"task.created","taskId":"task_20260128_jpuZZy","project":"veritas-kanban","status":"todo","id":"evt_elluIaIoF0C9","timestamp":"2026-01-28T06:14:56.910Z"}
+{"type":"task.created","taskId":"task_20260128_EIsIv5","project":"veritas-kanban","status":"todo","id":"evt_BNmdmXBwINCo","timestamp":"2026-01-28T06:14:56.922Z"}
+{"type":"task.created","taskId":"task_20260128_bDBHgJ","project":"veritas-kanban","status":"todo","id":"evt_AnzttUB7OJxB","timestamp":"2026-01-28T06:14:56.933Z"}
+{"type":"task.created","taskId":"task_20260128_2-0mLV","project":"veritas-kanban","status":"todo","id":"evt_GgZyxMK169qc","timestamp":"2026-01-28T06:14:56.944Z"}
+{"type":"task.created","taskId":"task_20260128_XLZgpo","project":"veritas-kanban","status":"todo","id":"evt_qVMQLlgPY1ap","timestamp":"2026-01-28T06:14:56.955Z"}
+{"type":"task.created","taskId":"task_20260128_MwGpPe","project":"veritas-kanban","status":"todo","id":"evt_qotqrOwWEiIS","timestamp":"2026-01-28T06:14:56.966Z"}
+{"type":"task.created","taskId":"task_20260128_rQvOgG","project":"veritas-kanban","status":"todo","id":"evt_NxSwsqXwoDKg","timestamp":"2026-01-28T06:14:56.977Z"}
+{"type":"task.created","taskId":"task_20260128_XGU2QA","project":"veritas-kanban","status":"todo","id":"evt_7OhWk2NXrbt9","timestamp":"2026-01-28T06:14:56.988Z"}
+{"type":"task.created","taskId":"task_20260128_PNPYo1","project":"veritas-kanban","status":"todo","id":"evt__DodKzt3PiBa","timestamp":"2026-01-28T06:14:56.999Z"}
+{"type":"task.created","taskId":"task_20260128_efQBVi","project":"veritas-kanban","status":"todo","id":"evt_3VHswBEjofRe","timestamp":"2026-01-28T06:14:57.010Z"}
+{"type":"task.created","taskId":"task_20260128_Zz5vOl","project":"veritas-kanban","status":"todo","id":"evt_1aZO377JZCNj","timestamp":"2026-01-28T06:14:57.021Z"}
+{"type":"task.status_changed","taskId":"task_20260128_346aMO","project":"veritas-kanban","status":"in-progress","previousStatus":"todo","id":"evt_-8LPimJtq2TJ","timestamp":"2026-01-28T06:23:05.740Z"}

@@ -10,6 +10,7 @@ import type {
   CreateTemplateInput,
   UpdateTemplateInput,
   TaskTypeConfig,
+  SprintConfig,
 } from '@veritas-kanban/shared';
 
 const API_BASE = '/api';
@@ -434,6 +435,60 @@ export const api = {
         body: JSON.stringify({ orderedIds }),
       });
       return handleResponse<TaskTypeConfig[]>(response);
+    },
+  },
+
+  sprints: {
+    list: async (): Promise<SprintConfig[]> => {
+      const response = await fetch(`${API_BASE}/sprints`);
+      return handleResponse<SprintConfig[]>(response);
+    },
+
+    get: async (id: string): Promise<SprintConfig> => {
+      const response = await fetch(`${API_BASE}/sprints/${id}`);
+      return handleResponse<SprintConfig>(response);
+    },
+
+    create: async (input: { label: string; description?: string }): Promise<SprintConfig> => {
+      const response = await fetch(`${API_BASE}/sprints`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(input),
+      });
+      return handleResponse<SprintConfig>(response);
+    },
+
+    update: async (id: string, patch: Partial<SprintConfig>): Promise<SprintConfig> => {
+      const response = await fetch(`${API_BASE}/sprints/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(patch),
+      });
+      return handleResponse<SprintConfig>(response);
+    },
+
+    delete: async (id: string, force = false): Promise<void> => {
+      const url = force 
+        ? `${API_BASE}/sprints/${id}?force=true`
+        : `${API_BASE}/sprints/${id}`;
+      const response = await fetch(url, {
+        method: 'DELETE',
+      });
+      return handleResponse<void>(response);
+    },
+
+    canDelete: async (id: string): Promise<{ allowed: boolean; referenceCount: number; isDefault: boolean }> => {
+      const response = await fetch(`${API_BASE}/sprints/${id}/can-delete`);
+      return handleResponse(response);
+    },
+
+    reorder: async (orderedIds: string[]): Promise<SprintConfig[]> => {
+      const response = await fetch(`${API_BASE}/sprints/reorder`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderedIds }),
+      });
+      return handleResponse<SprintConfig[]>(response);
     },
   },
 };

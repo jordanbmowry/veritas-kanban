@@ -38,6 +38,7 @@ import { Trash2, Calendar, Clock, GitBranch, Bot, FileDiff, ClipboardCheck, Moni
 import type { Task, TaskStatus, TaskPriority, ReviewComment, ReviewState } from '@veritas-kanban/shared';
 import { useTaskTypes, getTypeIcon } from '@/hooks/useTaskTypes';
 import { useProjects } from '@/hooks/useProjects';
+import { useSprints } from '@/hooks/useSprints';
 import { GitSection } from './GitSection';
 import { AgentPanel } from './AgentPanel';
 import { DiffViewer } from './DiffViewer';
@@ -115,6 +116,7 @@ export function TaskDetailPanel({ task, open, onOpenChange }: TaskDetailPanelPro
   const deleteTask = useDeleteTask();
   const { data: taskTypes = [] } = useTaskTypes();
   const { data: projects = [] } = useProjects();
+  const { data: sprints = [] } = useSprints();
   const { localTask, updateField, isDirty } = useDebouncedSave(task, updateTask);
   const [activeTab, setActiveTab] = useState('details');
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -393,16 +395,9 @@ export function TaskDetailPanel({ task, open, onOpenChange }: TaskDetailPanelPro
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="__none__">No Sprint</SelectItem>
-                    <SelectItem value="US-100">US-100</SelectItem>
-                    <SelectItem value="US-200">US-200</SelectItem>
-                    <SelectItem value="US-300">US-300</SelectItem>
-                    <SelectItem value="US-400">US-400</SelectItem>
-                    <SelectItem value="US-500">US-500</SelectItem>
-                    <SelectItem value="US-600">US-600</SelectItem>
-                    <SelectItem value="US-700">US-700</SelectItem>
-                    <SelectItem value="US-800">US-800</SelectItem>
-                    <SelectItem value="US-900">US-900</SelectItem>
-                    <SelectItem value="US-1000">US-1000</SelectItem>
+                    {sprints.map(s => (
+                      <SelectItem key={s.id} value={s.id}>{s.label}</SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>

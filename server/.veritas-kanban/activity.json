@@ -1,5 +1,293 @@
 [
   {
+    "id": "activity_1769581385740_3jvunl52p",
+    "type": "status_changed",
+    "taskId": "task_20260128_346aMO",
+    "taskTitle": "BUG: Can't add or remove sprints and I have no way of adding and removing sprints either. Add a similar workflow like you gave me for projects and task types for sprint number management.",
+    "details": {
+      "from": "todo",
+      "status": "in-progress"
+    },
+    "timestamp": "2026-01-28T06:23:05.740Z"
+  },
+  {
+    "id": "activity_1769581365402_03utxgabl",
+    "type": "task_updated",
+    "taskId": "task_20260128_346aMO",
+    "taskTitle": "BUG: Can't add or remove sprints and I have no way of adding and removing sprints either. Add a similar workflow like you gave me for projects and task types for sprint number management.",
+    "timestamp": "2026-01-28T06:22:45.402Z"
+  },
+  {
+    "id": "activity_1769581358708_iq8daxdhx",
+    "type": "task_updated",
+    "taskId": "task_20260128_346aMO",
+    "taskTitle": "BUG: Can't add or remove sprints and I have no way of adding and removing sprints either. Add a similar workflow like you gave me for projects and task types for sprint number management.",
+    "timestamp": "2026-01-28T06:22:38.708Z"
+  },
+  {
+    "id": "activity_1769581357838_xrd8tc4l3",
+    "type": "task_updated",
+    "taskId": "task_20260128_346aMO",
+    "taskTitle": "BUG: Can't add or remove sprints and I have no way of adding and removing sprints either. Add a similar workflow like you gave me for projects and task types for sprint number management.",
+    "timestamp": "2026-01-28T06:22:37.838Z"
+  },
+  {
+    "id": "activity_1769580957069_byrl1luks",
+    "type": "task_updated",
+    "taskId": "task_20260128_9_qdSV",
+    "taskTitle": "US-1001: Veritas telemetry reporter",
+    "timestamp": "2026-01-28T06:15:57.069Z"
+  },
+  {
+    "id": "activity_1769580930203_87o4ug5eb",
+    "type": "task_updated",
+    "taskId": "task_20260128_9_qdSV",
+    "taskTitle": "US-1001: Veritas telemetry reporter",
+    "timestamp": "2026-01-28T06:15:30.203Z"
+  },
+  {
+    "id": "activity_1769580913894_j1b7ar0mz",
+    "type": "task_updated",
+    "taskId": "task_20260128_Zz5vOl",
+    "taskTitle": "US-1012: Sprint velocity",
+    "timestamp": "2026-01-28T06:15:13.894Z"
+  },
+  {
+    "id": "activity_1769580913886_z8ol6pshc",
+    "type": "task_updated",
+    "taskId": "task_20260128_efQBVi",
+    "taskTitle": "US-1011: Cost budget tracking",
+    "timestamp": "2026-01-28T06:15:13.886Z"
+  },
+  {
+    "id": "activity_1769580913879_oxhizsejd",
+    "type": "task_updated",
+    "taskId": "task_20260128_PNPYo1",
+    "taskTitle": "US-1010: Daily digest",
+    "timestamp": "2026-01-28T06:15:13.879Z"
+  },
+  {
+    "id": "activity_1769580913871_vcj9vbut9",
+    "type": "task_updated",
+    "taskId": "task_20260128_XGU2QA",
+    "taskTitle": "US-1009: Failure alerts to Teams",
+    "timestamp": "2026-01-28T06:15:13.871Z"
+  },
+  {
+    "id": "activity_1769580913864_vm769gbps",
+    "type": "task_updated",
+    "taskId": "task_20260128_rQvOgG",
+    "taskTitle": "US-1008: Agent comparison",
+    "timestamp": "2026-01-28T06:15:13.864Z"
+  },
+  {
+    "id": "activity_1769580913856_gdmxp6337",
+    "type": "task_updated",
+    "taskId": "task_20260128_MwGpPe",
+    "taskTitle": "US-1007: Historical trends",
+    "timestamp": "2026-01-28T06:15:13.856Z"
+  },
+  {
+    "id": "activity_1769580913849_1mn3gocxx",
+    "type": "task_updated",
+    "taskId": "task_20260128_XLZgpo",
+    "taskTitle": "US-1006: Metrics export",
+    "timestamp": "2026-01-28T06:15:13.849Z"
+  },
+  {
+    "id": "activity_1769580913841_g8l3ppn1l",
+    "type": "task_updated",
+    "taskId": "task_20260128_2-0mLV",
+    "taskTitle": "US-1005: Dashboard drill-down",
+    "timestamp": "2026-01-28T06:15:13.841Z"
+  },
+  {
+    "id": "activity_1769580913833_r60u1txaq",
+    "type": "task_updated",
+    "taskId": "task_20260128_bDBHgJ",
+    "taskTitle": "US-1004: Token & cost tracking integration",
+    "timestamp": "2026-01-28T06:15:13.833Z"
+  },
+  {
+    "id": "activity_1769580913826_py036g2pk",
+    "type": "task_updated",
+    "taskId": "task_20260128_EIsIv5",
+    "taskTitle": "US-1003: Agent run summary on task card",
+    "timestamp": "2026-01-28T06:15:13.826Z"
+  },
+  {
+    "id": "activity_1769580913818_9eqlsncsq",
+    "type": "task_updated",
+    "taskId": "task_20260128_jpuZZy",
+    "taskTitle": "US-1002: Task metrics panel",
+    "timestamp": "2026-01-28T06:15:13.818Z"
+  },
+  {
+    "id": "activity_1769580913809_dpm7za9zq",
+    "type": "task_updated",
+    "taskId": "task_20260128_9_qdSV",
+    "taskTitle": "US-1001: Veritas telemetry reporter",
+    "timestamp": "2026-01-28T06:15:13.809Z"
+  },
+  {
+    "id": "activity_1769580897021_dwfqkx4uj",
+    "type": "task_created",
+    "taskId": "task_20260128_Zz5vOl",
+    "taskTitle": "US-1012: Sprint velocity",
+    "details": {
+      "type": "code",
+      "priority": "low",
+      "project": "veritas-kanban"
+    },
+    "timestamp": "2026-01-28T06:14:57.021Z"
+  },
+  {
+    "id": "activity_1769580897010_84ltboj7o",
+    "type": "task_created",
+    "taskId": "task_20260128_efQBVi",
+    "taskTitle": "US-1011: Cost budget tracking",
+    "details": {
+      "type": "code",
+      "priority": "medium",
+      "project": "veritas-kanban"
+    },
+    "timestamp": "2026-01-28T06:14:57.010Z"
+  },
+  {
+    "id": "activity_1769580896999_7yrj3fuw4",
+    "type": "task_created",
+    "taskId": "task_20260128_PNPYo1",
+    "taskTitle": "US-1010: Daily digest",
+    "details": {
+      "type": "code",
+      "priority": "medium",
+      "project": "veritas-kanban"
+    },
+    "timestamp": "2026-01-28T06:14:56.999Z"
+  },
+  {
+    "id": "activity_1769580896988_2bwrzxjj1",
+    "type": "task_created",
+    "taskId": "task_20260128_XGU2QA",
+    "taskTitle": "US-1009: Failure alerts to Teams",
+    "details": {
+      "type": "code",
+      "priority": "high",
+      "project": "veritas-kanban"
+    },
+    "timestamp": "2026-01-28T06:14:56.988Z"
+  },
+  {
+    "id": "activity_1769580896977_pkelevbf7",
+    "type": "task_created",
+    "taskId": "task_20260128_rQvOgG",
+    "taskTitle": "US-1008: Agent comparison",
+    "details": {
+      "type": "code",
+      "priority": "low",
+      "project": "veritas-kanban"
+    },
+    "timestamp": "2026-01-28T06:14:56.977Z"
+  },
+  {
+    "id": "activity_1769580896966_44nf682gf",
+    "type": "task_created",
+    "taskId": "task_20260128_MwGpPe",
+    "taskTitle": "US-1007: Historical trends",
+    "details": {
+      "type": "code",
+      "priority": "medium",
+      "project": "veritas-kanban"
+    },
+    "timestamp": "2026-01-28T06:14:56.966Z"
+  },
+  {
+    "id": "activity_1769580896955_k05bw425c",
+    "type": "task_created",
+    "taskId": "task_20260128_XLZgpo",
+    "taskTitle": "US-1006: Metrics export",
+    "details": {
+      "type": "code",
+      "priority": "low",
+      "project": "veritas-kanban"
+    },
+    "timestamp": "2026-01-28T06:14:56.955Z"
+  },
+  {
+    "id": "activity_1769580896944_zlrbctx55",
+    "type": "task_created",
+    "taskId": "task_20260128_2-0mLV",
+    "taskTitle": "US-1005: Dashboard drill-down",
+    "details": {
+      "type": "code",
+      "priority": "medium",
+      "project": "veritas-kanban"
+    },
+    "timestamp": "2026-01-28T06:14:56.944Z"
+  },
+  {
+    "id": "activity_1769580896933_bwrn5alfz",
+    "type": "task_created",
+    "taskId": "task_20260128_bDBHgJ",
+    "taskTitle": "US-1004: Token & cost tracking integration",
+    "details": {
+      "type": "code",
+      "priority": "high",
+      "project": "veritas-kanban"
+    },
+    "timestamp": "2026-01-28T06:14:56.933Z"
+  },
+  {
+    "id": "activity_1769580896922_gbwutaefo",
+    "type": "task_created",
+    "taskId": "task_20260128_EIsIv5",
+    "taskTitle": "US-1003: Agent run summary on task card",
+    "details": {
+      "type": "code",
+      "priority": "medium",
+      "project": "veritas-kanban"
+    },
+    "timestamp": "2026-01-28T06:14:56.922Z"
+  },
+  {
+    "id": "activity_1769580896910_5gna6hsaw",
+    "type": "task_created",
+    "taskId": "task_20260128_jpuZZy",
+    "taskTitle": "US-1002: Task metrics panel",
+    "details": {
+      "type": "code",
+      "priority": "high",
+      "project": "veritas-kanban"
+    },
+    "timestamp": "2026-01-28T06:14:56.910Z"
+  },
+  {
+    "id": "activity_1769580896898_f46l1wlx1",
+    "type": "task_created",
+    "taskId": "task_20260128_9_qdSV",
+    "taskTitle": "US-1001: Veritas telemetry reporter",
+    "details": {
+      "type": "code",
+      "priority": "high",
+      "project": "veritas-kanban"
+    },
+    "timestamp": "2026-01-28T06:14:56.898Z"
+  },
+  {
+    "id": "activity_1769580800212_w1aijg07o",
+    "type": "task_updated",
+    "taskId": "task_20260128_iG-ISb",
+    "taskTitle": "Review the ByteRover Skill",
+    "timestamp": "2026-01-28T06:13:20.212Z"
+  },
+  {
+    "id": "activity_1769580783579_k0s7naaef",
+    "type": "task_updated",
+    "taskId": "task_20260128_XvmMga",
+    "taskTitle": "Research Kimi K2.5",
+    "timestamp": "2026-01-28T06:13:03.579Z"
+  },
+  {
     "id": "activity_1769580331489_v8447wz2w",
     "type": "task_updated",
     "taskId": "task_20260128_tDh8SO",
@@ -555,311 +843,5 @@
     "taskId": "task_20260128_Foonyv",
     "taskTitle": "FEATURE REQUEST: Settings Panel with Feaeture Toggles",
     "timestamp": "2026-01-28T05:10:19.279Z"
-  },
-  {
-    "id": "activity_1769576987933_wubbvg1ri",
-    "type": "task_updated",
-    "taskId": "task_20260128_Foonyv",
-    "taskTitle": "FEATURE REQUEST: Settings Panel with Feaeture Toggles",
-    "timestamp": "2026-01-28T05:09:47.933Z"
-  },
-  {
-    "id": "activity_1769576211870_1j1d18u73",
-    "type": "task_updated",
-    "taskId": "task_20260128_Foonyv",
-    "taskTitle": "FEATURE REQUEST: Settings Panel with Feaeture Toggles",
-    "timestamp": "2026-01-28T04:56:51.870Z"
-  },
-  {
-    "id": "activity_1769576209606_n1xv0o8gc",
-    "type": "task_updated",
-    "taskId": "task_20260128_Foonyv",
-    "taskTitle": "FEATURE REQUEST: Settings Panel with Feaeture Toggles",
-    "timestamp": "2026-01-28T04:56:49.606Z"
-  },
-  {
-    "id": "activity_1769576164079_9f6mpqwml",
-    "type": "task_updated",
-    "taskId": "task_20260128_Foonyv",
-    "taskTitle": "FEATURE REQUEST: Settings Panel with Feaeture Toggles",
-    "timestamp": "2026-01-28T04:56:04.079Z"
-  },
-  {
-    "id": "activity_1769576158516_qf1vs16x4",
-    "type": "task_updated",
-    "taskId": "task_20260128_Foonyv",
-    "taskTitle": "FEATURE REQUEST: Settings Panel with Feaeture Toggles",
-    "timestamp": "2026-01-28T04:55:58.516Z"
-  },
-  {
-    "id": "activity_1769576157328_dkmqaa1id",
-    "type": "task_updated",
-    "taskId": "task_20260128_Foonyv",
-    "taskTitle": "FEATURE REQUEST: Settings Panel with Feaeture Toggles",
-    "timestamp": "2026-01-28T04:55:57.328Z"
-  },
-  {
-    "id": "activity_1769576154751_59sqzi926",
-    "type": "task_updated",
-    "taskId": "task_20260128_Foonyv",
-    "taskTitle": "FEATURE REQUEST: Settings Panel with Feaeture Toggles",
-    "timestamp": "2026-01-28T04:55:54.751Z"
-  },
-  {
-    "id": "activity_1769573955781_lnmdfp7ew",
-    "type": "comment_added",
-    "taskId": "task_20260128_gVorh6",
-    "taskTitle": "US-916: Tag management with managed list",
-    "details": {
-      "author": "Veritas",
-      "preview": "Implemented managed tag list with TagPicker multi-..."
-    },
-    "timestamp": "2026-01-28T04:19:15.781Z"
-  },
-  {
-    "id": "activity_1769573955771_depc5glg7",
-    "type": "comment_added",
-    "taskId": "task_20260128_UWrGIB",
-    "taskTitle": "US-914: Project management with dropdown selection",
-    "details": {
-      "author": "Veritas",
-      "preview": "Implemented managed project list with dropdown sel..."
-    },
-    "timestamp": "2026-01-28T04:19:15.771Z"
-  },
-  {
-    "id": "activity_1769573949892_9ln8h9ith",
-    "type": "status_changed",
-    "taskId": "task_20260128_gVorh6",
-    "taskTitle": "US-916: Tag management with managed list",
-    "details": {
-      "from": "in-progress",
-      "status": "done"
-    },
-    "timestamp": "2026-01-28T04:19:09.892Z"
-  },
-  {
-    "id": "activity_1769573947630_ca5kw4p1h",
-    "type": "status_changed",
-    "taskId": "task_20260128_UWrGIB",
-    "taskTitle": "US-914: Project management with dropdown selection",
-    "details": {
-      "from": "in-progress",
-      "status": "done"
-    },
-    "timestamp": "2026-01-28T04:19:07.630Z"
-  },
-  {
-    "id": "activity_1769573548430_xn6wrwl6r",
-    "type": "comment_added",
-    "taskId": "task_20260128_nfa0sK",
-    "taskTitle": "US-911: Task comments system for agent activity logs",
-    "details": {
-      "author": "Brad Groux",
-      "preview": "You should be able to delete and edit existing com..."
-    },
-    "timestamp": "2026-01-28T04:12:28.430Z"
-  },
-  {
-    "id": "activity_1769573503380_fvovjfr0p",
-    "type": "comment_added",
-    "taskId": "task_20260128_WOCpqE",
-    "taskTitle": "US-913: Custom task type management",
-    "details": {
-      "author": "Brad Groux",
-      "preview": "The color is way off for the task type area. Also,..."
-    },
-    "timestamp": "2026-01-28T04:11:43.380Z"
-  },
-  {
-    "id": "activity_1769573480850_9aaja0u86",
-    "type": "comment_added",
-    "taskId": "task_20260128_WOCpqE",
-    "taskTitle": "US-913: Custom task type management",
-    "details": {
-      "author": "Veritas",
-      "preview": "The color is way off for the task type area. Also,..."
-    },
-    "timestamp": "2026-01-28T04:11:20.850Z"
-  },
-  {
-    "id": "activity_1769573432781_bhl5v1e13",
-    "type": "status_changed",
-    "taskId": "task_20260128_gVorh6",
-    "taskTitle": "US-916: Tag management with managed list",
-    "details": {
-      "from": "todo",
-      "status": "in-progress"
-    },
-    "timestamp": "2026-01-28T04:10:32.781Z"
-  },
-  {
-    "id": "activity_1769573432760_u881qvfsv",
-    "type": "status_changed",
-    "taskId": "task_20260128_UWrGIB",
-    "taskTitle": "US-914: Project management with dropdown selection",
-    "details": {
-      "from": "todo",
-      "status": "in-progress"
-    },
-    "timestamp": "2026-01-28T04:10:32.760Z"
-  },
-  {
-    "id": "activity_1769573371506_1t4acgcpt",
-    "type": "comment_added",
-    "taskId": "task_20260128_WOCpqE",
-    "taskTitle": "US-913: Custom task type management",
-    "details": {
-      "author": "Veritas",
-      "preview": "Replaced hardcoded TaskType enum with dynamic mana..."
-    },
-    "timestamp": "2026-01-28T04:09:31.506Z"
-  },
-  {
-    "id": "activity_1769573371494_be7lxc748",
-    "type": "status_changed",
-    "taskId": "task_20260128_WOCpqE",
-    "taskTitle": "US-913: Custom task type management",
-    "details": {
-      "from": "todo",
-      "status": "done"
-    },
-    "timestamp": "2026-01-28T04:09:31.494Z"
-  },
-  {
-    "id": "activity_1769573371482_jgnt68ahx",
-    "type": "comment_added",
-    "taskId": "task_20260128_Oq5P-O",
-    "taskTitle": "US-915: ManagedListService — reusable foundation for managed entity lists",
-    "details": {
-      "author": "Veritas",
-      "preview": "Implemented ManagedListService base class, createM..."
-    },
-    "timestamp": "2026-01-28T04:09:31.482Z"
-  },
-  {
-    "id": "activity_1769573371467_4lo3f514j",
-    "type": "status_changed",
-    "taskId": "task_20260128_Oq5P-O",
-    "taskTitle": "US-915: ManagedListService — reusable foundation for managed entity lists",
-    "details": {
-      "from": "in-progress",
-      "status": "done"
-    },
-    "timestamp": "2026-01-28T04:09:31.467Z"
-  },
-  {
-    "id": "activity_1769573330167_uf55svpjy",
-    "type": "task_updated",
-    "taskId": "task_20260128_XvmMga",
-    "taskTitle": "Research Kimi K2.5",
-    "timestamp": "2026-01-28T04:08:50.167Z"
-  },
-  {
-    "id": "activity_1769573329149_8kqsmm1qi",
-    "type": "task_updated",
-    "taskId": "task_20260128_XvmMga",
-    "taskTitle": "Research Kimi K2.5",
-    "timestamp": "2026-01-28T04:08:49.149Z"
-  },
-  {
-    "id": "activity_1769573327271_w5rxe8596",
-    "type": "task_updated",
-    "taskId": "task_20260128_XvmMga",
-    "taskTitle": "Research Kimi K2.5",
-    "timestamp": "2026-01-28T04:08:47.271Z"
-  },
-  {
-    "id": "activity_1769573325026_hf0ilxbzr",
-    "type": "task_updated",
-    "taskId": "task_20260128_XvmMga",
-    "taskTitle": "Research Kimi K2.5",
-    "timestamp": "2026-01-28T04:08:45.026Z"
-  },
-  {
-    "id": "activity_1769573322546_nz113v7jg",
-    "type": "task_updated",
-    "taskId": "task_20260128_XvmMga",
-    "taskTitle": "Research Kimi K2.5",
-    "timestamp": "2026-01-28T04:08:42.546Z"
-  },
-  {
-    "id": "activity_1769573029935_oc1euui8x",
-    "type": "status_changed",
-    "taskId": "task_20260128_Oq5P-O",
-    "taskTitle": "US-915: ManagedListService — reusable foundation for managed entity lists",
-    "details": {
-      "from": "todo",
-      "status": "in-progress"
-    },
-    "timestamp": "2026-01-28T04:03:49.935Z"
-  },
-  {
-    "id": "activity_1769572463792_4bj64fzux",
-    "type": "comment_added",
-    "taskId": "task_20260128_7_9GhV",
-    "taskTitle": "US-912: Task attachments for agent context",
-    "details": {
-      "author": "Veritas",
-      "preview": "Implemented full attachment system: attachment-ser..."
-    },
-    "timestamp": "2026-01-28T03:54:23.792Z"
-  },
-  {
-    "id": "activity_1769572463781_y89x9cfzi",
-    "type": "status_changed",
-    "taskId": "task_20260128_7_9GhV",
-    "taskTitle": "US-912: Task attachments for agent context",
-    "details": {
-      "from": "in-progress",
-      "status": "done"
-    },
-    "timestamp": "2026-01-28T03:54:23.781Z"
-  },
-  {
-    "id": "activity_1769572389365_4nyfg81ej",
-    "type": "task_created",
-    "taskId": "task_20260128_Zk4oV0",
-    "taskTitle": "BUG: Kanban requires refresh to see progress",
-    "details": {
-      "type": "code",
-      "priority": "medium",
-      "project": "veritas-kanban"
-    },
-    "timestamp": "2026-01-28T03:53:09.365Z"
-  },
-  {
-    "id": "activity_1769572121032_uswxnnxmh",
-    "type": "comment_added",
-    "taskId": "task_20260128_7_9GhV",
-    "taskTitle": "US-912: Task attachments for agent context",
-    "details": {
-      "author": "Veritas",
-      "preview": "US-912 implemented: attachment service with config..."
-    },
-    "timestamp": "2026-01-28T03:48:41.032Z"
-  },
-  {
-    "id": "activity_1769572010594_as8tlu7ls",
-    "type": "task_created",
-    "taskId": "task_20260128_XvmMga",
-    "taskTitle": "Research Kimi K2.5",
-    "details": {
-      "type": "research",
-      "priority": "medium",
-      "project": "brain"
-    },
-    "timestamp": "2026-01-28T03:46:50.594Z"
-  },
-  {
-    "id": "activity_1769571594717_kfw5df7xm",
-    "type": "status_changed",
-    "taskId": "task_20260128_7_9GhV",
-    "taskTitle": "US-912: Task attachments for agent context",
-    "details": {
-      "from": "todo",
-      "status": "in-progress"
-    },
-    "timestamp": "2026-01-28T03:39:54.717Z"
   }
 ]

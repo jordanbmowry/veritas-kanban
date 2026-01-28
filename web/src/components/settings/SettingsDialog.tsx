@@ -42,12 +42,13 @@ import {
   type TaskTemplate,
 } from '@/hooks/useTemplates';
 import { Plus, Trash2, Check, X, Loader2, FolderGit2, Bot, Star, FileText, Download, Upload, HelpCircle, Info } from 'lucide-react';
-import type { RepoConfig, AgentConfig, AgentType, TaskPriority, TaskTypeConfig } from '@veritas-kanban/shared';
+import type { RepoConfig, AgentConfig, AgentType, TaskPriority, TaskTypeConfig, SprintConfig, ProjectConfig } from '@veritas-kanban/shared';
 import { cn } from '@/lib/utils';
 import { TEMPLATE_CATEGORIES, getCategoryIcon, getCategoryLabel } from '@/lib/template-categories';
 import { exportAllTemplates, parseTemplateFile, checkDuplicateName } from '@/lib/template-io';
 import { useTaskTypesManager, getTypeIcon, getAvailableIcons, AVAILABLE_COLORS } from '@/hooks/useTaskTypes';
 import { useProjectsManager, AVAILABLE_PROJECT_COLORS } from '@/hooks/useProjects';
+import { useSprintsManager } from '@/hooks/useSprints';
 import { ManagedListManager } from './ManagedListManager';
 import type { ProjectConfig } from '@veritas-kanban/shared';
 
@@ -513,6 +514,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
   const { data: templates, isLoading: templatesLoading } = useTemplates();
   const taskTypesManager = useTaskTypesManager();
   const projectsManager = useProjectsManager();
+  const sprintsManager = useSprintsManager();
   const [showAddForm, setShowAddForm] = useState(false);
   const [showAddTemplateForm, setShowAddTemplateForm] = useState(false);
   const [showTemplateHelp, setShowTemplateHelp] = useState(false);
@@ -770,6 +772,35 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                   </div>
                 )}
                 newItemDefaults={{ description: '', color: 'bg-blue-500/20' }}
+              />
+            </div>
+          </div>
+
+          {/* Sprints Section */}
+          <div className="space-y-3">
+            <h3 className="text-sm font-medium">Sprints</h3>
+            <div className="border rounded-lg p-4">
+              <ManagedListManager<SprintConfig>
+                title=""
+                items={sprintsManager.items}
+                isLoading={sprintsManager.isLoading}
+                onCreate={sprintsManager.create}
+                onUpdate={sprintsManager.update}
+                onDelete={sprintsManager.remove}
+                onReorder={sprintsManager.reorder}
+                canDeleteCheck={sprintsManager.canDelete}
+                renderExtraFields={(item, onChange) => (
+                  <div className="mt-2">
+                    <Label className="text-xs text-muted-foreground">Description</Label>
+                    <Input
+                      value={item.description || ''}
+                      onChange={(e) => onChange({ description: e.target.value })}
+                      placeholder="Optional description..."
+                      className="h-8 mt-1"
+                    />
+                  </div>
+                )}
+                newItemDefaults={{ description: '' }}
               />
             </div>
           </div>
