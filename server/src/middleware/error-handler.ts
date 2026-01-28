@@ -38,17 +38,25 @@ export function errorHandler(
   res: Response,
   next: NextFunction
 ) {
+  const requestId: string | undefined = res.locals.requestId;
+
   if (err instanceof AppError) {
-    const response: { error: string; code?: string; details?: unknown } = {
+    const response: { error: string; code?: string; details?: unknown; requestId?: string } = {
       error: err.message,
       code: err.code,
     };
     if (err.details) {
       response.details = err.details;
     }
+    if (requestId) {
+      response.requestId = requestId;
+    }
     return res.status(err.statusCode).json(response);
   }
 
   console.error('Unhandled error:', err);
-  res.status(500).json({ error: 'Internal server error' });
+  res.status(500).json({
+    error: 'Internal server error',
+    ...(requestId ? { requestId } : {}),
+  });
 }

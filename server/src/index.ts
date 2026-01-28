@@ -17,6 +17,7 @@ import { ConfigService } from './services/config-service.js';
 import { initBroadcast } from './services/broadcast-service.js';
 import { runStartupMigrations } from './services/migration-service.js';
 import { errorHandler } from './middleware/error-handler.js';
+import { requestIdMiddleware } from './middleware/request-id.js';
 import { authenticate, authenticateWebSocket, validateWebSocketOrigin, getAuthStatus, type AuthenticatedWebSocket } from './middleware/auth.js';
 import authRoutes from './routes/auth.js';
 import { apiRateLimit } from './middleware/rate-limit.js';
@@ -127,8 +128,16 @@ const corsOptions: cors.CorsOptions = {
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key', 'X-API-Version'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key', 'X-API-Version', 'X-Request-ID'],
 };
+
+// ============================================
+// Tracing: Request ID (X-Request-ID)
+// ============================================
+// Generates (or preserves) a unique request ID for every request.
+// Placed right after Helmet + compression so the ID is available
+// to all downstream middleware and route handlers.
+app.use(requestIdMiddleware);
 
 // Middleware
 app.use(cors(corsOptions));

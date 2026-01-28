@@ -1,5 +1,27 @@
 [
   {
+    "id": "activity_1769641852570_c0bqhisjh",
+    "type": "comment_added",
+    "taskId": "task_20260128_8DUobI",
+    "taskTitle": "PERF: Reduce frontend bundle size from 1.2MB main chunk",
+    "details": {
+      "author": "Veritas",
+      "preview": "✅ Main bundle reduced by 69%.\n\n**Before:** index.j..."
+    },
+    "timestamp": "2026-01-28T23:10:52.570Z"
+  },
+  {
+    "id": "activity_1769641852557_7syi9n40u",
+    "type": "status_changed",
+    "taskId": "task_20260128_8DUobI",
+    "taskTitle": "PERF: Reduce frontend bundle size from 1.2MB main chunk",
+    "details": {
+      "from": "in-progress",
+      "status": "done"
+    },
+    "timestamp": "2026-01-28T23:10:52.557Z"
+  },
+  {
     "id": "activity_1769641818570_u5pb6k93a",
     "type": "status_changed",
     "taskId": "task_20260128_uUydZN",
