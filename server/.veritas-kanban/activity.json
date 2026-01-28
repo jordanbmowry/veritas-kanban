@@ -1,5 +1,38 @@
 [
   {
+    "id": "activity_1769641984737_iexbxcytg",
+    "type": "status_changed",
+    "taskId": "task_20260128_gYodue",
+    "taskTitle": "PERF: Add service disposal to graceful shutdown",
+    "details": {
+      "from": "todo",
+      "status": "in-progress"
+    },
+    "timestamp": "2026-01-28T23:13:04.737Z"
+  },
+  {
+    "id": "activity_1769641953788_zrhhxvv9q",
+    "type": "comment_added",
+    "taskId": "task_20260128_3X46QP",
+    "taskTitle": "QUALITY: Create CI pipeline (.github/workflows)",
+    "details": {
+      "author": "Veritas",
+      "preview": "Created .github/workflows/ci.yml with 4 parallel j..."
+    },
+    "timestamp": "2026-01-28T23:12:33.788Z"
+  },
+  {
+    "id": "activity_1769641945180_ybvr2ju43",
+    "type": "status_changed",
+    "taskId": "task_20260128_3X46QP",
+    "taskTitle": "QUALITY: Create CI pipeline (.github/workflows)",
+    "details": {
+      "from": "in-progress",
+      "status": "done"
+    },
+    "timestamp": "2026-01-28T23:12:25.180Z"
+  },
+  {
     "id": "activity_1769641914696_o9slvvwd6",
     "type": "status_changed",
     "taskId": "task_20260128_nhfrcW",

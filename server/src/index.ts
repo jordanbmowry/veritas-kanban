@@ -8,12 +8,14 @@ import { WebSocketServer, WebSocket } from 'ws';
 import { createServer } from 'http';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { createLogger } from './lib/logger.js';
 import { v1Router } from './routes/v1/index.js';
 import { agentService } from './routes/agents.js';
 import { syncSettingsToServices } from './routes/settings.js';
 import { initAgentStatus } from './routes/agent-status.js';
 import { getTelemetryService } from './services/telemetry-service.js';
 import { ConfigService } from './services/config-service.js';
+import { disposeTaskService } from './services/task-service.js';
 import { initBroadcast } from './services/broadcast-service.js';
 import { runStartupMigrations } from './services/migration-service.js';
 import { errorHandler } from './middleware/error-handler.js';
@@ -32,6 +34,8 @@ import { taskSubtaskRoutes } from './routes/task-subtasks.js';
 import attachmentRoutes from './routes/attachments.js';
 import { configRoutes } from './routes/config.js';
 import { agentRoutes } from './routes/agents.js';
+
+const log = createLogger('server');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -122,7 +126,7 @@ const corsOptions: cors.CorsOptions = {
     if (ALLOWED_ORIGINS.includes(origin)) {
       callback(null, true);
     } else {
-      console.warn(`CORS: Blocked request from origin: ${origin}`);
+      log.warn({ origin }, 'CORS blocked request from disallowed origin');
       callback(new Error('Not allowed by CORS'));
     }
   },
@@ -245,6 +249,9 @@ if (process.env.NODE_ENV === 'production') {
 // Error handling middleware (must be last)
 app.use(errorHandler);
 
+// Module-level config service instance (shared with shutdown handler)
+let configService: ConfigService | null = null;
+
 // Initialize services on startup
 (async () => {
   try {
@@ -252,12 +259,12 @@ app.use(errorHandler);
     await runStartupMigrations();
     
     // Initialize telemetry service and sync with feature settings
-    const configService = new ConfigService();
+    configService = new ConfigService();
     const featureSettings = await configService.getFeatureSettings();
     syncSettingsToServices(featureSettings);
     await getTelemetryService().init();
   } catch (err) {
-    console.error('Failed to initialize services:', err);
+    log.error({ err }, 'Failed to initialize services');
   }
 })();
 
@@ -275,7 +282,7 @@ const wss = new WebSocketServer({
     const result = validateWebSocketOrigin(origin, ALLOWED_ORIGINS);
     
     if (!result.allowed) {
-      console.warn(`WebSocket origin rejected: ${origin} — ${result.reason}`);
+      log.warn({ origin, reason: result.reason }, 'WebSocket origin rejected');
       callback(false, 403, 'Forbidden: origin not allowed');
       return;
     }
@@ -298,7 +305,7 @@ wss.on('connection', (ws: AuthenticatedWebSocket, req) => {
   const authResult = authenticateWebSocket(req);
   
   if (!authResult.authenticated) {
-    console.log('WebSocket connection rejected: ' + authResult.error);
+    log.warn({ error: authResult.error }, 'WebSocket connection rejected');
     ws.close(4001, authResult.error || 'Authentication required');
     return;
   }
@@ -310,7 +317,7 @@ wss.on('connection', (ws: AuthenticatedWebSocket, req) => {
     isLocalhost: authResult.isLocalhost,
   };
   
-  console.log(`WebSocket client connected (role: ${authResult.role}, localhost: ${authResult.isLocalhost})`);
+  log.info({ role: authResult.role, localhost: authResult.isLocalhost }, 'WebSocket client connected');
   
   let subscribedTaskId: string | null = null;
 
@@ -396,12 +403,12 @@ wss.on('connection', (ws: AuthenticatedWebSocket, req) => {
         }));
       }
     } catch (error) {
-      console.error('WebSocket message error:', error);
+      log.error({ err: error }, 'WebSocket message error');
     }
   });
 
   ws.on('close', () => {
-    console.log('WebSocket client disconnected');
+    log.info('WebSocket client disconnected');
     
     // Clean up subscriptions
     if (subscribedTaskId) {
@@ -420,24 +427,55 @@ wss.on('connection', (ws: AuthenticatedWebSocket, req) => {
 export { wss };
 
 // Graceful shutdown handler
-function gracefulShutdown(signal: string) {
-  console.log(`\n${signal} received. Shutting down gracefully...`);
+async function gracefulShutdown(signal: string) {
+  log.info({ signal }, 'Shutting down gracefully');
   
-  // Close WebSocket connections
-  console.log('Closing WebSocket connections...');
+  // 1. Close WebSocket connections first (stop accepting new messages)
+  log.info({ clients: wss.clients.size }, 'Closing WebSocket connections');
   wss.clients.forEach((client) => {
     client.close(1000, 'Server shutting down');
   });
   
-  // Close HTTP server
+  // Close the WebSocket server itself (stop accepting new connections)
+  await new Promise<void>((resolve) => {
+    wss.close((err) => {
+      if (err) log.error({ err }, 'Error closing WebSocket server');
+      else log.info('WebSocket server closed');
+      resolve();
+    });
+  });
+  
+  // 2. Dispose services (release file watchers, flush buffers)
+  try {
+    log.info('Disposing services');
+    
+    // Flush pending telemetry writes
+    await getTelemetryService().flush();
+    log.info('Telemetry flushed');
+    
+    // Dispose task service (closes file watchers, clears cache)
+    disposeTaskService();
+    log.info('Task service disposed');
+    
+    // Dispose config service (closes file watcher, clears cache)
+    if (configService) {
+      configService.dispose();
+      configService = null;
+      log.info('Config service disposed');
+    }
+  } catch (err) {
+    log.error({ err }, 'Error during service disposal');
+  }
+  
+  // 3. Close HTTP server last
   server.close(() => {
-    console.log('HTTP server closed.');
+    log.info('HTTP server closed');
     process.exit(0);
   });
   
   // Force exit after 10 seconds
   setTimeout(() => {
-    console.error('Forced shutdown after timeout.');
+    log.fatal('Forced shutdown after timeout');
     process.exit(1);
   }, 10000);
 }
@@ -457,34 +495,29 @@ server.listen(PORT, () => {
     : 'Auth: OFF (dev mode)';
   const corsLine = `CORS: ${ALLOWED_ORIGINS.length} origins`;
   
-  console.log(`
-╔═══════════════════════════════════════════════╗
-║           Veritas Kanban Server               ║
-╠═══════════════════════════════════════════════╣
-║  API:        http://localhost:${PORT}            ║
-║  WebSocket:  ws://localhost:${PORT}/ws           ║
-║  Health:     http://localhost:${PORT}/health     ║
-║  ${authLine.padEnd(42)}║
-║  ${corsLine.padEnd(42)}║
-║  Helmet:     ON (CSP + security headers)       ║
-║  Compress:   ON (gzip, threshold 1KB)          ║
-║  Rate Limit: 100 req/min                      ║
-║  Body Limit: 1MB                              ║
-╚═══════════════════════════════════════════════╝
-  `);
+  log.info({
+    port: PORT,
+    api: `http://localhost:${PORT}`,
+    ws: `ws://localhost:${PORT}/ws`,
+    auth: authLine,
+    cors: corsLine,
+    helmet: true,
+    compression: true,
+    rateLimit: '100 req/min',
+    bodyLimit: '1MB',
+  }, 'Veritas Kanban Server started');
   
   // Security warnings for localhost bypass
   if (authStatus.localhostBypass) {
     if (authStatus.localhostRole === 'admin') {
-      console.warn(
-        '⚠️  WARNING: Localhost bypass is active with ADMIN role.\n' +
-        '   Any local process can read, modify, or delete all data without authentication.\n' +
-        '   Set VERITAS_AUTH_LOCALHOST_ROLE=read-only or disable bypass for production.\n'
+      log.warn(
+        { localhostRole: 'admin' },
+        'Localhost bypass is active with ADMIN role — any local process has full access without authentication'
       );
     } else {
-      console.log(
-        `ℹ️  Localhost bypass active (role: ${authStatus.localhostRole}). ` +
-        'Local connections can read data without authentication.'
+      log.info(
+        { localhostRole: authStatus.localhostRole },
+        'Localhost bypass active — local connections can read data without authentication'
       );
     }
   }

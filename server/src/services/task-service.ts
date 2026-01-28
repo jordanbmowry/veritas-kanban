@@ -5,6 +5,9 @@ import matter from 'gray-matter';
 import { nanoid } from 'nanoid';
 import type { Task, CreateTaskInput, UpdateTaskInput, ReviewComment, Subtask, TaskTelemetryEvent, TimeTracking } from '@veritas-kanban/shared';
 import { getTelemetryService, type TelemetryService } from './telemetry-service.js';
+import { createLogger } from '../lib/logger.js';
+
+const log = createLogger('task-cache');
 
 /** 
  * Task ID format validation
@@ -81,7 +84,7 @@ export class TaskService {
     this.cacheLoading = null;
     this.cacheInitialized = true;
     this.startWatcher();
-    console.debug(`[TaskCache] Initialized with ${this.cache.size} tasks`);
+    log.debug({ count: this.cache.size }, 'Cache initialized');
   }
 
   /** Read every .md file in tasksDir and populate the cache */
@@ -110,7 +113,7 @@ export class TaskService {
       const content = await fs.readFile(filepath, 'utf-8');
       const task = this.parseTaskFile(content, filename);
       if (task) {
-        console.debug(`[TaskCache] Reloaded ${task.id} from disk`);
+        log.debug({ taskId: task.id }, 'Reloaded from disk');
         this.cache.set(task.id, task);
       }
     } catch {
@@ -126,7 +129,7 @@ export class TaskService {
     if (idMatch) {
       const id = idMatch[1];
       if (this.cache.delete(id)) {
-        console.debug(`[TaskCache] Invalidated ${id} (file removed)`);
+        log.debug({ taskId: id }, 'Invalidated (file removed)');
       }
     }
   }
@@ -135,7 +138,7 @@ export class TaskService {
   private cacheInvalidate(id: string): boolean {
     const deleted = this.cache.delete(id);
     if (deleted) {
-      console.debug(`[TaskCache] Invalidated ${id}`);
+      log.debug({ taskId: id }, 'Invalidated');
     }
     return deleted;
   }
@@ -145,10 +148,10 @@ export class TaskService {
     const task = this.cache.get(id);
     if (task) {
       this.cacheStats.hits++;
-      console.debug(`[TaskCache] HIT  ${id} (hits=${this.cacheStats.hits})`);
+      log.trace({ taskId: id, hits: this.cacheStats.hits }, 'Cache HIT');
     } else {
       this.cacheStats.misses++;
-      console.debug(`[TaskCache] MISS ${id} (misses=${this.cacheStats.misses})`);
+      log.trace({ taskId: id, misses: this.cacheStats.misses }, 'Cache MISS');
     }
     return task;
   }
@@ -175,10 +178,10 @@ export class TaskService {
         // Ignore events caused by our own writes
         if (Date.now() - this.lastWriteTime < WRITE_DEBOUNCE_MS) return;
 
-        console.debug(`[TaskCache] File change detected: ${eventType} ${filename}`);
+        log.debug({ eventType, filename }, 'File change detected');
         // Re-read the changed file (or remove from cache if deleted)
         this.reloadFile(filename).catch(err =>
-          console.error(`[TaskCache] Error reloading ${filename}:`, err),
+          log.error({ err, filename }, 'Error reloading file'),
         );
       });
     } catch (err) {
