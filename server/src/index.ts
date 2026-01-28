@@ -31,6 +31,8 @@ import {
 } from './middleware/auth.js';
 import authRoutes from './routes/auth.js';
 import { checkJwtSecretConfig } from './config/security.js';
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from './config/swagger.js';
 import { apiRateLimit } from './middleware/rate-limit.js';
 import { apiVersionMiddleware } from './middleware/api-version.js';
 import { apiCacheHeaders } from './middleware/cache-control.js';
@@ -43,6 +45,7 @@ import { taskSubtaskRoutes } from './routes/task-subtasks.js';
 import attachmentRoutes from './routes/attachments.js';
 import { configRoutes } from './routes/config.js';
 import { agentRoutes } from './routes/agents.js';
+import { cspNonceMiddleware, cspNonceDirective } from './middleware/csp-nonce.js';
 
 const log = createLogger('server');
 
@@ -98,7 +101,7 @@ app.set('etag', 'weak');
 //
 // CSP Directives:
 //   defaultSrc  - Fallback for all resource types: only same-origin
-//   scriptSrc   - Scripts: same-origin + inline (needed for Vite HMR in dev)
+//   scriptSrc   - Scripts: same-origin only (+ unsafe-inline in dev for Vite HMR)
 //   styleSrc    - Styles: same-origin + inline (Tailwind/JSX inline styles)
 //   connectSrc  - XHR/fetch/WebSocket: same-origin + ws://localhost for dev WS
 //   imgSrc      - Images: same-origin + data: URIs (inline SVGs, base64 images)
@@ -109,23 +112,82 @@ app.set('etag', 'weak');
 //   formAction  - Form submissions: only same-origin
 //   upgradeInsecureRequests - Auto-upgrade HTTP → HTTPS in production
 //
-// In development, connectSrc includes ws://localhost:* for WebSocket hot-reload.
-// In production, tighten scriptSrc (remove 'unsafe-inline') and use nonces.
+// == Dev vs Production CSP ==
+//
+// DEVELOPMENT ('unsafe-inline' only, NO 'unsafe-eval'):
+//   Vite HMR injects inline <script> tags for hot module replacement.
+//   Nonce-based CSP would require Vite's dev server to know the nonce at
+//   script injection time, which it doesn't support (Vite generates HMR
+//   client scripts independently of Express). See:
+//     https://github.com/vitejs/vite/issues/12086
+//
+//   'unsafe-eval' was previously included but is NOT required. Vite uses
+//   dynamic import() (works under 'self') and does NOT rely on eval() or
+//   new Function() for module evaluation.
+//
+//   Note: In dev, Vite (port 3000) serves the frontend and proxies /api
+//   to Express (port 3001). These CSP headers apply to Express responses
+//   only, not to Vite-served HTML. They still matter for any HTML served
+//   directly by Express (e.g., error pages) and as defense-in-depth.
+//
+// PRODUCTION (strict: no unsafe-inline, no unsafe-eval):
+//   Scripts require same-origin + nonce. The cspNonceMiddleware generates
+//   a per-request nonce available via res.locals.cspNonce. To serve HTML
+//   with nonce-tagged scripts, inject the nonce attribute on <script> tags
+//   in the SPA fallback handler.
+//
+// == CSP Report-Only Mode ==
+//
+// Set CSP_REPORT_ONLY=true to use Content-Security-Policy-Report-Only
+// instead of enforcing. Violations are reported (if CSP_REPORT_URI is set)
+// but not blocked — useful for testing policy changes without breakage.
+//
+// Set CSP_REPORT_URI to a URL to receive violation reports (e.g.,
+// https://your-domain.com/csp-report or a service like report-uri.com).
 const isDev = process.env.NODE_ENV !== 'production';
+const cspReportOnly = process.env.CSP_REPORT_ONLY === 'true';
+const cspReportUri = process.env.CSP_REPORT_URI || null;
+
+// CSP nonce generation — must run before Helmet so the per-request nonce
+// is available when Helmet builds the Content-Security-Policy header.
+app.use(cspNonceMiddleware);
 
 app.use(
   helmet({
     contentSecurityPolicy: {
+      // Report-Only mode: log violations without enforcing (for safe rollout)
+      reportOnly: cspReportOnly,
       directives: {
         defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", ...(isDev ? ["'unsafe-inline'", "'unsafe-eval'"] : [])],
-        styleSrc: ["'self'", "'unsafe-inline'"],
+
+        scriptSrc: [
+          "'self'",
+          // DEV ONLY: Vite HMR requires inline scripts. See comment block above.
+          // This is scoped to dev and does NOT include 'unsafe-eval'.
+          ...(isDev ? ["'unsafe-inline'"] : []),
+          // PRODUCTION: Per-request nonce for server-rendered script tags.
+          // Use res.locals.cspNonce when injecting scripts into HTML.
+          ...(!isDev ? [cspNonceDirective()] : []),
+        ],
+
+        styleSrc: [
+          "'self'",
+          // unsafe-inline is needed across both environments for:
+          //   - Tailwind CSS utility classes applied via style attribute
+          //   - Radix UI / shadcn component inline styles
+          //   - React component inline styles (style prop)
+          // TODO: Migrate to nonce-based style injection when CSS-in-JS
+          // libraries and Radix UI support it consistently.
+          "'unsafe-inline'",
+        ],
+
         connectSrc: [
           "'self'",
           ...(isDev
             ? ['ws://localhost:*', 'ws://127.0.0.1:*', 'http://localhost:*', 'http://127.0.0.1:*']
             : []),
         ],
+
         imgSrc: ["'self'", 'data:', 'blob:'],
         fontSrc: ["'self'"],
         objectSrc: ["'none'"],
@@ -133,6 +195,10 @@ app.use(
         baseUri: ["'self'"],
         formAction: ["'self'"],
         upgradeInsecureRequests: isDev ? null : [],
+
+        // CSP violation reporting — only included when CSP_REPORT_URI is set.
+        // Works with both enforced and report-only modes.
+        ...(cspReportUri ? { reportUri: cspReportUri } : {}),
       },
     },
     // Cross-Origin-Embedder-Policy can break loading of cross-origin resources;
@@ -202,6 +268,32 @@ app.use(express.json({ limit: '1mb' }));
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
+
+// ============================================
+// API Documentation (Swagger UI) — unauthenticated
+// ============================================
+// Serve the raw OpenAPI JSON spec
+app.get('/api-docs/swagger.json', (_req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(swaggerSpec);
+});
+
+// Swagger UI needs inline scripts/styles, so override CSP for /api-docs only
+app.use(
+  '/api-docs',
+  (_req: express.Request, res: express.Response, next: express.NextFunction) => {
+    res.setHeader(
+      'Content-Security-Policy',
+      "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;"
+    );
+    next();
+  },
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpec, {
+    customSiteTitle: 'Veritas Kanban API Docs',
+    explorer: true,
+  })
+);
 
 // Auth diagnostic endpoint (admin-only, requires authentication)
 // Available at both /api/auth/diagnostics and /api/v1/auth/diagnostics

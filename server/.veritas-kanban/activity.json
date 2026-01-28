@@ -1,5 +1,38 @@
 [
   {
+    "id": "activity_1769643912579_k1qyqf4pc",
+    "type": "status_changed",
+    "taskId": "task_20260128_iAxrNa",
+    "taskTitle": "QUALITY: Add API documentation (OpenAPI/Swagger)",
+    "details": {
+      "from": "todo",
+      "status": "in-progress"
+    },
+    "timestamp": "2026-01-28T23:45:12.579Z"
+  },
+  {
+    "id": "activity_1769643881639_6l9720mzq",
+    "type": "comment_added",
+    "taskId": "task_20260128_MIuR31",
+    "taskTitle": "SECURITY: Configure production API keys and persistent JWT secret",
+    "details": {
+      "author": "Veritas",
+      "preview": "Added persistent VERITAS_JWT_SECRET to server/.env..."
+    },
+    "timestamp": "2026-01-28T23:44:41.639Z"
+  },
+  {
+    "id": "activity_1769643881628_kgm550sn1",
+    "type": "status_changed",
+    "taskId": "task_20260128_MIuR31",
+    "taskTitle": "SECURITY: Configure production API keys and persistent JWT secret",
+    "details": {
+      "from": "in-progress",
+      "status": "done"
+    },
+    "timestamp": "2026-01-28T23:44:41.628Z"
+  },
+  {
     "id": "activity_1769643822234_p72ucq50f",
     "type": "status_changed",
     "taskId": "task_20260128_N5mwaB",

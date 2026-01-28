@@ -105,24 +105,61 @@ const updateTaskSchema = z.object({
 
 // === Core CRUD Routes ===
 
-// GET /api/tasks - List tasks with optional pagination, filtering, and field selection
-//
-// Query parameters:
-//   Pagination:
-//     page   - Page number (1-indexed, default: 1). When omitted AND limit is omitted,
-//              returns all tasks (backward-compatible).
-//     limit  - Items per page (default: 50, max: 200)
-//
-//   Filtering:
-//     status   - Filter by status (comma-separated: "todo,in-progress")
-//     priority - Filter by priority (comma-separated: "high,medium")
-//     type     - Filter by type (comma-separated)
-//     project  - Filter by project name (exact match)
-//
-//   Field selection (mutually exclusive — fields takes precedence):
-//     view   - "summary" returns TaskSummary (lightweight board view)
-//     fields - Comma-separated field names to include (always includes "id")
-//
+/**
+ * @openapi
+ * /api/tasks:
+ *   get:
+ *     summary: List tasks
+ *     description: >
+ *       List tasks with optional pagination, filtering, and field selection.
+ *       When page/limit are omitted, returns all tasks as a flat array (backward-compatible).
+ *       When page or limit is provided, returns a paginated response with Link headers.
+ *     tags: [Tasks]
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema: { type: integer, minimum: 1 }
+ *         description: Page number (1-indexed). Enables paginated response.
+ *       - in: query
+ *         name: limit
+ *         schema: { type: integer, minimum: 1, maximum: 200, default: 50 }
+ *         description: Items per page
+ *       - in: query
+ *         name: status
+ *         schema: { type: string }
+ *         description: Filter by status (comma-separated, e.g. "todo,in-progress")
+ *       - in: query
+ *         name: priority
+ *         schema: { type: string }
+ *         description: Filter by priority (comma-separated, e.g. "high,medium")
+ *       - in: query
+ *         name: type
+ *         schema: { type: string }
+ *         description: Filter by type (comma-separated)
+ *       - in: query
+ *         name: project
+ *         schema: { type: string }
+ *         description: Filter by project name (exact match)
+ *       - in: query
+ *         name: view
+ *         schema: { type: string, enum: [summary] }
+ *         description: '"summary" returns lightweight TaskSummary objects'
+ *       - in: query
+ *         name: fields
+ *         schema: { type: string }
+ *         description: Comma-separated field names to include (always includes "id")
+ *     responses:
+ *       200:
+ *         description: Task list (flat array or paginated object)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               oneOf:
+ *                 - type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Task'
+ *                 - $ref: '#/components/schemas/PaginatedResponse'
+ */
 router.get(
   '/',
   asyncHandler(async (req, res) => {
@@ -287,7 +324,33 @@ router.post(
   })
 );
 
-// GET /api/tasks/:id - Get single task
+/**
+ * @openapi
+ * /api/tasks/{id}:
+ *   get:
+ *     summary: Get a single task
+ *     description: Retrieve a task by its ID, including all details.
+ *     tags: [Tasks]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *         description: Task ID
+ *     responses:
+ *       200:
+ *         description: Task details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Task'
+ *       404:
+ *         description: Task not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 router.get(
   '/:id',
   asyncHandler(async (req, res) => {
@@ -316,7 +379,33 @@ router.get(
   })
 );
 
-// POST /api/tasks - Create task
+/**
+ * @openapi
+ * /api/tasks:
+ *   post:
+ *     summary: Create a new task
+ *     description: Create a task with the given title, type, priority, and optional project/sprint.
+ *     tags: [Tasks]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/CreateTaskInput'
+ *     responses:
+ *       201:
+ *         description: Task created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Task'
+ *       400:
+ *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 router.post(
   '/',
   asyncHandler(async (req, res) => {
@@ -344,7 +433,48 @@ router.post(
   })
 );
 
-// PATCH /api/tasks/:id - Update task
+/**
+ * @openapi
+ * /api/tasks/{id}:
+ *   patch:
+ *     summary: Update a task
+ *     description: >
+ *       Partially update a task. Supports changing status, priority, title, description,
+ *       and more. Moving a blocked task to in-progress checks blockedBy dependencies.
+ *       Moving out of blocked status auto-clears blockedReason.
+ *     tags: [Tasks]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *         description: Task ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UpdateTaskInput'
+ *     responses:
+ *       200:
+ *         description: Updated task
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Task'
+ *       400:
+ *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       404:
+ *         description: Task not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 router.patch(
   '/:id',
   asyncHandler(async (req, res) => {
@@ -400,7 +530,29 @@ router.patch(
   })
 );
 
-// DELETE /api/tasks/:id - Delete task (move to archive)
+/**
+ * @openapi
+ * /api/tasks/{id}:
+ *   delete:
+ *     summary: Delete a task
+ *     description: Delete (archive) a task by ID.
+ *     tags: [Tasks]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *         description: Task ID
+ *     responses:
+ *       204:
+ *         description: Task deleted successfully
+ *       404:
+ *         description: Task not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 router.delete(
   '/:id',
   asyncHandler(async (req, res) => {
