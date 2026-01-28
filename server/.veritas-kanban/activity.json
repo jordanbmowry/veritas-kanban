@@ -1,5 +1,138 @@
 [
   {
+    "id": "activity_1769584325263_iv5d040ns",
+    "type": "task_archived",
+    "taskId": "task_20260128_cllk71",
+    "taskTitle": "US-707: Time tracking",
+    "timestamp": "2026-01-28T07:12:05.263Z"
+  },
+  {
+    "id": "activity_1769584322508_px3tuo09s",
+    "type": "status_changed",
+    "taskId": "task_20260128_cllk71",
+    "taskTitle": "US-707: Time tracking",
+    "details": {
+      "from": "archived",
+      "status": "done"
+    },
+    "timestamp": "2026-01-28T07:12:02.508Z"
+  },
+  {
+    "id": "activity_1769584277461_e9y0eazcz",
+    "type": "status_changed",
+    "taskId": "task_20260128_tDh8SO",
+    "taskTitle": "BUG: You can't view or restore archived tasks",
+    "details": {
+      "from": "todo",
+      "status": "in-progress"
+    },
+    "timestamp": "2026-01-28T07:11:17.461Z"
+  },
+  {
+    "id": "activity_1769584213090_cit3ga65j",
+    "type": "task_updated",
+    "taskId": "task_20260128_Nvw1ZN",
+    "taskTitle": "FEATURE REQUEST: Make the UI available on LAN",
+    "timestamp": "2026-01-28T07:10:13.090Z"
+  },
+  {
+    "id": "activity_1769584211592_ig4iq0uun",
+    "type": "task_updated",
+    "taskId": "task_20260128_Nvw1ZN",
+    "taskTitle": "FEATURE REQUEST: Make the UI available on LAN",
+    "timestamp": "2026-01-28T07:10:11.592Z"
+  },
+  {
+    "id": "activity_1769584208878_oc78clmum",
+    "type": "task_updated",
+    "taskId": "task_20260128_Nvw1ZN",
+    "taskTitle": "FEATURE REQUEST: Make the UI available on LAN",
+    "timestamp": "2026-01-28T07:10:08.878Z"
+  },
+  {
+    "id": "activity_1769584207110_x72wjabm3",
+    "type": "task_updated",
+    "taskId": "task_20260128_Nvw1ZN",
+    "taskTitle": "FEATURE REQUEST: Make the UI available on LAN",
+    "timestamp": "2026-01-28T07:10:07.110Z"
+  },
+  {
+    "id": "activity_1769584205921_no8yaf2ms",
+    "type": "task_updated",
+    "taskId": "task_20260128_Nvw1ZN",
+    "taskTitle": "FEATURE REQUEST: Make the UI available on LAN",
+    "timestamp": "2026-01-28T07:10:05.921Z"
+  },
+  {
+    "id": "activity_1769584202234_119g9gyxm",
+    "type": "task_updated",
+    "taskId": "task_20260128_Nvw1ZN",
+    "taskTitle": "FEATURE REQUEST: Make the UI available on LAN",
+    "timestamp": "2026-01-28T07:10:02.234Z"
+  },
+  {
+    "id": "activity_1769584200971_0smrabreo",
+    "type": "task_updated",
+    "taskId": "task_20260128_Nvw1ZN",
+    "taskTitle": "FEATURE REQUEST: Make the UI available on LAN",
+    "timestamp": "2026-01-28T07:10:00.971Z"
+  },
+  {
+    "id": "activity_1769584199877_z04ane3ev",
+    "type": "task_updated",
+    "taskId": "task_20260128_Nvw1ZN",
+    "taskTitle": "FEATURE REQUEST: Make the UI available on LAN",
+    "timestamp": "2026-01-28T07:09:59.877Z"
+  },
+  {
+    "id": "activity_1769584197695_tfh2rn1ar",
+    "type": "task_updated",
+    "taskId": "task_20260128_Nvw1ZN",
+    "taskTitle": "FEATURE REQUEST: Make the UI available on LAN",
+    "timestamp": "2026-01-28T07:09:57.695Z"
+  },
+  {
+    "id": "activity_1769584196082_bzutdyu35",
+    "type": "task_updated",
+    "taskId": "task_20260128_Nvw1ZN",
+    "taskTitle": "FEATURE REQUEST: Make the UI available on LAN",
+    "timestamp": "2026-01-28T07:09:56.082Z"
+  },
+  {
+    "id": "activity_1769584169548_05y2o0qj4",
+    "type": "task_created",
+    "taskId": "task_20260128_Nvw1ZN",
+    "taskTitle": "FEATURE REQUEST: Make the UI available on LAN",
+    "details": {
+      "type": "feature-request-n30mhV",
+      "priority": "medium",
+      "project": "platform"
+    },
+    "timestamp": "2026-01-28T07:09:29.548Z"
+  },
+  {
+    "id": "activity_1769584109622_zjvycw51p",
+    "type": "comment_added",
+    "taskId": "task_20260128_4qCzGr",
+    "taskTitle": "BUG: Can't re-arrange tasks in the columns",
+    "details": {
+      "author": "Veritas",
+      "preview": "Implemented drag-and-drop reordering within kanban..."
+    },
+    "timestamp": "2026-01-28T07:08:29.622Z"
+  },
+  {
+    "id": "activity_1769584104778_fgd981v20",
+    "type": "status_changed",
+    "taskId": "task_20260128_4qCzGr",
+    "taskTitle": "BUG: Can't re-arrange tasks in the columns",
+    "details": {
+      "from": "in-progress",
+      "status": "done"
+    },
+    "timestamp": "2026-01-28T07:08:24.778Z"
+  },
+  {
     "id": "activity_1769583799062_q8zwukzj2",
     "type": "status_changed",
     "taskId": "task_20260128_4qCzGr",
@@ -930,187 +1063,5 @@
       "status": "done"
     },
     "timestamp": "2026-01-28T06:52:38.426Z"
-  },
-  {
-    "id": "activity_1769583158414_syqz4kd3e",
-    "type": "comment_added",
-    "taskId": "task_20260128_Rr1VxE",
-    "taskTitle": "US-305: Send follow-up message to agent",
-    "details": {
-      "author": "Veritas",
-      "preview": "Historical backfill — completed as part of Sprint ..."
-    },
-    "timestamp": "2026-01-28T06:52:38.414Z"
-  },
-  {
-    "id": "activity_1769583158404_jrkhgofyt",
-    "type": "status_changed",
-    "taskId": "task_20260128_Rr1VxE",
-    "taskTitle": "US-305: Send follow-up message to agent",
-    "details": {
-      "from": "todo",
-      "status": "done"
-    },
-    "timestamp": "2026-01-28T06:52:38.404Z"
-  },
-  {
-    "id": "activity_1769583158395_6gddsrebj",
-    "type": "comment_added",
-    "taskId": "task_20260128_b2wd2j",
-    "taskTitle": "US-304: Agent conversation log persistence",
-    "details": {
-      "author": "Veritas",
-      "preview": "Historical backfill — completed as part of Sprint ..."
-    },
-    "timestamp": "2026-01-28T06:52:38.395Z"
-  },
-  {
-    "id": "activity_1769583158385_l4g9ck5o5",
-    "type": "status_changed",
-    "taskId": "task_20260128_b2wd2j",
-    "taskTitle": "US-304: Agent conversation log persistence",
-    "details": {
-      "from": "todo",
-      "status": "done"
-    },
-    "timestamp": "2026-01-28T06:52:38.385Z"
-  },
-  {
-    "id": "activity_1769583158375_ap04fisfj",
-    "type": "comment_added",
-    "taskId": "task_20260128_fXqE7m",
-    "taskTitle": "US-303: Real-time agent output streaming",
-    "details": {
-      "author": "Veritas",
-      "preview": "Historical backfill — completed as part of Sprint ..."
-    },
-    "timestamp": "2026-01-28T06:52:38.375Z"
-  },
-  {
-    "id": "activity_1769583158365_8e1i0x80r",
-    "type": "status_changed",
-    "taskId": "task_20260128_fXqE7m",
-    "taskTitle": "US-303: Real-time agent output streaming",
-    "details": {
-      "from": "todo",
-      "status": "done"
-    },
-    "timestamp": "2026-01-28T06:52:38.365Z"
-  },
-  {
-    "id": "activity_1769583158356_mq7gver8u",
-    "type": "comment_added",
-    "taskId": "task_20260128_gfzxYu",
-    "taskTitle": "US-302: Start agent on task",
-    "details": {
-      "author": "Veritas",
-      "preview": "Historical backfill — completed as part of Sprint ..."
-    },
-    "timestamp": "2026-01-28T06:52:38.356Z"
-  },
-  {
-    "id": "activity_1769583158346_rvgqbwps0",
-    "type": "status_changed",
-    "taskId": "task_20260128_gfzxYu",
-    "taskTitle": "US-302: Start agent on task",
-    "details": {
-      "from": "todo",
-      "status": "done"
-    },
-    "timestamp": "2026-01-28T06:52:38.346Z"
-  },
-  {
-    "id": "activity_1769583158336_l85fx8zlm",
-    "type": "comment_added",
-    "taskId": "task_20260128_sDOpsM",
-    "taskTitle": "US-301: Agent configuration",
-    "details": {
-      "author": "Veritas",
-      "preview": "Historical backfill — completed as part of Sprint ..."
-    },
-    "timestamp": "2026-01-28T06:52:38.336Z"
-  },
-  {
-    "id": "activity_1769583158325_rilz0tfmn",
-    "type": "status_changed",
-    "taskId": "task_20260128_sDOpsM",
-    "taskTitle": "US-301: Agent configuration",
-    "details": {
-      "from": "todo",
-      "status": "done"
-    },
-    "timestamp": "2026-01-28T06:52:38.325Z"
-  },
-  {
-    "id": "activity_1769583154426_zaxw3cfrs",
-    "type": "task_created",
-    "taskId": "task_20260128_qImfEu",
-    "taskTitle": "US-307: Agent completion handling",
-    "details": {
-      "type": "code",
-      "priority": "medium",
-      "project": "veritas-kanban"
-    },
-    "timestamp": "2026-01-28T06:52:34.426Z"
-  },
-  {
-    "id": "activity_1769583154415_4kh65fygw",
-    "type": "task_created",
-    "taskId": "task_20260128_8De44X",
-    "taskTitle": "US-306: Stop agent",
-    "details": {
-      "type": "code",
-      "priority": "medium",
-      "project": "veritas-kanban"
-    },
-    "timestamp": "2026-01-28T06:52:34.415Z"
-  },
-  {
-    "id": "activity_1769583154403_93cw4wq89",
-    "type": "task_created",
-    "taskId": "task_20260128_Rr1VxE",
-    "taskTitle": "US-305: Send follow-up message to agent",
-    "details": {
-      "type": "code",
-      "priority": "medium",
-      "project": "veritas-kanban"
-    },
-    "timestamp": "2026-01-28T06:52:34.403Z"
-  },
-  {
-    "id": "activity_1769583154392_s3i65wjfr",
-    "type": "task_created",
-    "taskId": "task_20260128_b2wd2j",
-    "taskTitle": "US-304: Agent conversation log persistence",
-    "details": {
-      "type": "code",
-      "priority": "medium",
-      "project": "veritas-kanban"
-    },
-    "timestamp": "2026-01-28T06:52:34.392Z"
-  },
-  {
-    "id": "activity_1769583154381_n2on0ujww",
-    "type": "task_created",
-    "taskId": "task_20260128_fXqE7m",
-    "taskTitle": "US-303: Real-time agent output streaming",
-    "details": {
-      "type": "code",
-      "priority": "high",
-      "project": "veritas-kanban"
-    },
-    "timestamp": "2026-01-28T06:52:34.381Z"
-  },
-  {
-    "id": "activity_1769583154370_hf41gnw1t",
-    "type": "task_created",
-    "taskId": "task_20260128_gfzxYu",
-    "taskTitle": "US-302: Start agent on task",
-    "details": {
-      "type": "code",
-      "priority": "high",
-      "project": "veritas-kanban"
-    },
-    "timestamp": "2026-01-28T06:52:34.370Z"
   }
 ]
