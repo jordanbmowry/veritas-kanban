@@ -56,28 +56,28 @@ const ws = new WebSocket('ws://localhost:3001/ws?api_key=your-api-key');
 
 ## Roles and Permissions
 
-| Role | Read | Write | Admin Actions |
-|------|------|-------|---------------|
-| `admin` | ✅ | ✅ | ✅ |
-| `agent` | ✅ | ✅ | ❌ |
-| `read-only` | ✅ | ❌ | ❌ |
+| Role        | Read | Write | Admin Actions |
+| ----------- | ---- | ----- | ------------- |
+| `admin`     | ✅   | ✅    | ✅            |
+| `agent`     | ✅   | ✅    | ❌            |
+| `read-only` | ✅   | ❌    | ❌            |
 
 ### Role Details
 
 - **admin**: Full access to all endpoints including sensitive operations
-- **agent**: Can read/write tasks, run agents, manage worktrees. Intended for AI agents like Clawdbot/Veritas
+- **agent**: Can read/write tasks, run agents, manage worktrees. Intended for AI agents like [Moltbot](https://github.com/moltbot/moltbot)
 - **read-only**: Can only perform GET requests. Suitable for dashboards and monitoring
 
 ## Configuration Reference
 
 ### Environment Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `VERITAS_AUTH_ENABLED` | `true` | Enable/disable authentication |
-| `VERITAS_AUTH_LOCALHOST_BYPASS` | `false` | Allow unauthenticated localhost requests |
-| `VERITAS_ADMIN_KEY` | (none) | Admin API key with full access |
-| `VERITAS_API_KEYS` | (none) | Comma-separated API keys (format: `name:key:role`) |
+| Variable                        | Default | Description                                        |
+| ------------------------------- | ------- | -------------------------------------------------- |
+| `VERITAS_AUTH_ENABLED`          | `true`  | Enable/disable authentication                      |
+| `VERITAS_AUTH_LOCALHOST_BYPASS` | `false` | Allow unauthenticated localhost requests           |
+| `VERITAS_ADMIN_KEY`             | (none)  | Admin API key with full access                     |
+| `VERITAS_API_KEYS`              | (none)  | Comma-separated API keys (format: `name:key:role`) |
 
 ### API Key Format
 
@@ -86,6 +86,7 @@ name:key:role,name2:key2:role2
 ```
 
 Example:
+
 ```
 veritas:vk_abc123xyz:agent,dashboard:vk_def456uvw:read-only
 ```
@@ -117,6 +118,7 @@ curl http://localhost:3001/api/auth/status
 ```
 
 Response:
+
 ```json
 {
   "enabled": true,
@@ -149,9 +151,9 @@ ws.onclose = (event) => {
 
 ### WebSocket Close Codes
 
-| Code | Meaning |
-|------|---------|
-| `1000` | Normal close |
+| Code   | Meaning                        |
+| ------ | ------------------------------ |
+| `1000` | Normal close                   |
 | `4001` | Authentication required/failed |
 
 ## Error Responses
@@ -194,7 +196,7 @@ If you're upgrading from an earlier version without authentication:
 
 1. **Before upgrading**: Document all clients that access the API
 
-2. **During upgrade**: 
+2. **During upgrade**:
    - Start with `VERITAS_AUTH_LOCALHOST_BYPASS=true` for smooth transition
    - Generate API keys for each client
    - Update clients to include authentication headers
@@ -260,7 +262,7 @@ Check that `VERITAS_AUTH_LOCALHOST_BYPASS=true` is set, or provide an API key.
 
 ## Changelog
 
-- **v1.0.0** (2026-01-28): Initial authentication implementation
+- **v1.0.0** (2026-01-29): Initial authentication implementation
   - API key authentication for HTTP and WebSocket
   - Role-based authorization (admin, agent, read-only)
   - Localhost bypass for development

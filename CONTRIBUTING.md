@@ -4,8 +4,8 @@ Thanks for your interest in contributing! This guide will help you get started.
 
 ## Prerequisites
 
-- **Node.js** 20 or later
-- **pnpm** (package manager)
+- **Node.js** 22 or later
+- **pnpm** 9+ (package manager)
 
 ## Development Setup
 
@@ -27,15 +27,18 @@ Thanks for your interest in contributing! This guide will help you get started.
 4. **Set up environment variables:**
 
    ```bash
-   cp .env.example .env
+   cp server/.env.example server/.env
    ```
 
-   Edit `.env` with your local configuration.
+   Edit `server/.env` with your local configuration (at minimum, set `VERITAS_ADMIN_KEY`).
 
 5. **Start the development server:**
+
    ```bash
    pnpm dev
    ```
+
+   The board auto-seeds with example tasks on first run. To re-seed manually: `pnpm seed`.
 
 ## Project Structure
 
@@ -45,10 +48,18 @@ Veritas Kanban is a monorepo:
 veritas-kanban/
 ├── server/     # Backend API (Express + TypeScript)
 ├── web/        # Frontend UI (React + Vite + TypeScript)
-├── shared/     # Shared types, utilities, constants
+├── shared/     # Shared types & contracts
+├── cli/        # `vk` CLI tool
+├── mcp/        # MCP server for AI assistants
+├── tasks/      # Task storage (Markdown files, gitignored)
+│   ├── active/     # Current tasks (your data, not tracked)
+│   ├── archive/    # Archived tasks (not tracked)
+│   └── examples/   # Seed tasks for first-run
 ├── scripts/    # Build and utility scripts
-└── ...
+└── docs/       # Documentation
 ```
+
+> **Note:** Your task data (`tasks/active/`, `tasks/archive/`) is `.gitignore`d and never committed. Only `tasks/examples/` (seed data) is tracked.
 
 ## Development Workflow
 

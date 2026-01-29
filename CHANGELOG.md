@@ -5,7 +5,7 @@ All notable changes to Veritas Kanban are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.1.0] - 2026-01-30
+## [Unreleased]
 
 ### Added
 
@@ -16,6 +16,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Edit Agent: inline edit name, command, and args via pencil icon
 - Remove Agent: trash icon with confirmation dialog (blocked for the default agent)
 - `AgentType` loosened from a fixed enum (`claude-code | amp | copilot | gemini | veritas`) to any string slug — users can define completely custom agents
+
+#### First-Run Seed Data
+
+- Example tasks auto-populate the board on first run (4 sample tasks showcasing features)
+- Manual seed script: `pnpm seed` (copies examples when board is empty)
+- Task data (`tasks/active/`, `tasks/archive/`) is `.gitignore`d — your data stays private
+- Attachment directories excluded from git tracking
 
 #### Dark/Light Mode Toggle
 
@@ -150,5 +157,5 @@ Veritas Kanban is an AI-native project management board built for developers and
 
 _Built by [Digital Meld](https://digitalmeld.io) — AI-driven enterprise automation._
 
-[1.1.0]: https://github.com/BradGroux/veritas-kanban/releases/tag/v1.1.0
+[unreleased]: https://github.com/BradGroux/veritas-kanban/compare/v1.0.0...HEAD
 [1.0.0]: https://github.com/BradGroux/veritas-kanban/releases/tag/v1.0.0

@@ -227,8 +227,9 @@ veritas-kanban/                  ← pnpm monorepo
 ├── docs/                        ← Sprint & audit documentation
 │
 ├── tasks/                       ← Task storage (Markdown files)
-│   ├── active/                  ← Current tasks
-│   └── archive/                 ← Archived tasks
+│   ├── active/                  ← Current tasks (.gitignored)
+│   ├── archive/                 ← Archived tasks (.gitignored)
+│   └── examples/                ← Seed tasks for first-run
 │
 └── .veritas-kanban/             ← Runtime config & data
     ├── config.json
