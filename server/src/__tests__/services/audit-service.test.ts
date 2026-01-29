@@ -105,9 +105,9 @@ describe('audit-service', () => {
 
       expect(entry.action).toBe('test');
       expect(entry.actor).toBe('system');
-      // resource and details are optional
-      expect(entry).toHaveProperty('resource');
-      expect(entry).toHaveProperty('details');
+      // resource and details are optional — omitted when undefined
+      expect(entry.timestamp).toBeTruthy();
+      expect(entry.integrity).toBe('');
     });
   });
 

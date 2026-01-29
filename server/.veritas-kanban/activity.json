@@ -1,5 +1,27 @@
 [
   {
+    "id": "activity_1769683786791_m9ddshuk8",
+    "type": "comment_added",
+    "taskId": "task_20260129_CKRmq7",
+    "taskTitle": "SECURITY: Add immutable audit log for sensitive operations",
+    "details": {
+      "author": "Veritas",
+      "preview": "Added immutable audit log with SHA-256 hash chain...."
+    },
+    "timestamp": "2026-01-29T10:49:46.791Z"
+  },
+  {
+    "id": "activity_1769683776619_mp7i32h0n",
+    "type": "status_changed",
+    "taskId": "task_20260129_CKRmq7",
+    "taskTitle": "SECURITY: Add immutable audit log for sensitive operations",
+    "details": {
+      "from": "in-progress",
+      "status": "done"
+    },
+    "timestamp": "2026-01-29T10:49:36.619Z"
+  },
+  {
     "id": "activity_1769683728201_9mt563bb5",
     "type": "comment_added",
     "taskId": "task_20260129_D2VwKL",
