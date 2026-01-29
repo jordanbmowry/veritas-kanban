@@ -1,9 +1,4 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useKeyboard } from '@/hooks/useKeyboard';
 
 interface Shortcut {
@@ -33,9 +28,7 @@ const shortcuts: { category: string; items: Shortcut[] }[] = [
   },
   {
     category: 'General',
-    items: [
-      { keys: ['?'], description: 'Toggle this help' },
-    ],
+    items: [{ keys: ['?'], description: 'Toggle this help' }],
   },
 ];
 
@@ -54,39 +47,38 @@ export function KeyboardShortcutsDialog() {
     <Dialog open={isHelpOpen} onOpenChange={(open) => !open && closeHelpDialog()}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            ⌨️ Keyboard Shortcuts
-          </DialogTitle>
+          <DialogTitle className="flex items-center gap-2">⌨️ Keyboard Shortcuts</DialogTitle>
         </DialogHeader>
-        
+
         <div className="space-y-6 py-2">
           {shortcuts.map((section) => (
-            <div key={section.category}>
+            <section key={section.category} aria-label={`${section.category} shortcuts`}>
               <h3 className="text-sm font-semibold text-muted-foreground mb-3">
                 {section.category}
               </h3>
-              <div className="space-y-2">
+              <dl className="space-y-2">
                 {section.items.map((shortcut, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center justify-between"
-                  >
-                    <span className="text-sm">{shortcut.description}</span>
-                    <div className="flex items-center gap-1">
+                  <div key={i} className="flex items-center justify-between">
+                    <dt className="text-sm">{shortcut.description}</dt>
+                    <dd className="flex items-center gap-1">
                       {shortcut.keys.map((key, j) => (
                         <span key={j} className="flex items-center gap-1">
-                          {j > 0 && <span className="text-muted-foreground text-xs">or</span>}
+                          {j > 0 && (
+                            <span className="text-muted-foreground text-xs" aria-hidden="true">
+                              or
+                            </span>
+                          )}
                           <KeyBadge>{key}</KeyBadge>
                         </span>
                       ))}
-                    </div>
+                    </dd>
                   </div>
                 ))}
-              </div>
-            </div>
+              </dl>
+            </section>
           ))}
         </div>
-        
+
         <div className="text-xs text-muted-foreground text-center pt-2 border-t">
           Press <KeyBadge>?</KeyBadge> anytime to toggle this help
         </div>

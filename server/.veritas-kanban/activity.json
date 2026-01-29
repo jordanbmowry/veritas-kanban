@@ -1,5 +1,27 @@
 [
   {
+    "id": "activity_1769684783257_lolvoukac",
+    "type": "comment_added",
+    "taskId": "task_20260128_RcHzcp",
+    "taskTitle": "[v1.1] QUALITY: Improve frontend accessibility to WCAG 2.1 AA",
+    "details": {
+      "author": "Veritas",
+      "preview": "Completed WCAG 2.1 AA accessibility improvements: ..."
+    },
+    "timestamp": "2026-01-29T11:06:23.257Z"
+  },
+  {
+    "id": "activity_1769684776056_r3pckieup",
+    "type": "status_changed",
+    "taskId": "task_20260128_RcHzcp",
+    "taskTitle": "[v1.1] QUALITY: Improve frontend accessibility to WCAG 2.1 AA",
+    "details": {
+      "from": "in-progress",
+      "status": "done"
+    },
+    "timestamp": "2026-01-29T11:06:16.056Z"
+  },
+  {
     "id": "activity_1769684715336_1898uz1j7",
     "type": "comment_added",
     "taskId": "task_20260129_yAgwCQ",

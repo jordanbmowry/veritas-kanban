@@ -338,19 +338,22 @@ export function SettingsDialog({ open, onOpenChange, defaultTab }: SettingsDialo
                   accept="application/json,.json"
                   onChange={handleImportSettings}
                   className="hidden"
+                  aria-label="Import settings file"
                 />
                 <button
                   onClick={handleExportSettings}
+                  aria-label="Export settings as JSON file"
                   className="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-md text-xs text-muted-foreground hover:bg-background/50 hover:text-foreground transition-colors text-left"
                 >
-                  <Download className="h-3.5 w-3.5 flex-shrink-0" />
+                  <Download className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
                   Export Settings
                 </button>
                 <button
                   onClick={() => settingsFileInputRef.current?.click()}
+                  aria-label="Import settings from JSON file"
                   className="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-md text-xs text-muted-foreground hover:bg-background/50 hover:text-foreground transition-colors text-left"
                 >
-                  <Upload className="h-3.5 w-3.5 flex-shrink-0" />
+                  <Upload className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
                   Import Settings
                 </button>
                 <AlertDialog>

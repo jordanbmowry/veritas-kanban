@@ -50,7 +50,8 @@ export function KanbanColumn({
     <div
       ref={setNodeRef}
       role="region"
-      aria-label={`${title} column, ${tasks.length} tasks`}
+      aria-labelledby={`column-heading-${id}`}
+      aria-roledescription="kanban column"
       className={cn(
         'flex flex-col rounded-lg bg-muted/50 border-t-2 transition-all',
         columnColors[id],
@@ -58,10 +59,13 @@ export function KanbanColumn({
       )}
     >
       <div className="flex items-center justify-between px-3 py-2">
-        <h2 className="text-sm font-medium text-muted-foreground">{title}</h2>
+        <h2 id={`column-heading-${id}`} className="text-sm font-medium text-muted-foreground">
+          {title}
+        </h2>
         <span
           className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full"
           aria-live="polite"
+          aria-label={`${tasks.length} ${tasks.length === 1 ? 'task' : 'tasks'}`}
         >
           {tasks.length}
         </span>

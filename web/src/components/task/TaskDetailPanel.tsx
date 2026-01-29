@@ -1,16 +1,6 @@
 import { useEffect, useState } from 'react';
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from '@/components/ui/sheet';
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from '@/components/ui/tabs';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -27,7 +17,17 @@ import { AttachmentsSection } from './AttachmentsSection';
 import { ApplyTemplateDialog } from './ApplyTemplateDialog';
 import { TaskMetricsPanel } from './TaskMetricsPanel';
 import FeatureErrorBoundary from '@/components/shared/FeatureErrorBoundary';
-import { GitBranch, Bot, FileDiff, ClipboardCheck, Monitor, FileCode, Paperclip, Archive, BarChart3 } from 'lucide-react';
+import {
+  GitBranch,
+  Bot,
+  FileDiff,
+  ClipboardCheck,
+  Monitor,
+  FileCode,
+  Paperclip,
+  Archive,
+  BarChart3,
+} from 'lucide-react';
 import type { Task, ReviewComment, ReviewState } from '@veritas-kanban/shared';
 
 interface TaskDetailPanelProps {
@@ -38,7 +38,13 @@ interface TaskDetailPanelProps {
   onRestore?: (taskId: string) => void;
 }
 
-export function TaskDetailPanel({ task, open, onOpenChange, readOnly = false, onRestore }: TaskDetailPanelProps) {
+export function TaskDetailPanel({
+  task,
+  open,
+  onOpenChange,
+  readOnly = false,
+  onRestore,
+}: TaskDetailPanelProps) {
   const { data: taskTypes = [] } = useTaskTypes();
   const { settings: featureSettings } = useFeatureSettings();
   const taskSettings = featureSettings.tasks;
@@ -64,13 +70,16 @@ export function TaskDetailPanel({ task, open, onOpenChange, readOnly = false, on
   const hasWorktree = !!localTask.git?.worktreePath;
 
   // Get current type info
-  const currentType = taskTypes.find(t => t.id === localTask.type);
+  const currentType = taskTypes.find((t) => t.id === localTask.type);
   const TypeIconComponent = currentType ? getTypeIcon(currentType.icon) : null;
   const typeLabel = currentType ? currentType.label : localTask.type;
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-[700px] sm:max-w-[700px] overflow-hidden flex flex-col">
+      <SheetContent
+        className="w-[700px] sm:max-w-[700px] overflow-hidden flex flex-col"
+        aria-label={`Task details: ${localTask.title}`}
+      >
         <SheetHeader className="space-y-1 flex-shrink-0">
           <div className="flex items-center gap-2 text-muted-foreground">
             {TypeIconComponent && <TypeIconComponent className="h-4 w-4" />}
@@ -94,14 +103,21 @@ export function TaskDetailPanel({ task, open, onOpenChange, readOnly = false, on
                 onChange={(e) => updateField('title', e.target.value)}
                 className="text-xl font-semibold border-0 px-0 focus-visible:ring-0 bg-transparent"
                 placeholder="Task title..."
+                aria-label="Task title"
               />
             )}
           </SheetTitle>
         </SheetHeader>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden mt-4">
+        <Tabs
+          value={activeTab}
+          onValueChange={setActiveTab}
+          className="flex-1 flex flex-col overflow-hidden mt-4"
+        >
           <div className="flex items-center gap-2">
-            <TabsList className={`grid flex-1 ${isCodeTask ? (taskSettings.enableAttachments ? 'grid-cols-7' : 'grid-cols-6') : (taskSettings.enableAttachments ? 'grid-cols-3' : 'grid-cols-2')}`}>
+            <TabsList
+              className={`grid flex-1 ${isCodeTask ? (taskSettings.enableAttachments ? 'grid-cols-7' : 'grid-cols-6') : taskSettings.enableAttachments ? 'grid-cols-3' : 'grid-cols-2'}`}
+            >
               <TabsTrigger value="details">Details</TabsTrigger>
               {taskSettings.enableAttachments && (
                 <TabsTrigger value="attachments" className="flex items-center gap-1">
@@ -119,7 +135,11 @@ export function TaskDetailPanel({ task, open, onOpenChange, readOnly = false, on
                     <Bot className="h-3 w-3" />
                     Agent
                   </TabsTrigger>
-                  <TabsTrigger value="changes" disabled={!hasWorktree} className="flex items-center gap-1">
+                  <TabsTrigger
+                    value="changes"
+                    disabled={!hasWorktree}
+                    className="flex items-center gap-1"
+                  >
                     <FileDiff className="h-3 w-3" />
                     Changes
                   </TabsTrigger>
@@ -211,8 +231,13 @@ export function TaskDetailPanel({ task, open, onOpenChange, readOnly = false, on
                       updateField('reviewComments', newComments);
                     }}
                     onRemoveComment={(commentId: string) => {
-                      const newComments = (localTask.reviewComments || []).filter(c => c.id !== commentId);
-                      updateField('reviewComments', newComments.length > 0 ? newComments : undefined);
+                      const newComments = (localTask.reviewComments || []).filter(
+                        (c) => c.id !== commentId
+                      );
+                      updateField(
+                        'reviewComments',
+                        newComments.length > 0 ? newComments : undefined
+                      );
                     }}
                   />
                 </FeatureErrorBoundary>
@@ -246,11 +271,7 @@ export function TaskDetailPanel({ task, open, onOpenChange, readOnly = false, on
 
       {/* Preview Panel */}
       {localTask && (
-        <PreviewPanel
-          task={localTask}
-          open={previewOpen}
-          onOpenChange={setPreviewOpen}
-        />
+        <PreviewPanel task={localTask} open={previewOpen} onOpenChange={setPreviewOpen} />
       )}
 
       {/* Apply Template Dialog */}
