@@ -10,7 +10,7 @@ Built for developers who want a visual Kanban board that works with autonomous c
 
 [![CI](https://github.com/BradGroux/veritas-kanban/actions/workflows/ci.yml/badge.svg)](https://github.com/BradGroux/veritas-kanban/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)](CHANGELOG.md)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue.svg)](https://www.typescriptlang.org/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
@@ -81,7 +81,7 @@ Open [http://localhost:3000](http://localhost:3000) — that's it.
 
 - **Drag-and-drop Kanban** — Move tasks across To Do, In Progress, Review, Done
 - **Markdown storage** — Human-readable task files with YAML frontmatter
-- **Dark mode** — Easy on the eyes, always
+- **Dark/light mode** — Toggle between dark and light themes in Settings
 
 ### 🔀 Code Workflow
 
@@ -94,6 +94,7 @@ Open [http://localhost:3000](http://localhost:3000) — that's it.
 ### 🤖 AI Agents
 
 - **Agent orchestration** — Spawn autonomous coding agents on tasks
+- **Custom agents** — Add your own agents with any name and command; not limited to built-in types
 - **Platform-agnostic API** — REST endpoints work with any agentic platform
 - **Built-in Moltbot support** — Native integration with [Moltbot](https://github.com/moltbot/moltbot) (formerly Clawdbot)
 - **Multiple attempts** — Retry with different agents, preserve history
@@ -109,7 +110,7 @@ Open [http://localhost:3000](http://localhost:3000) — that's it.
 
 ### ⚙️ Settings & Customization
 
-- **Modular settings** — 7 focused tabs (General, Board, Tasks, Agents, Data, Notifications, Manage)
+- **Modular settings** — 8 focused tabs (General, Board, Tasks, Agents, Data, Notifications, Security, Manage)
 - **Security hardened** — XSS prevention, path traversal blocking, prototype pollution protection
 - **WCAG 2.1 AA** — Full accessibility with ARIA labels, keyboard navigation
 - **Error boundaries** — Crash isolation per tab with recovery options

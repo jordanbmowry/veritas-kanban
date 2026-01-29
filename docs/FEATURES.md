@@ -30,14 +30,14 @@ Complete feature reference for Veritas Kanban. For a quick overview, see the [RE
 The Kanban board is the central interface — a drag-and-drop workspace that reflects your project's state in real time.
 
 - **Kanban columns** — Four default columns: To Do, In Progress, Blocked, Done
-- **Drag-and-drop** — Move tasks between columns with [@dnd-kit](https://dndkit.com/); reorder within columns
+- **Drag-and-drop** — Move tasks between columns with [@dnd-kit](https://dndkit.com/); reorder within columns; custom collision detection (pointerWithin + rectIntersection fallback) for reliable cross-column moves; tooltips suppressed during drag; local state management for real-time column updates
 - **Task CRUD** — Create, read, update, and delete tasks through the UI or API
 - **Create task dialog** — Quick-create with title, type, priority, project, sprint, and description
 - **Task detail panel** — Slide-out sheet with tabbed sections: Details, Git, Agent, Diff, Review, Preview, Attachments, Metrics
 - **Task types** — Configurable type system with icons and color-coded card borders (code, research, content, automation, and custom types)
 - **Priority levels** — Low, medium, and high with visual indicators on cards
 - **Markdown storage** — Tasks stored as human-readable `.md` files with YAML frontmatter (via [gray-matter](https://github.com/jonschlinkert/gray-matter))
-- **Dark mode** — Ships dark by default; easy on the eyes
+- **Dark/light mode** — Ships dark by default with a toggle in Settings → General → Appearance; persists to localStorage; inline script in `index.html` prevents flash of wrong theme on load
 - **Filter bar** — Search tasks by text, filter by project and task type; filters persist in URL query params
 - **Bulk operations** — Select multiple tasks to move, archive, or delete in batch; select-all toggle
 - **Keyboard shortcuts** — Navigate tasks (j/k, arrows), open (Enter), close (Esc), create (c), move to column (1-4), help (?)
@@ -108,7 +108,8 @@ Integrated git workflow from branch creation to merge.
 First-class support for autonomous coding agents.
 
 - **Agent orchestration** — Start, stop, and monitor AI agents on code tasks from the UI or API
-- **Multi-agent support** — Choose from Claude Code, Amp, Copilot, Gemini, or Veritas agents
+- **Multi-agent support** — Ships with Claude Code, Amp, Copilot, Gemini, and Veritas agents; add completely custom agents via Settings → Agents
+- **Agent CRUD management** — Full Add/Edit/Remove for agents in Settings → Agents; add agent form with name, type slug (auto-generated), command, and args; inline edit via pencil icon; remove via trash icon with confirmation (blocked for the default agent); `AgentType` accepts any string slug, not just built-in names
 - **Agent request files** — Server writes structured requests to `.veritas-kanban/agent-requests/` for agent pickup
 - **Completion callbacks** — Agents call the completion endpoint with success/failure status and summary
 - **Multiple attempts** — Retry tasks with different agents; full attempt history preserved with status (pending, running, complete, failed)
@@ -296,14 +297,15 @@ Real-time project metrics and telemetry.
 - **Blocked task breakdown** — Blocked task counts by category (feedback, technical snag, prerequisite, other)
 - **Sprint velocity** — Track task completion rate over time
 - **Cost budget tracking** — Token usage and cost metrics with budget cards
-- **Agent comparison** — Side-by-side performance metrics across different AI agents
-- **Drill-down panels** — Click any metric card to drill into tasks, errors, tokens, or duration details
-  - **Tasks drill-down** — List of tasks matching the selected metric
+- **Agent comparison** — Side-by-side performance metrics across different AI agents (uses `apiFetch()` to properly unwrap the API envelope)
+- **Drill-down panels** — Click any metric card to drill into tasks, errors, tokens, or duration details; focus rings use `ring-inset` to prevent clipping
+  - **Tasks drill-down** — List of tasks matching the selected metric; clicking a task opens its detail panel (with API fallback for deleted tasks via `open-task` event)
   - **Errors drill-down** — Failed agent runs with error details
   - **Tokens drill-down** — Token usage breakdown by agent and task
   - **Duration drill-down** — Time distribution analysis
-- **Trends charts** — Time-series charts for key metrics
-- **Status timeline** — Visual timeline of task status changes
+- **Trends charts** — Time-series charts for key metrics; rolling average line in vibrant cyan-teal for contrast with the purple theme; bar chart hover uses subtle muted fill instead of white flash
+- **Status timeline** — Daily Activity (75%) + Recent Status Changes (25%) side-by-side layout
+- **Section collapsing** — Dashboard sections apply `overflow-hidden` only when collapsed
 - **Daily digest** — Summary of the day's activity: tasks completed/created, agent runs, token usage, failures and issues
 - **Task-level metrics** — Per-task panel showing attempt history, token counts, duration, cost, and status timeline
 - **Export dialog** — Export dashboard data for external analysis
@@ -316,10 +318,10 @@ Modular settings system with 8 focused tabs.
 
 | Tab               | What It Controls                                                                                               |
 | ----------------- | -------------------------------------------------------------------------------------------------------------- |
-| **General**       | Application-wide preferences                                                                                   |
+| **General**       | Application-wide preferences, appearance (dark/light mode toggle with moon/sun icon)                           |
 | **Board**         | Column visibility and board layout                                                                             |
 | **Tasks**         | Default values, auto-complete behavior                                                                         |
-| **Agents**        | Agent configuration, default agent selection                                                                   |
+| **Agents**        | Agent CRUD (add/edit/remove), default agent selection, custom agent types with any string slug                 |
 | **Data**          | Storage, telemetry retention settings                                                                          |
 | **Notifications** | Per-event notification toggles (task complete, agent failed, review ready, etc.)                               |
 | **Security**      | Password change with strength indicator, API key display                                                       |
@@ -499,7 +501,7 @@ Working toward WCAG 2.1 AA compliance.
 - **Keyboard shortcuts dialog** — Discoverable via `?` key with grouped shortcut reference
 - **Focus management** — Focus trapped in dialogs and sheets; restored on close
 - **Screen reader support** — Semantic HTML, ARIA roles, and descriptive labels throughout
-- **Color contrast** — Dark mode palette designed for readability
+- **Color contrast** — Dark and light mode palettes designed for readability; purple primary (`270° 50% 40%`) buttons with white text in dark mode
 - **Skip navigation** — Keyboard users can navigate efficiently between sections
 - **Sortable list accessibility** — Drag-and-drop lists in settings include keyboard-accessible reordering
 - **Interactive cards** — Task cards, metric cards, and stat cards support keyboard activation (Enter/Space)
@@ -507,4 +509,4 @@ Working toward WCAG 2.1 AA compliance.
 
 ---
 
-_Last updated: 2026-01-29 · [Back to README](../README.md)_
+_Last updated: 2026-01-30 · [Back to README](../README.md)_
