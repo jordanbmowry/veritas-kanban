@@ -1,19 +1,20 @@
 <div align="center">
 
-# Veritas Kanban
+# ⚖️ Veritas Kanban
 
 **Local-first task management and AI agent orchestration platform.**
 
-Built for developers who want a visual Kanban board that integrates with AI coding agents.
+Built for developers who want a visual Kanban board that works with autonomous coding agents.
 
-[![CI (Work)](https://github.com/dm-bradgroux/veritas-kanban/actions/workflows/ci.yml/badge.svg)](https://github.com/dm-bradgroux/veritas-kanban/actions/workflows/ci.yml)
-[![CI (Personal)](https://github.com/BradGroux/veritas-kanban/actions/workflows/ci.yml/badge.svg)](https://github.com/BradGroux/veritas-kanban/actions/workflows/ci.yml)
-![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue.svg)
-![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
+[![CI](https://github.com/dm-bradgroux/veritas-kanban/actions/workflows/ci.yml/badge.svg)](https://github.com/dm-bradgroux/veritas-kanban/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](CHANGELOG.md)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue.svg)](https://www.typescriptlang.org/)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-<!-- TODO: Add hero screenshot -->
+<!-- TODO: Add hero screenshot / GIF of board in action -->
+
+[Quickstart](#-quickstart) · [Features](#-features) · [Docs](docs/) · [API](#-api-versioning) · [Agent Integration](#-agent-integration) · [MCP Server](#-mcp-server) · [Contributing](CONTRIBUTING.md) · [Changelog](CHANGELOG.md)
 
 </div>
 
@@ -55,7 +56,9 @@ Open [http://localhost:3000](http://localhost:3000) — that's it.
 
 ### 🤖 AI Agents
 
-- **Clawdbot integration** — Spawns sub-agents via `sessions_spawn`
+- **Agent orchestration** — Spawn autonomous coding agents on tasks
+- **Platform-agnostic API** — REST endpoints work with any agentic platform
+- **Built-in Moltbot support** — Native integration with [Moltbot](https://github.com/moltbot/moltbot) (formerly Clawdbot)
 - **Multiple attempts** — Retry with different agents, preserve history
 - **Running indicator** — Visual feedback when agents are working
 
@@ -96,6 +99,35 @@ Open [http://localhost:3000](http://localhost:3000) — that's it.
 | **Testing**         | Playwright (E2E), Vitest (unit)      | Playwright 1.58, Vitest 4      |
 | **Runtime**         | Node.js                              | 22+                            |
 | **Package Manager** | pnpm                                 | 9+                             |
+
+---
+
+## 🔄 How It Works
+
+```
+  Any AI Agent / CLI / MCP Client
+           │
+           ▼
+┌─────────────────────────────┐
+│      REST API + WebSocket   │
+│    http://localhost:3001    │
+│                             │
+│  ┌───────┐  ┌───────────┐  │
+│  │ Tasks │  │  Agents   │  │
+│  │  API  │  │  Service  │  │
+│  └───┬───┘  └─────┬─────┘  │
+│      │            │         │
+│      ▼            ▼         │
+│   Markdown    Agent Request │
+│    Files       Files (.json)│
+└─────────────────────────────┘
+           │
+           ▼
+   React 19 + Vite Frontend
+   http://localhost:3000
+```
+
+The board is the source of truth. Agents interact via the REST API — create tasks, update status, track time, submit completions. The frontend reflects everything in real time over WebSocket. No vendor lock-in: if it can make HTTP calls, it can drive the board.
 
 ---
 
@@ -186,27 +218,47 @@ vk notify:pending                # Check notifications
 
 ## 🤖 Agent Integration
 
-Veritas Kanban integrates with [Clawdbot](https://github.com/clawdbot/clawdbot) for AI agent orchestration.
+Veritas Kanban works with any agentic platform that can make HTTP calls. The REST API covers the full task lifecycle — create, update, track time, complete.
+
+Built and tested with [Moltbot](https://github.com/moltbot/moltbot) (formerly Clawdbot), which provides native orchestration via `sessions_spawn`. The built-in agent service targets Moltbot — PRs welcome for adapters to other platforms.
 
 ### How It Works
 
-1. **Start Agent** — Click "Start Agent" in the UI on a code task
+1. **Start Agent** — Click "Start Agent" in the UI on a code task (or hit the API directly)
 2. **Request Created** — Server writes to `.veritas-kanban/agent-requests/`
-3. **Veritas Picks Up** — Tell Veritas "I started an agent on task X"
-4. **Sub-agent Spawns** — Clawdbot's `sessions_spawn` handles PTY and execution
-5. **Work Complete** — Agent commits changes and calls completion endpoint
+3. **Agent Picks Up** — Your agent reads the request and begins work
+4. **Work Happens** — Agent updates task status, tracks time, commits code
+5. **Completion** — Agent calls the completion endpoint with results
 6. **Task Updates** — Status moves to Review, notifications sent
 
-### Manual Trigger
+### Any Platform (REST API)
 
 ```bash
-# Check for pending requests
+# Create a task
+curl -X POST http://localhost:3001/api/tasks \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: $YOUR_KEY" \
+  -d '{"title": "Implement feature X", "type": "code", "status": "in-progress"}'
+
+# Start time tracking
+curl -X POST http://localhost:3001/api/tasks/<id>/time/start \
+  -H "X-API-Key: $YOUR_KEY"
+
+# Mark complete
+curl -X POST http://localhost:3001/api/agents/<id>/complete \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: $YOUR_KEY" \
+  -d '{"success": true, "summary": "What was done"}'
+```
+
+### Moltbot (Native)
+
+```bash
+# Check for pending agent requests
 vk agents:pending
 
-# If you're Veritas, spawn the sub-agent and call:
-curl -X POST http://localhost:3001/api/agents/<task-id>/complete \
-  -H "Content-Type: application/json" \
-  -d '{"success": true, "summary": "What was done"}'
+# Moltbot sub-agents use sessions_spawn to execute work,
+# then call the completion endpoint automatically.
 ```
 
 ---
@@ -299,15 +351,16 @@ pnpm test:e2e   # E2E tests (Playwright)
 
 ---
 
-## 🔗 Repositories
-
-| Repository   | URL                                            |
-| ------------ | ---------------------------------------------- |
-| **Work**     | https://github.com/dm-bradgroux/veritas-kanban |
-| **Personal** | https://github.com/BradGroux/veritas-kanban    |
-
----
-
 ## 📜 License
 
 [MIT](LICENSE) © 2026 [Digital Meld](https://digitalmeld.io)
+
+---
+
+<div align="center">
+
+Built by [Digital Meld](https://digitalmeld.io) — AI-driven enterprise automation.
+
+Originally built for [Moltbot](https://github.com/moltbot/moltbot). Works with any agentic platform.
+
+</div>
