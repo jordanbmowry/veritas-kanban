@@ -1,5 +1,27 @@
 [
   {
+    "id": "activity_1769683437415_3fghkz7n7",
+    "type": "comment_added",
+    "taskId": "task_20260129_9nk1AM",
+    "taskTitle": "STABILITY: Add WebSocket heartbeat, reconnection, and connection limits",
+    "details": {
+      "author": "Veritas",
+      "preview": "Implemented WebSocket hardening: Server sends ping..."
+    },
+    "timestamp": "2026-01-29T10:43:57.415Z"
+  },
+  {
+    "id": "activity_1769683430943_4p7mgjsbq",
+    "type": "status_changed",
+    "taskId": "task_20260129_9nk1AM",
+    "taskTitle": "STABILITY: Add WebSocket heartbeat, reconnection, and connection limits",
+    "details": {
+      "from": "in-progress",
+      "status": "done"
+    },
+    "timestamp": "2026-01-29T10:43:50.943Z"
+  },
+  {
     "id": "activity_1769683424525_3t53tke99",
     "type": "comment_added",
     "taskId": "task_20260129_0nTA6h",

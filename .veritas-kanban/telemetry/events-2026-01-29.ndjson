@@ -1461,3 +1461,4 @@
 {"type":"task.restored","taskId":"task_20260126_arch1","status":"done","id":"evt_JijWWBIypKx0","timestamp":"2026-01-29T10:43:39.921Z"}
 {"type":"task.status_changed","taskId":"task_20260126_arch1","status":"blocked","previousStatus":"done","id":"evt_XYvSj7aY9mH0","timestamp":"2026-01-29T10:43:39.939Z"}
 {"type":"task.archived","taskId":"task_20260126_arch1","status":"blocked","id":"evt_zpmB2KIudvo_","timestamp":"2026-01-29T10:43:39.948Z"}
+{"type":"task.status_changed","taskId":"task_20260129_9nk1AM","status":"done","previousStatus":"in-progress","id":"evt_9jKh8rd700vo","timestamp":"2026-01-29T10:43:50.942Z"}
