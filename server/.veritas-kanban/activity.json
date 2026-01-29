@@ -1,5 +1,27 @@
 [
   {
+    "id": "activity_1769683167629_q9635t20d",
+    "type": "comment_added",
+    "taskId": "task_20260129_41Y8FT",
+    "taskTitle": "STABILITY: Add React error boundaries with graceful fallback UI",
+    "details": {
+      "author": "Veritas",
+      "preview": "Added reusable ErrorBoundary component with 3-leve..."
+    },
+    "timestamp": "2026-01-29T10:39:27.629Z"
+  },
+  {
+    "id": "activity_1769683161292_mkrwl9iw2",
+    "type": "status_changed",
+    "taskId": "task_20260129_41Y8FT",
+    "taskTitle": "STABILITY: Add React error boundaries with graceful fallback UI",
+    "details": {
+      "from": "in-progress",
+      "status": "done"
+    },
+    "timestamp": "2026-01-29T10:39:21.292Z"
+  },
+  {
     "id": "activity_1769683041137_3l4s1vokw",
     "type": "comment_added",
     "taskId": "task_20260129_H_qzbf",

@@ -1271,3 +1271,4 @@
 {"type":"task.created","taskId":"task_20260129_m5mpVz","project":"project-b","status":"todo","id":"evt_LfyCp2zYm0lr","timestamp":"2026-01-29T10:37:06.994Z"}
 {"type":"task.created","taskId":"task_20260129_T0fxZb","status":"todo","id":"evt_RGyZgnNhv1HO","timestamp":"2026-01-29T10:37:07.020Z"}
 {"type":"task.status_changed","taskId":"task_20260129_H_qzbf","status":"done","previousStatus":"in-progress","id":"evt_j0AX9HSBM57P","timestamp":"2026-01-29T10:37:21.101Z"}
+{"type":"task.status_changed","taskId":"task_20260129_41Y8FT","status":"done","previousStatus":"in-progress","id":"evt_RtEQUD_Mi6Kf","timestamp":"2026-01-29T10:39:21.292Z"}

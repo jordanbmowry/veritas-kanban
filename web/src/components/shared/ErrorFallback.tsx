@@ -14,7 +14,7 @@ interface ErrorFallbackProps {
 // Page-level: full-screen centered error
 // ────────────────────────────────────────────────────────────
 
-function PageFallback({ error, onRetry }: Omit<ErrorFallbackProps, 'level'>) {
+function PageFallback({ error, onRetry: _onRetry }: Omit<ErrorFallbackProps, 'level'>) {
   const [showDetails, setShowDetails] = useState(false);
 
   return (

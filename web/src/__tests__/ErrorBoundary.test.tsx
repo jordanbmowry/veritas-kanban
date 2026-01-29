@@ -2,8 +2,8 @@
  * @vitest-environment jsdom
  */
 import React from 'react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import { ErrorBoundary } from '../components/shared/ErrorBoundary';
 
 // ── Helpers ──────────────────────────────────────────────────
@@ -21,6 +21,11 @@ function GoodChild() {
 // Suppress React's own error boundary console noise during tests
 beforeEach(() => {
   vi.spyOn(console, 'error').mockImplementation(() => {});
+});
+
+afterEach(() => {
+  cleanup();
+  vi.restoreAllMocks();
 });
 
 // ── Tests ────────────────────────────────────────────────────
@@ -77,7 +82,7 @@ describe('ErrorBoundary', () => {
   it('resets state and re-renders children when retry is clicked', () => {
     let shouldThrow = true;
 
-    function ConditionalChild() {
+    function ConditionalChild(): React.ReactNode {
       if (shouldThrow) {
         throw new Error('Boom');
       }
@@ -105,7 +110,7 @@ describe('ErrorBoundary', () => {
   it('resets widget-level boundary on retry', () => {
     let shouldThrow = true;
 
-    function ConditionalChild() {
+    function ConditionalChild(): React.ReactNode {
       if (shouldThrow) {
         throw new Error('Widget boom');
       }
