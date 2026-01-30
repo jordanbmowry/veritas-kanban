@@ -137,6 +137,8 @@ export function AgentsTab() {
             min={5}
             max={480}
             unit="min"
+            hideSpinners
+            maxLength={3}
           />
           <ToggleRow
             label="Auto-Commit on Complete"

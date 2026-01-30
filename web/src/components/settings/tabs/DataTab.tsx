@@ -1,7 +1,4 @@
-import {
-  useFeatureSettings,
-  useDebouncedFeatureUpdate,
-} from '@/hooks/useFeatureSettings';
+import { useFeatureSettings, useDebouncedFeatureUpdate } from '@/hooks/useFeatureSettings';
 import { DEFAULT_FEATURE_SETTINGS } from '@veritas-kanban/shared';
 import { ToggleRow, NumberRow, SectionHeader, SaveIndicator } from '../shared';
 
@@ -54,6 +51,8 @@ export function DataTab() {
               min={7}
               max={365}
               unit="days"
+              hideSpinners
+              maxLength={3}
             />
             <ToggleRow
               label="Trace Collection"
@@ -73,7 +72,9 @@ export function DataTab() {
 
       {/* Budget Tracking */}
       <div className="space-y-3">
-        <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Budget Tracking</h4>
+        <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+          Budget Tracking
+        </h4>
         <div className="divide-y">
           <ToggleRow
             label="Budget Tracking"
@@ -114,6 +115,8 @@ export function DataTab() {
                 max={99}
                 step={5}
                 unit="%"
+                hideSpinners
+                maxLength={2}
               />
             </>
           )}
@@ -122,7 +125,9 @@ export function DataTab() {
 
       {/* Archive */}
       <div className="space-y-3">
-        <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Archive</h4>
+        <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+          Archive
+        </h4>
         <div className="divide-y">
           <ToggleRow
             label="Auto-Archive"
@@ -139,6 +144,8 @@ export function DataTab() {
               min={1}
               max={365}
               unit="days"
+              hideSpinners
+              maxLength={3}
             />
           )}
         </div>
