@@ -7,54 +7,139 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+---
+
+## [1.1.0] - 2026-01-31
+
+### ✨ Highlights
+
+- **Built-in Chat Interface** — Talk to AI agents directly from the board or any task, with streaming responses and markdown rendering
+- **Agent Routing Engine** — Tasks auto-route to the best available agent based on type, project, and capabilities
+- **Agent Selection on Task Creation** — Choose which agent handles a task when you create it
+- **Hardened Infrastructure** — Rate limiting, circuit breakers, file locking, request timeouts, data integrity checks, and more
+
 ### Added
+
+#### Chat Interface (#18)
+
+- Full chat panel accessible from any task or the board header
+- Streaming AI responses with real-time WebSocket delivery
+- Floating chat bubble with pulse indicator for new messages
+- Chat sessions stored as markdown files with YAML frontmatter
+- Gateway integration for AI responses via Clawdbot
+- Chat export as markdown (download icon in header)
+- Clear chat history with confirmation dialog
+- Mode toggle: Ask (read-only queries) vs Build (changes, files, commands)
+- Keyboard shortcut support
+- Auto-focus input after sending messages
+- Tool call display with expandable input/output sections
+
+#### Agent Routing Engine (#16)
+
+- Task-aware routing that matches tasks to agents by type, project, and capabilities
+- Routing rules configurable per agent in Settings → Agents
+- API endpoints for routing queries and rule management
+- Full test coverage (17 tests)
+
+#### Agent Selection on Task Creation (#17)
+
+- Agent dropdown in the Create Task dialog
+- Auto-routes to best agent based on task type, or allows manual override
+- Agent field displayed in task metadata section
 
 #### Agent CRUD Management
 
 - Full Add/Edit/Remove for agents in Settings → Agents
 - Add Agent form with name, type slug (auto-generated), command, and args
-- Edit Agent: inline edit name, command, and args via pencil icon
-- Remove Agent: trash icon with confirmation dialog (blocked for the default agent)
-- `AgentType` loosened from a fixed enum (`claude-code | amp | copilot | gemini | veritas`) to any string slug — users can define completely custom agents
+- Edit/Remove via inline icons (default agent protected from deletion)
+- `AgentType` loosened from fixed enum to any string slug — fully custom agents
 
-#### First-Run Seed Data
+#### Board Filter: Agent
 
-- Example tasks auto-populate the board on first run (4 sample tasks showcasing features)
-- Manual seed script: `pnpm seed` (copies examples when board is empty)
-- Task data (`tasks/active/`, `tasks/archive/`) is `.gitignore`d — your data stays private
-- Attachment directories excluded from git tracking
+- Filter board by assigned agent in the FilterBar
+- Agent indicator dots on task cards match filter state
 
-#### Dark/Light Mode Toggle
+#### Infrastructure & Security
 
-- Settings → General → Appearance section with toggle switch (moon/sun icon)
+- **Rate Limiting** — Per-route tiered thresholds (auth, API reads, writes, uploads)
+- **Circuit Breaker** — Automatic failure detection for external service calls with configurable thresholds
+- **File Locking** — FIFO queue prevents race conditions on concurrent file writes
+- **Request Timeouts** — Middleware kills hung connections before they pile up
+- **Data Integrity** — Hash-chain verification + automatic backup on startup with rotation
+- **Audit Log** — Immutable hash-chain audit trail for sensitive operations
+- **Health Endpoint** — Liveness, readiness, and deep checks (storage, disk, task file)
+- **API Envelope** — Standardized `{ success, data, meta }` response format across all endpoints
+- **Schema Validation** — Zod schemas on all mutating API routes
+- **Metrics** — Prometheus-compatible `/metrics` endpoint for monitoring
+- **WebSocket Heartbeat** — Connection keep-alive with automatic reconnection and connection limits
+- **Error Boundaries** — React error boundaries with graceful fallback UI
+- **Dependency Audit** — Automated vulnerability scanning in CI
+
+#### Storage & Architecture
+
+- Abstract file storage behind repository interface (prep for future database backends)
+- Structured logging with pino (replaced all `console.*` calls)
+
+#### First-Run Experience
+
+- Example tasks auto-populate the board on first run (4 sample tasks)
+- Manual seed script: `pnpm seed`
+- Task data `.gitignore`d — your data stays private
+
+#### Dark/Light Mode
+
+- Settings → General → Appearance toggle (moon/sun icon)
 - Persists to localStorage; default is dark mode
-- Inline script in `index.html` prevents flash of wrong theme on page load
+- Inline script prevents flash of wrong theme on load
 
 #### UI Theme
 
-- Primary color changed to purple (`270° 50% 40%`) with white text in dark mode
-- Focus rings updated to purple
-- Switch toggle thumbs: white in dark mode, black in light mode
+- Primary color: purple (`270° 50% 40%`) with white text
+- Focus rings, switches, and accents updated to match
+
+#### Documentation
+
+- TROUBLESHOOTING.md with common issues and solutions
+- Comprehensive FEATURES.md reference
+- Agentic AI Safety best practices guide
+- Roadmap section linking to v1.1 milestone
+- Competitive comparison table
+- OpenClaw (formerly Moltbot/Clawdbot) attribution updated
+
+#### Per-Status Selection (#24)
+
+- Select All checkbox per column header
+- Toolbar buttons for bulk operations scoped to selected status
+- Column checkboxes for quick multi-select
 
 ### Fixed
 
-#### Cross-Column Drag-and-Drop
+- **Chat delete not clearing UI** — React Query kept stale cached data after session file was deleted; now uses `removeQueries` to nuke cache
+- **Chat send broken after delete** — Server now recreates task-scoped sessions instead of throwing 404
+- **Cross-column drag-and-drop** — Tasks reliably move between columns with local state management during drag
+- **Dashboard agent comparison** — Fixed broken data fetch (raw `fetch` → `apiFetch` for envelope unwrapping)
+- **Dashboard drill-down** — Removed duplicate X button, fixed focus ring clipping, wired up `open-task` event
+- **Localhost auth rate limit** (#25) — Exempted localhost from rate limiting
+- **Numeric inputs** — Clean inputs without browser spinners (#19)
+- **Timer start/stop** — Optimistic UI toggle + cache patch for instant feedback
+- **Task cache fragmentation** — All routes now use TaskService singleton
+- **Sprint/Agent label alignment** — Fixed form layout in task detail panel
+- **Sticky header** — Fixed positioning + matched indicator dot sizes
+- **Keyboard test infinite loop** — Resolved render loop in `useKeyboard` + memoized context
+- **Agent idle timeout** — Increased from 5 to 15 minutes to reduce false resets
+- **File lock ordering** — Added in-process FIFO queue for deterministic write ordering
+- **Search filters** — Added task ID to board and archive search
 
-- Tasks can now be dragged between Kanban columns reliably
-- Added local state management during drag for real-time column updates
-- Custom collision detection using `pointerWithin` with `rectIntersection` fallback
-- Tooltips suppressed during drag operations to prevent interference
+### Changed
 
-#### Dashboard
-
-- Agent Comparison chart: fixed broken data fetch — replaced raw `fetch()` with `apiFetch()` to properly unwrap the API response envelope
-- Rolling average line: changed from purple to vibrant cyan-teal to contrast new purple theme
-- Bar chart hover cursor: changed from white flash to subtle muted fill
-- Drill-down panels: removed duplicate X close button
-- Drill-down focus rings: changed to `ring-inset` to prevent clipping at panel edges
-- Dashboard section `overflow-hidden`: now only applies when the section is collapsed
-- StatusTimeline: redesigned to Daily Activity (75%) + Recent Status Changes (25%) side-by-side layout
-- `open-task` event: wired up so clicking tasks in drill-down panels opens the task detail panel (with API fallback for deleted tasks)
+- Agent status popover: moved idle description to bottom, added activity history link
+- WebSocket indicator: click popover with connection status explanation
+- Dashboard layout: Daily Activity (75%) + Recent Status Changes (25%) side-by-side
+- Rolling average line: cyan-teal to contrast purple theme
+- Bar chart hover: subtle muted fill instead of white flash
+- All repo links updated to BradGroux (primary repo)
+- All contact emails standardized to contact@digitalmeld.io
+- Test suite: 72 files, **1,270 tests** (up from 61 files / 1,143 tests)
 
 ---
 
@@ -157,5 +242,6 @@ Veritas Kanban is an AI-native project management board built for developers and
 
 _Built by [Digital Meld](https://digitalmeld.io) — AI-driven enterprise automation._
 
-[unreleased]: https://github.com/BradGroux/veritas-kanban/compare/v1.0.0...HEAD
+[unreleased]: https://github.com/BradGroux/veritas-kanban/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/BradGroux/veritas-kanban/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/BradGroux/veritas-kanban/releases/tag/v1.0.0
