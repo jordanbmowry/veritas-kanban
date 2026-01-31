@@ -27,7 +27,7 @@ import { useCreateTaskForm } from '@/hooks/useCreateTaskForm';
 import { BlueprintPreview } from './create/BlueprintPreview';
 import { TemplateVariableInputs } from './create/TemplateVariableInputs';
 import type { TaskPriority } from '@veritas-kanban/shared';
-import { FileText, X, Check, HelpCircle, Info, Bot } from 'lucide-react';
+import { FileText, X, Check, HelpCircle, Info } from 'lucide-react';
 import { getCategoryIcon } from '@/lib/template-categories';
 
 interface CreateTaskDialogProps {
@@ -393,10 +393,7 @@ export function CreateTaskDialog({ open, onOpenChange }: CreateTaskDialogProps) 
                   </div>
 
                   <div className="grid gap-2">
-                    <Label className="flex items-center gap-1.5">
-                      <Bot className="h-3.5 w-3.5" />
-                      Agent
-                    </Label>
+                    <Label>Agent</Label>
                     <Select value={agent || 'auto'} onValueChange={setAgent}>
                       <SelectTrigger>
                         <SelectValue />

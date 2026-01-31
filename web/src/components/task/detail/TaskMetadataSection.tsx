@@ -13,7 +13,6 @@ import { useTaskTypes, getTypeIcon } from '@/hooks/useTaskTypes';
 import { useProjects } from '@/hooks/useProjects';
 import { useSprints } from '@/hooks/useSprints';
 import { useConfig } from '@/hooks/useConfig';
-import { Bot } from 'lucide-react';
 import type { Task, TaskStatus, TaskPriority, AgentType } from '@veritas-kanban/shared';
 
 interface TaskMetadataSectionProps {
@@ -243,10 +242,7 @@ export function TaskMetadataSection({
         </div>
 
         <div className="space-y-2">
-          <Label className="text-muted-foreground flex items-center gap-1.5">
-            <Bot className="h-3.5 w-3.5" />
-            Agent
-          </Label>
+          <Label className="text-muted-foreground">Agent</Label>
           {readOnly ? (
             <div className="text-sm font-medium px-3 py-2 bg-muted/30 rounded-md">
               {task.agent === 'auto' || !task.agent
