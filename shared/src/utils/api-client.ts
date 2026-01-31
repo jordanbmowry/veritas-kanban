@@ -6,6 +6,13 @@ import type { Task } from '../types/task.types.js';
 
 const DEFAULT_BASE = 'http://localhost:3001';
 
+/** Standard API response envelope */
+interface ApiEnvelope<T> {
+  success: boolean;
+  data: T;
+  meta?: Record<string, unknown>;
+}
+
 /**
  * Create an API client instance
  * @param baseUrl - Base URL for the API (default: http://localhost:3001)
@@ -22,14 +29,24 @@ export function createApiClient(baseUrl = DEFAULT_BASE) {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ error: res.statusText })) as { error?: string };
+      const error = (await res.json().catch(() => ({ error: res.statusText }))) as {
+        error?: string;
+      };
       throw new Error(error.error || `API error: ${res.status}`);
     }
 
     if (res.status === 204) {
       return undefined as T;
     }
-    return res.json() as Promise<T>;
+
+    const body = await res.json();
+
+    // Unwrap standard API envelope { success, data, meta }
+    if (body && typeof body === 'object' && 'success' in body && 'data' in body) {
+      return (body as ApiEnvelope<T>).data;
+    }
+
+    return body as T;
   };
 }
 
@@ -48,5 +65,5 @@ export const api = createApiClient(API_BASE);
  */
 export async function findTask(id: string, apiClient = api): Promise<Task | null> {
   const tasks = await apiClient<Task[]>('/api/tasks');
-  return tasks.find(t => t.id === id || t.id.endsWith(id)) || null;
+  return tasks.find((t) => t.id === id || t.id.endsWith(id)) || null;
 }
