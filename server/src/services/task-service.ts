@@ -15,6 +15,7 @@ import type {
 import { getTelemetryService, type TelemetryService } from './telemetry-service.js';
 import { withFileLock } from './file-lock.js';
 import { createLogger } from '../lib/logger.js';
+import { ConflictError, NotFoundError } from '../middleware/error-handler.js';
 
 const log = createLogger('task-cache');
 
@@ -422,54 +423,68 @@ export class TaskService {
   }
 
   async updateTask(id: string, input: UpdateTaskInput): Promise<Task | null> {
+    // Initial read to check existence and compute the lock filepath.
+    // NOTE: this data may be stale by the time we acquire the lock —
+    // the actual merge happens inside the lock with a fresh cache read.
     const task = await this.getTask(id);
     if (!task) return null;
-
-    // Track if status changed for telemetry
-    const previousStatus = task.status;
-    const statusChanged = input.status !== undefined && input.status !== previousStatus;
 
     // Handle git field separately to merge properly
     const { git: gitUpdate, blockedReason: blockedReasonUpdate, ...restInput } = input;
 
-    const updatedTask: Task = {
-      ...task,
-      ...restInput,
-      git: gitUpdate ? ({ ...task.git, ...gitUpdate } as Task['git']) : task.git,
-      // Handle blockedReason: null means clear, undefined means keep existing
-      blockedReason:
-        blockedReasonUpdate === null ? undefined : (blockedReasonUpdate ?? task.blockedReason),
-      updated: new Date().toISOString(),
-    };
-
-    // Remove old file if title changed (filename changes)
+    // Compute filenames for locking. We use the tentative updated task
+    // to determine the new filename (title may have changed).
     const oldFilename = this.taskToFilename(task);
-    const newFilename = this.taskToFilename(updatedTask);
+    const tentativeTask: Task = { ...task, ...restInput };
+    const newFilename = this.taskToFilename(tentativeTask);
     const filepath = path.join(this.tasksDir, newFilename);
-    const content = this.taskToMarkdown(updatedTask);
+
+    let updatedTask!: Task;
 
     await withFileLock(filepath, async () => {
+      // Re-read from cache inside the lock to get the latest state.
+      // This prevents concurrent writes (e.g., debounced field save vs.
+      // timer start) from overwriting each other's changes.
+      const freshTask = this.cacheGet(id) ?? task;
+
+      const previousStatus = freshTask.status;
+      const statusChanged = input.status !== undefined && input.status !== previousStatus;
+
+      updatedTask = {
+        ...freshTask,
+        ...restInput,
+        git: gitUpdate ? ({ ...freshTask.git, ...gitUpdate } as Task['git']) : freshTask.git,
+        // Handle blockedReason: null means clear, undefined means keep existing
+        blockedReason:
+          blockedReasonUpdate === null
+            ? undefined
+            : (blockedReasonUpdate ?? freshTask.blockedReason),
+        updated: new Date().toISOString(),
+      };
+
+      const content = this.taskToMarkdown(updatedTask);
       this.markWrite();
+
       if (oldFilename !== newFilename) {
         // Intentionally silent: old file may already be gone after rename
         await fs.unlink(path.join(this.tasksDir, oldFilename)).catch(() => {});
       }
       await fs.writeFile(filepath, content, 'utf-8');
+
+      // Write-through: update cache immediately (inside lock for consistency)
+      this.cache.set(updatedTask.id, updatedTask);
+
+      // Emit telemetry event if status changed
+      if (statusChanged) {
+        await this.telemetry.emit<TaskTelemetryEvent>({
+          type: 'task.status_changed',
+          taskId: updatedTask.id,
+          project: updatedTask.project,
+          status: updatedTask.status,
+          previousStatus,
+        });
+      }
     });
-
-    // Write-through: update cache immediately
-    this.cache.set(updatedTask.id, updatedTask);
-
-    // Emit telemetry event if status changed
-    if (statusChanged) {
-      await this.telemetry.emit<TaskTelemetryEvent>({
-        type: 'task.status_changed',
-        taskId: updatedTask.id,
-        project: updatedTask.project,
-        status: updatedTask.status,
-        previousStatus,
-      });
-    }
 
     return updatedTask;
   }
@@ -667,17 +682,18 @@ export class TaskService {
   // ============ Time Tracking Methods ============
 
   /**
-   * Start a timer for a task
+   * Start a timer for a task.
+   * Per-task exclusivity: only one timer per task (but multiple tasks can
+   * each have their own running timer — supports multi-agent workflows).
    */
   async startTimer(taskId: string): Promise<Task> {
     const task = await this.getTask(taskId);
     if (!task) {
-      throw new Error('Task not found');
+      throw new NotFoundError('Task not found');
     }
 
-    // Check if timer is already running
     if (task.timeTracking?.isRunning) {
-      throw new Error('Timer is already running for this task');
+      throw new ConflictError('Timer is already running for this task');
     }
 
     const entryId = `time_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
@@ -695,7 +711,7 @@ export class TaskService {
       activeEntryId: entryId,
     };
 
-    return this.updateTask(taskId, { timeTracking }) as Promise<Task>;
+    return (await this.updateTask(taskId, { timeTracking })) as Task;
   }
 
   /**
@@ -704,11 +720,11 @@ export class TaskService {
   async stopTimer(taskId: string): Promise<Task> {
     const task = await this.getTask(taskId);
     if (!task) {
-      throw new Error('Task not found');
+      throw new NotFoundError('Task not found');
     }
 
     if (!task.timeTracking?.isRunning || !task.timeTracking.activeEntryId) {
-      throw new Error('No timer is running for this task');
+      throw new ConflictError('No timer is running for this task');
     }
 
     const now = new Date();
@@ -743,7 +759,7 @@ export class TaskService {
   async addTimeEntry(taskId: string, duration: number, description?: string): Promise<Task> {
     const task = await this.getTask(taskId);
     if (!task) {
-      throw new Error('Task not found');
+      throw new NotFoundError('Task not found');
     }
 
     const entryId = `time_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
@@ -777,7 +793,7 @@ export class TaskService {
   async deleteTimeEntry(taskId: string, entryId: string): Promise<Task> {
     const task = await this.getTask(taskId);
     if (!task) {
-      throw new Error('Task not found');
+      throw new NotFoundError('Task not found');
     }
 
     const entries = (task.timeTracking?.entries || []).filter((e) => e.id !== entryId);
