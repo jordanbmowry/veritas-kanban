@@ -391,6 +391,7 @@ export class TaskService {
       priority: input.priority || 'medium',
       project: input.project,
       sprint: input.sprint,
+      agent: input.agent, // Pre-assigned agent (or "auto" for routing)
       subtasks: input.subtasks, // Include subtasks from template
       blockedBy: input.blockedBy, // Include dependencies from blueprint
       created: now,

@@ -21,12 +21,13 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useTaskTypes, getTypeIcon } from '@/hooks/useTaskTypes';
 import { useProjects } from '@/hooks/useProjects';
 import { useSprints } from '@/hooks/useSprints';
+import { useConfig } from '@/hooks/useConfig';
 import { useTemplateForm } from '@/hooks/useTemplateForm';
 import { useCreateTaskForm } from '@/hooks/useCreateTaskForm';
 import { BlueprintPreview } from './create/BlueprintPreview';
 import { TemplateVariableInputs } from './create/TemplateVariableInputs';
 import type { TaskPriority } from '@veritas-kanban/shared';
-import { FileText, X, Check, HelpCircle, Info } from 'lucide-react';
+import { FileText, X, Check, HelpCircle, Info, Bot } from 'lucide-react';
 import { getCategoryIcon } from '@/lib/template-categories';
 
 interface CreateTaskDialogProps {
@@ -44,6 +45,7 @@ export function CreateTaskDialog({ open, onOpenChange }: CreateTaskDialogProps) 
     setPriority,
     setProject,
     setSprint,
+    setAgent,
     setCategoryFilter,
     setNewProjectName,
     toggleHelp,
@@ -61,6 +63,7 @@ export function CreateTaskDialog({ open, onOpenChange }: CreateTaskDialogProps) 
     priority,
     project,
     sprint,
+    agent,
     categoryFilter,
     showHelp,
     showNewProject,
@@ -70,7 +73,9 @@ export function CreateTaskDialog({ open, onOpenChange }: CreateTaskDialogProps) 
   const { data: taskTypes = [] } = useTaskTypes();
   const { data: projects = [] } = useProjects();
   const { data: sprints = [] } = useSprints();
-  
+  const { data: config } = useConfig();
+  const enabledAgents = config?.agents.filter((a) => a.enabled) || [];
+
   const {
     selectedTemplate,
     templates,
@@ -89,7 +94,7 @@ export function CreateTaskDialog({ open, onOpenChange }: CreateTaskDialogProps) 
   const filteredTemplates = useMemo(() => {
     if (!templates) return [];
     if (categoryFilter === 'all') return templates;
-    return templates.filter(t => (t.category || 'custom') === categoryFilter);
+    return templates.filter((t) => (t.category || 'custom') === categoryFilter);
   }, [templates, categoryFilter]);
 
   const handleTemplateSelect = (templateId: string) => {
@@ -97,10 +102,10 @@ export function CreateTaskDialog({ open, onOpenChange }: CreateTaskDialogProps) 
       clearTemplate();
       return;
     }
-    
-    const template = templates?.find(t => t.id === templateId);
+
+    const template = templates?.find((t) => t.id === templateId);
     if (!template) return;
-    
+
     const defaults = applyTemplate(template);
     // Apply template defaults to form state atomically
     applyFormDefaults({
@@ -111,18 +116,20 @@ export function CreateTaskDialog({ open, onOpenChange }: CreateTaskDialogProps) 
     });
   };
 
-  const currentTemplate = selectedTemplate ? templates?.find(t => t.id === selectedTemplate) : null;
+  const currentTemplate = selectedTemplate
+    ? templates?.find((t) => t.id === selectedTemplate)
+    : null;
   const isBlueprint = Boolean(currentTemplate?.blueprint && currentTemplate.blueprint.length > 0);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Use computed canSubmit instead of inline check
     if (!canSubmit(isBlueprint)) {
       return;
     }
-    
-    await createTasks(title, description, project, sprint, type, priority);
+
+    await createTasks(title, description, project, sprint, type, priority, agent);
 
     // Reset form state atomically
     resetForm();
@@ -137,7 +144,7 @@ export function CreateTaskDialog({ open, onOpenChange }: CreateTaskDialogProps) 
           <DialogHeader>
             <DialogTitle>Create New Task</DialogTitle>
           </DialogHeader>
-          
+
           {/* Template selector */}
           {templates && templates.length > 0 && (
             <div className="border-b pb-2">
@@ -157,7 +164,7 @@ export function CreateTaskDialog({ open, onOpenChange }: CreateTaskDialogProps) 
                   <HelpCircle className="h-4 w-4 text-muted-foreground" />
                 </Button>
               </div>
-              
+
               {/* Help Section */}
               {showHelp && (
                 <div className="mb-3 p-3 rounded-md bg-muted/50 border border-muted-foreground/20 text-sm space-y-2">
@@ -166,29 +173,49 @@ export function CreateTaskDialog({ open, onOpenChange }: CreateTaskDialogProps) 
                     <div className="space-y-1.5">
                       <p className="font-medium text-sm">Using Templates</p>
                       <ul className="space-y-1 text-xs text-muted-foreground">
-                        <li>• <strong>Simple templates</strong> pre-fill task fields and can include subtasks</li>
-                        <li>• <strong>Variables</strong> like <code className="px-1 py-0.5 rounded bg-muted">{'{{date}}'}</code> or <code className="px-1 py-0.5 rounded bg-muted">{'{{author}}'}</code> are replaced when creating the task</li>
-                        <li>• <strong>Custom variables</strong> (e.g., <code className="px-1 py-0.5 rounded bg-muted">{'{{bugId}}'}</code>) prompt you for values</li>
-                        <li>• <strong>Blueprint templates</strong> create multiple linked tasks with dependencies</li>
+                        <li>
+                          • <strong>Simple templates</strong> pre-fill task fields and can include
+                          subtasks
+                        </li>
+                        <li>
+                          • <strong>Variables</strong> like{' '}
+                          <code className="px-1 py-0.5 rounded bg-muted">{'{{date}}'}</code> or{' '}
+                          <code className="px-1 py-0.5 rounded bg-muted">{'{{author}}'}</code> are
+                          replaced when creating the task
+                        </li>
+                        <li>
+                          • <strong>Custom variables</strong> (e.g.,{' '}
+                          <code className="px-1 py-0.5 rounded bg-muted">{'{{bugId}}'}</code>)
+                          prompt you for values
+                        </li>
+                        <li>
+                          • <strong>Blueprint templates</strong> create multiple linked tasks with
+                          dependencies
+                        </li>
                       </ul>
                     </div>
                   </div>
                 </div>
               )}
-              
+
               <Tabs value={categoryFilter} onValueChange={setCategoryFilter}>
                 <TabsList className="grid w-full grid-cols-4">
-                  <TabsTrigger value="all" className="text-xs">All</TabsTrigger>
-                  <TabsTrigger value="bug" className="text-xs">🐛</TabsTrigger>
-                  <TabsTrigger value="feature" className="text-xs">✨</TabsTrigger>
-                  <TabsTrigger value="sprint" className="text-xs">🔄</TabsTrigger>
+                  <TabsTrigger value="all" className="text-xs">
+                    All
+                  </TabsTrigger>
+                  <TabsTrigger value="bug" className="text-xs">
+                    🐛
+                  </TabsTrigger>
+                  <TabsTrigger value="feature" className="text-xs">
+                    ✨
+                  </TabsTrigger>
+                  <TabsTrigger value="sprint" className="text-xs">
+                    🔄
+                  </TabsTrigger>
                 </TabsList>
               </Tabs>
-              
-              <Select
-                value={selectedTemplate || 'none'}
-                onValueChange={handleTemplateSelect}
-              >
+
+              <Select value={selectedTemplate || 'none'} onValueChange={handleTemplateSelect}>
                 <SelectTrigger className="mt-2">
                   <SelectValue placeholder="Select template..." />
                 </SelectTrigger>
@@ -199,9 +226,7 @@ export function CreateTaskDialog({ open, onOpenChange }: CreateTaskDialogProps) 
                       {template.category && `${getCategoryIcon(template.category)} `}
                       {template.name}
                       {template.description && (
-                        <span className="text-muted-foreground ml-2">
-                          — {template.description}
-                        </span>
+                        <span className="text-muted-foreground ml-2">— {template.description}</span>
                       )}
                     </SelectItem>
                   ))}
@@ -209,7 +234,7 @@ export function CreateTaskDialog({ open, onOpenChange }: CreateTaskDialogProps) 
               </Select>
             </div>
           )}
-          
+
           {/* Blueprint preview or regular form */}
           <div className="grid gap-4 py-4">
             {isBlueprint ? (
@@ -218,7 +243,7 @@ export function CreateTaskDialog({ open, onOpenChange }: CreateTaskDialogProps) 
                 <TemplateVariableInputs
                   variables={requiredCustomVars}
                   values={customVars}
-                  onChange={(name, value) => setCustomVars(prev => ({ ...prev, [name]: value }))}
+                  onChange={(name, value) => setCustomVars((prev) => ({ ...prev, [name]: value }))}
                 />
               </>
             ) : (
@@ -233,7 +258,7 @@ export function CreateTaskDialog({ open, onOpenChange }: CreateTaskDialogProps) 
                     autoFocus
                   />
                 </div>
-              
+
                 <div className="grid gap-2">
                   <Label htmlFor="description">Description</Label>
                   <Textarea
@@ -244,7 +269,7 @@ export function CreateTaskDialog({ open, onOpenChange }: CreateTaskDialogProps) 
                     rows={3}
                   />
                 </div>
-              
+
                 <div className="grid grid-cols-2 gap-4">
                   <div className="grid gap-2">
                     <Label htmlFor="type">Type</Label>
@@ -267,7 +292,7 @@ export function CreateTaskDialog({ open, onOpenChange }: CreateTaskDialogProps) 
                       </SelectContent>
                     </Select>
                   </div>
-                  
+
                   <div className="grid gap-2">
                     <Label htmlFor="priority">Priority</Label>
                     <Select value={priority} onValueChange={(v) => setPriority(v as TaskPriority)}>
@@ -282,12 +307,12 @@ export function CreateTaskDialog({ open, onOpenChange }: CreateTaskDialogProps) 
                     </Select>
                   </div>
                 </div>
-              
+
                 <div className="grid gap-2">
                   <Label htmlFor="project">Project (optional)</Label>
                   {!showNewProject ? (
-                    <Select 
-                      value={project} 
+                    <Select
+                      value={project}
                       onValueChange={(value) => {
                         if (value === '__new__') {
                           onShowNewProject();
@@ -339,37 +364,62 @@ export function CreateTaskDialog({ open, onOpenChange }: CreateTaskDialogProps) 
                       >
                         Add
                       </Button>
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant="outline"
-                        onClick={hideNewProject}
-                      >
+                      <Button type="button" size="sm" variant="outline" onClick={hideNewProject}>
                         Cancel
                       </Button>
                     </div>
                   )}
                 </div>
 
-                <div className="grid gap-2">
-                  <Label>Sprint (optional)</Label>
-                  <Select value={sprint || '__none__'} onValueChange={(v) => setSprint(v === '__none__' ? '' : v)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="No sprint" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="__none__">No Sprint</SelectItem>
-                      {sprints.map(s => (
-                        <SelectItem key={s.id} value={s.id}>{s.label}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="grid gap-2">
+                    <Label>Sprint (optional)</Label>
+                    <Select
+                      value={sprint || '__none__'}
+                      onValueChange={(v) => setSprint(v === '__none__' ? '' : v)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="No sprint" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="__none__">No Sprint</SelectItem>
+                        {sprints.map((s) => (
+                          <SelectItem key={s.id} value={s.id}>
+                            {s.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label className="flex items-center gap-1.5">
+                      <Bot className="h-3.5 w-3.5" />
+                      Agent
+                    </Label>
+                    <Select value={agent || 'auto'} onValueChange={setAgent}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="auto">
+                          <span className="text-muted-foreground">Auto</span>
+                          <span className="text-xs text-muted-foreground ml-1">(routing)</span>
+                        </SelectItem>
+                        {enabledAgents.map((a) => (
+                          <SelectItem key={a.type} value={a.type}>
+                            {a.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
 
                 <TemplateVariableInputs
                   variables={requiredCustomVars}
                   values={customVars}
-                  onChange={(name, value) => setCustomVars(prev => ({ ...prev, [name]: value }))}
+                  onChange={(name, value) => setCustomVars((prev) => ({ ...prev, [name]: value }))}
                 />
 
                 {subtasks.length > 0 && (
@@ -403,15 +453,12 @@ export function CreateTaskDialog({ open, onOpenChange }: CreateTaskDialogProps) 
               </>
             )}
           </div>
-          
+
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
-            <Button 
-              type="submit" 
-              disabled={!canSubmit(isBlueprint) || isCreating}
-            >
+            <Button type="submit" disabled={!canSubmit(isBlueprint) || isCreating}>
               {isCreating ? 'Creating...' : isBlueprint ? 'Create Tasks' : 'Create Task'}
             </Button>
           </DialogFooter>

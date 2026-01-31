@@ -10,6 +10,7 @@ export interface CreateTaskFormState {
   priority: TaskPriority;
   project: string;
   sprint: string;
+  agent: string; // "auto" | agent type slug | "" (empty = auto)
   categoryFilter: string;
   showHelp: boolean;
   showNewProject: boolean;
@@ -25,6 +26,7 @@ type CreateTaskFormAction =
   | { type: 'SET_PRIORITY'; payload: TaskPriority }
   | { type: 'SET_PROJECT'; payload: string }
   | { type: 'SET_SPRINT'; payload: string }
+  | { type: 'SET_AGENT'; payload: string }
   | { type: 'SET_CATEGORY_FILTER'; payload: string }
   | { type: 'TOGGLE_HELP' }
   | { type: 'SHOW_NEW_PROJECT' }
@@ -42,6 +44,7 @@ const initialState: CreateTaskFormState = {
   priority: 'medium',
   project: '',
   sprint: '',
+  agent: 'auto',
   categoryFilter: 'all',
   showHelp: false,
   showNewProject: false,
@@ -67,6 +70,8 @@ function createTaskFormReducer(
       return { ...state, project: action.payload, showNewProject: false };
     case 'SET_SPRINT':
       return { ...state, sprint: action.payload };
+    case 'SET_AGENT':
+      return { ...state, agent: action.payload };
     case 'SET_CATEGORY_FILTER':
       return { ...state, categoryFilter: action.payload };
     case 'TOGGLE_HELP':
@@ -97,6 +102,7 @@ export interface UseCreateTaskFormReturn {
   setPriority: (priority: TaskPriority) => void;
   setProject: (project: string) => void;
   setSprint: (sprint: string) => void;
+  setAgent: (agent: string) => void;
   setCategoryFilter: (category: string) => void;
   setNewProjectName: (name: string) => void;
   // Actions
@@ -111,21 +117,21 @@ export interface UseCreateTaskFormReturn {
 
 /**
  * Hook for managing CreateTaskDialog form state with useReducer.
- * 
+ *
  * Replaces 11 separate useState calls with a single, cohesive state machine.
  * Benefits:
  * - Single source of truth for form state
  * - Predictable state transitions
  * - Easier to test and debug
  * - Related state updates happen atomically
- * 
+ *
  * @example
  * ```tsx
  * const { state, setTitle, setPriority, applyTemplate, reset } = useCreateTaskForm();
- * 
+ *
  * // Apply template defaults
  * applyTemplate({ type: 'bug', priority: 'high' });
- * 
+ *
  * // Check if form can submit
  * if (canSubmit(isBlueprint)) handleSubmit();
  * ```
@@ -156,6 +162,10 @@ export function useCreateTaskForm(): UseCreateTaskFormReturn {
 
   const setSprint = useCallback((sprint: string) => {
     dispatch({ type: 'SET_SPRINT', payload: sprint });
+  }, []);
+
+  const setAgent = useCallback((agent: string) => {
+    dispatch({ type: 'SET_AGENT', payload: agent });
   }, []);
 
   const setCategoryFilter = useCallback((category: string) => {
@@ -201,6 +211,7 @@ export function useCreateTaskForm(): UseCreateTaskFormReturn {
       setPriority,
       setProject,
       setSprint,
+      setAgent,
       setCategoryFilter,
       setNewProjectName,
       toggleHelp,
@@ -218,6 +229,7 @@ export function useCreateTaskForm(): UseCreateTaskFormReturn {
       setPriority,
       setProject,
       setSprint,
+      setAgent,
       setCategoryFilter,
       setNewProjectName,
       toggleHelp,

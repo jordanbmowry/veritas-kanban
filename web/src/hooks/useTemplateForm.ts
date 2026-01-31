@@ -106,7 +106,8 @@ export function useTemplateForm() {
     project: string,
     sprint: string,
     type: string,
-    priority: string
+    priority: string,
+    agent?: string
   ) => {
     // Build variable context
     const context: VariableContext = {
@@ -139,6 +140,7 @@ export function useTemplateForm() {
         priority: priority as TaskPriority,
         project: project.trim() || undefined,
         sprint: sprint.trim() || undefined,
+        agent: agent && agent !== 'auto' ? agent : undefined,
         subtasks: interpolatedSubtasks.length > 0 ? interpolatedSubtasks : undefined,
       });
     }

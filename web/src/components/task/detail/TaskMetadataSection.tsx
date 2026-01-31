@@ -12,7 +12,9 @@ import {
 import { useTaskTypes, getTypeIcon } from '@/hooks/useTaskTypes';
 import { useProjects } from '@/hooks/useProjects';
 import { useSprints } from '@/hooks/useSprints';
-import type { Task, TaskStatus, TaskPriority } from '@veritas-kanban/shared';
+import { useConfig } from '@/hooks/useConfig';
+import { Bot } from 'lucide-react';
+import type { Task, TaskStatus, TaskPriority, AgentType } from '@veritas-kanban/shared';
 
 interface TaskMetadataSectionProps {
   task: Task;
@@ -21,10 +23,10 @@ interface TaskMetadataSectionProps {
 }
 
 const statusLabels: Record<TaskStatus, string> = {
-  'todo': 'To Do',
+  todo: 'To Do',
   'in-progress': 'In Progress',
-  'blocked': 'Blocked',
-  'done': 'Done',
+  blocked: 'Blocked',
+  done: 'Done',
 };
 
 const priorityLabels: Record<TaskPriority, string> = {
@@ -33,15 +35,21 @@ const priorityLabels: Record<TaskPriority, string> = {
   high: 'High',
 };
 
-export function TaskMetadataSection({ task, onUpdate, readOnly = false }: TaskMetadataSectionProps) {
+export function TaskMetadataSection({
+  task,
+  onUpdate,
+  readOnly = false,
+}: TaskMetadataSectionProps) {
   const { data: taskTypes = [] } = useTaskTypes();
   const { data: projects = [] } = useProjects();
   const { data: sprints = [] } = useSprints();
+  const { data: config } = useConfig();
+  const enabledAgents = config?.agents.filter((a) => a.enabled) || [];
   const [showNewProject, setShowNewProject] = useState(false);
   const [newProjectName, setNewProjectName] = useState('');
 
   // Get current type info
-  const currentType = taskTypes.find(t => t.id === task.type);
+  const currentType = taskTypes.find((t) => t.id === task.type);
   const typeLabel = currentType ? currentType.label : task.type;
 
   return (
@@ -55,16 +63,15 @@ export function TaskMetadataSection({ task, onUpdate, readOnly = false }: TaskMe
               {statusLabels[task.status]}
             </div>
           ) : (
-            <Select
-              value={task.status}
-              onValueChange={(v) => onUpdate('status', v as TaskStatus)}
-            >
+            <Select value={task.status} onValueChange={(v) => onUpdate('status', v as TaskStatus)}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 {Object.entries(statusLabels).map(([value, label]) => (
-                  <SelectItem key={value} value={value}>{label}</SelectItem>
+                  <SelectItem key={value} value={value}>
+                    {label}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -74,14 +81,9 @@ export function TaskMetadataSection({ task, onUpdate, readOnly = false }: TaskMe
         <div className="space-y-2">
           <Label className="text-muted-foreground">Type</Label>
           {readOnly ? (
-            <div className="text-sm font-medium px-3 py-2 bg-muted/30 rounded-md">
-              {typeLabel}
-            </div>
+            <div className="text-sm font-medium px-3 py-2 bg-muted/30 rounded-md">{typeLabel}</div>
           ) : (
-            <Select
-              value={task.type}
-              onValueChange={(v) => onUpdate('type', v)}
-            >
+            <Select value={task.type} onValueChange={(v) => onUpdate('type', v)}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
@@ -118,7 +120,9 @@ export function TaskMetadataSection({ task, onUpdate, readOnly = false }: TaskMe
               </SelectTrigger>
               <SelectContent>
                 {Object.entries(priorityLabels).map(([value, label]) => (
-                  <SelectItem key={value} value={value}>{label}</SelectItem>
+                  <SelectItem key={value} value={value}>
+                    {label}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -131,11 +135,11 @@ export function TaskMetadataSection({ task, onUpdate, readOnly = false }: TaskMe
         <Label className="text-muted-foreground">Project</Label>
         {readOnly ? (
           <div className="text-sm font-medium px-3 py-2 bg-muted/30 rounded-md">
-            {(projects.find(p => p.id === task.project)?.label) || task.project || 'No project'}
+            {projects.find((p) => p.id === task.project)?.label || task.project || 'No project'}
           </div>
         ) : !showNewProject ? (
-          <Select 
-            value={task.project || '__none__'} 
+          <Select
+            value={task.project || '__none__'}
             onValueChange={(value) => {
               if (value === '__new__') {
                 setShowNewProject(true);
@@ -208,29 +212,68 @@ export function TaskMetadataSection({ task, onUpdate, readOnly = false }: TaskMe
         )}
       </div>
 
-      {/* Sprint */}
-      <div className="space-y-2">
-        <Label className="text-muted-foreground">Sprint</Label>
-        {readOnly ? (
-          <div className="text-sm font-medium px-3 py-2 bg-muted/30 rounded-md">
-            {(sprints.find(s => s.id === task.sprint)?.label) || task.sprint || 'No sprint'}
-          </div>
-        ) : (
-          <Select
-            value={task.sprint || '__none__'}
-            onValueChange={(value) => onUpdate('sprint', value === '__none__' ? undefined : value)}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="No sprint" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="__none__">No Sprint</SelectItem>
-              {sprints.map(s => (
-                <SelectItem key={s.id} value={s.id}>{s.label}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        )}
+      {/* Sprint & Agent */}
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label className="text-muted-foreground">Sprint</Label>
+          {readOnly ? (
+            <div className="text-sm font-medium px-3 py-2 bg-muted/30 rounded-md">
+              {sprints.find((s) => s.id === task.sprint)?.label || task.sprint || 'No sprint'}
+            </div>
+          ) : (
+            <Select
+              value={task.sprint || '__none__'}
+              onValueChange={(value) =>
+                onUpdate('sprint', value === '__none__' ? undefined : value)
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="No sprint" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__none__">No Sprint</SelectItem>
+                {sprints.map((s) => (
+                  <SelectItem key={s.id} value={s.id}>
+                    {s.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <Label className="text-muted-foreground flex items-center gap-1.5">
+            <Bot className="h-3.5 w-3.5" />
+            Agent
+          </Label>
+          {readOnly ? (
+            <div className="text-sm font-medium px-3 py-2 bg-muted/30 rounded-md">
+              {task.agent === 'auto' || !task.agent
+                ? 'Auto (routing)'
+                : enabledAgents.find((a) => a.type === task.agent)?.name || task.agent}
+            </div>
+          ) : (
+            <Select
+              value={task.agent || 'auto'}
+              onValueChange={(value) =>
+                onUpdate('agent', value === 'auto' ? undefined : (value as AgentType))
+              }
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="auto">Auto (routing)</SelectItem>
+                {enabledAgents.map((a) => (
+                  <SelectItem key={a.type} value={a.type}>
+                    {a.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+        </div>
       </div>
     </div>
   );

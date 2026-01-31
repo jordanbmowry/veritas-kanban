@@ -26,6 +26,7 @@ const createTaskSchema = z.object({
   priority: z.enum(['low', 'medium', 'high']).optional().default('medium'),
   project: z.string().optional(),
   sprint: z.string().optional(),
+  agent: z.string().max(50).optional(), // "auto" | agent type slug
 });
 
 const gitSchema = z
@@ -103,6 +104,7 @@ const updateTaskSchema = z.object({
   priority: z.enum(['low', 'medium', 'high']).optional(),
   project: z.string().optional(),
   sprint: z.string().optional(),
+  agent: z.string().max(50).optional(),
   git: gitSchema,
   attempt: attemptSchema,
   reviewComments: z.array(reviewCommentSchema).optional(),

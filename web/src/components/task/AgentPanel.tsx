@@ -113,7 +113,11 @@ export function AgentPanel({ task }: AgentPanelProps) {
     startAgent.mutate(
       {
         taskId: task.id,
-        agent: selectedAgent || routingResult?.agent || defaultAgent,
+        agent:
+          selectedAgent ||
+          (task.agent && task.agent !== 'auto' ? task.agent : undefined) ||
+          routingResult?.agent ||
+          defaultAgent,
       },
       {
         onSuccess: () => {
@@ -197,7 +201,12 @@ export function AgentPanel({ task }: AgentPanelProps) {
                   </span>
                 )}
                 <Select
-                  value={selectedAgent || routingResult?.agent || defaultAgent}
+                  value={
+                    selectedAgent ||
+                    (task.agent && task.agent !== 'auto' ? task.agent : undefined) ||
+                    routingResult?.agent ||
+                    defaultAgent
+                  }
                   onValueChange={(v) => setSelectedAgent(v as AgentType)}
                 >
                   <SelectTrigger className="w-[180px] h-8">
