@@ -27,15 +27,8 @@ router.get(
 router.post(
   '/:id/time/start',
   asyncHandler(async (req, res) => {
-    const { task, stoppedTaskId } = await taskService.startTimer(req.params.id as string);
-
-    // Broadcast WS event for the auto-stopped task (if any) so other clients refresh
-    if (stoppedTaskId) {
-      broadcastTaskChange('updated', stoppedTaskId);
-    }
-    // Broadcast WS event for the started task
+    const task = await taskService.startTimer(req.params.id as string);
     broadcastTaskChange('updated', task.id);
-
     res.json(task);
   })
 );

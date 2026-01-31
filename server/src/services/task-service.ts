@@ -681,45 +681,18 @@ export class TaskService {
   // ============ Time Tracking Methods ============
 
   /**
-   * Find the task that currently has a running timer (if any).
-   */
-  async getRunningTimerTask(): Promise<Task | null> {
-    await this.initCache();
-    for (const task of this.cache.values()) {
-      if (task.timeTracking?.isRunning) {
-        return task;
-      }
-    }
-    return null;
-  }
-
-  /**
    * Start a timer for a task.
-   * Enforces global exclusivity: only one timer may run at a time.
-   * If another task has a running timer, it is auto-stopped first.
-   * Returns { task, stoppedTaskId? } so the caller can broadcast both.
+   * Per-task exclusivity: only one timer per task (but multiple tasks can
+   * each have their own running timer — supports multi-agent workflows).
    */
-  async startTimer(taskId: string): Promise<{ task: Task; stoppedTaskId?: string }> {
+  async startTimer(taskId: string): Promise<Task> {
     const task = await this.getTask(taskId);
     if (!task) {
       throw new NotFoundError('Task not found');
     }
 
-    // Check if timer is already running on THIS task
     if (task.timeTracking?.isRunning) {
       throw new ConflictError('Timer is already running for this task');
-    }
-
-    // Global exclusivity: stop any other running timer first
-    let stoppedTaskId: string | undefined;
-    const runningTask = await this.getRunningTimerTask();
-    if (runningTask && runningTask.id !== taskId) {
-      await this.stopTimer(runningTask.id);
-      stoppedTaskId = runningTask.id;
-      log.info(
-        { stoppedTaskId, startedTaskId: taskId },
-        'Auto-stopped timer for global exclusivity'
-      );
     }
 
     const entryId = `time_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
@@ -737,8 +710,7 @@ export class TaskService {
       activeEntryId: entryId,
     };
 
-    const updated = (await this.updateTask(taskId, { timeTracking })) as Task;
-    return { task: updated, stoppedTaskId };
+    return (await this.updateTask(taskId, { timeTracking })) as Task;
   }
 
   /**

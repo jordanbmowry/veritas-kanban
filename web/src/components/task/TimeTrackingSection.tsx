@@ -103,9 +103,6 @@ export function TimeTrackingSection({ task }: TimeTrackingSectionProps) {
   const entries = timeTracking?.entries ?? [];
   const activeEntry = entries.find((e) => e.id === timeTracking?.activeEntryId);
 
-  // Global exclusivity: is another task's timer running?
-  const otherRunningTask = allTasks?.find((t) => t.id !== task.id && t.timeTracking?.isRunning);
-
   // ── Handlers ──
 
   const handleStartStop = async () => {
@@ -218,13 +215,8 @@ export function TimeTrackingSection({ task }: TimeTrackingSectionProps) {
                   </>
                 )}
               </Button>
-            ) : otherRunningTask ? (
-              /* Another task has the active timer — Start is blocked */
-              <span className="text-xs text-muted-foreground italic">
-                Timer active on another task
-              </span>
             ) : (
-              /* No timer running anywhere — show Start */
+              /* Timer not running on this task — show Start */
               <Button variant="default" size="sm" onClick={handleStartStop} disabled={busy}>
                 {busy ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
