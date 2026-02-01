@@ -8,6 +8,7 @@ import type { CreateTaskInput, UpdateTaskInput, Task, TaskSummary } from '@verit
 import { broadcastTaskChange } from '../services/broadcast-service.js';
 import { asyncHandler } from '../middleware/async-handler.js';
 import { NotFoundError, ValidationError } from '../middleware/error-handler.js';
+import { sendPaginated } from '../middleware/response-envelope.js';
 import { setLastModified } from '../middleware/cache-control.js';
 import { sanitizeTaskFields } from '../utils/sanitize.js';
 import { auditLog } from '../services/audit-service.js';
@@ -313,10 +314,7 @@ router.get(
         res.set('Link', links.join(', '));
       }
 
-      res.json({
-        data: result,
-        pagination: { page, limit, total, totalPages },
-      });
+      sendPaginated(res, result, { page, limit, total });
     } else {
       // Backward-compatible flat array response
       res.json(result);

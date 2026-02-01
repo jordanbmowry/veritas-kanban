@@ -11,7 +11,7 @@ export function registerTaskCommands(program: Command): void {
     .command('list')
     .alias('ls')
     .description('List tasks')
-    .option('-s, --status <status>', 'Filter by status (todo, in-progress, review, done)')
+    .option('-s, --status <status>', 'Filter by status (todo, in-progress, blocked, done)')
     .option('-t, --type <type>', 'Filter by type (code, research, content, automation)')
     .option('-p, --project <project>', 'Filter by project')
     .option('-v, --verbose', 'Show more details')
@@ -19,24 +19,24 @@ export function registerTaskCommands(program: Command): void {
     .action(async (options) => {
       try {
         const tasks = await api<Task[]>('/api/tasks');
-        
+
         let filtered = tasks;
         if (options.status) {
-          filtered = filtered.filter(t => t.status === options.status);
+          filtered = filtered.filter((t) => t.status === options.status);
         }
         if (options.type) {
-          filtered = filtered.filter(t => t.type === options.type);
+          filtered = filtered.filter((t) => t.type === options.type);
         }
         if (options.project) {
-          filtered = filtered.filter(t => t.project === options.project);
+          filtered = filtered.filter((t) => t.project === options.project);
         }
-        
+
         if (options.json) {
           console.log(formatTasksJson(filtered));
         } else if (filtered.length === 0) {
           console.log(chalk.dim('No tasks found'));
         } else {
-          filtered.forEach(task => console.log(formatTask(task, options.verbose)));
+          filtered.forEach((task) => console.log(formatTask(task, options.verbose)));
         }
       } catch (err) {
         console.error(chalk.red(`Error: ${(err as Error).message}`));
@@ -52,12 +52,12 @@ export function registerTaskCommands(program: Command): void {
     .action(async (id, options) => {
       try {
         const task = await findTask(id);
-        
+
         if (!task) {
           console.error(chalk.red(`Task not found: ${id}`));
           process.exit(1);
         }
-        
+
         if (options.json) {
           console.log(formatTaskJson(task));
         } else {
@@ -101,7 +101,7 @@ export function registerTaskCommands(program: Command): void {
             priority: options.priority,
           }),
         });
-        
+
         if (options.json) {
           console.log(formatTaskJson(task));
         } else {
@@ -127,29 +127,29 @@ export function registerTaskCommands(program: Command): void {
     .action(async (id, options) => {
       try {
         const existing = await findTask(id);
-        
+
         if (!existing) {
           console.error(chalk.red(`Task not found: ${id}`));
           process.exit(1);
         }
-        
+
         const updates: Record<string, unknown> = {};
         if (options.status) updates.status = options.status;
         if (options.type) updates.type = options.type;
         if (options.project) updates.project = options.project;
         if (options.priority) updates.priority = options.priority;
         if (options.title) updates.title = options.title;
-        
+
         if (Object.keys(updates).length === 0) {
           console.error(chalk.yellow('No updates specified'));
           process.exit(1);
         }
-        
+
         const task = await api<Task>(`/api/tasks/${existing.id}`, {
           method: 'PATCH',
           body: JSON.stringify(updates),
         });
-        
+
         if (options.json) {
           console.log(formatTaskJson(task));
         } else {
@@ -170,14 +170,14 @@ export function registerTaskCommands(program: Command): void {
     .action(async (id, options) => {
       try {
         const task = await findTask(id);
-        
+
         if (!task) {
           console.error(chalk.red(`Task not found: ${id}`));
           process.exit(1);
         }
-        
+
         await api(`/api/tasks/${task.id}/archive`, { method: 'POST' });
-        
+
         if (options.json) {
           console.log(JSON.stringify({ archived: true }));
         } else {
@@ -197,14 +197,14 @@ export function registerTaskCommands(program: Command): void {
     .action(async (id, options) => {
       try {
         const task = await findTask(id);
-        
+
         if (!task) {
           console.error(chalk.red(`Task not found: ${id}`));
           process.exit(1);
         }
-        
+
         await api(`/api/tasks/${task.id}`, { method: 'DELETE' });
-        
+
         if (options.json) {
           console.log(JSON.stringify({ deleted: true }));
         } else {

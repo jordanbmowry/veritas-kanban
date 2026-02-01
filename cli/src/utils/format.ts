@@ -3,41 +3,43 @@ import type { Task } from './types.js';
 
 export function formatTask(task: Task, verbose = false): string {
   const statusColors: Record<string, (s: string) => string> = {
-    'todo': chalk.gray,
+    todo: chalk.gray,
     'in-progress': chalk.yellow,
-    'review': chalk.blue,
-    'done': chalk.green,
+    blocked: chalk.red,
+    done: chalk.green,
   };
-  
+
   const priorityColors: Record<string, (s: string) => string> = {
-    'low': chalk.dim,
-    'medium': chalk.white,
-    'high': chalk.red,
+    low: chalk.dim,
+    medium: chalk.white,
+    high: chalk.red,
   };
-  
+
   const typeIcons: Record<string, string> = {
-    'code': '💻',
-    'research': '🔍',
-    'content': '📝',
-    'automation': '⚡',
+    code: '💻',
+    research: '🔍',
+    content: '📝',
+    automation: '⚡',
   };
-  
+
   const statusColor = statusColors[task.status] || chalk.white;
   const priorityColor = priorityColors[task.priority] || chalk.white;
-  
+
   let line = `${typeIcons[task.type] || '•'} ${chalk.cyan(task.id.slice(-8))} `;
   line += statusColor(`[${task.status}]`) + ' ';
   line += priorityColor(`(${task.priority})`) + ' ';
   line += chalk.bold(task.title);
-  
+
   if (task.project) {
     line += chalk.dim(` #${task.project}`);
   }
-  
+
   if (verbose) {
     line += '\n';
     if (task.description) {
-      line += chalk.dim(`   ${task.description.slice(0, 80)}${task.description.length > 80 ? '...' : ''}\n`);
+      line += chalk.dim(
+        `   ${task.description.slice(0, 80)}${task.description.length > 80 ? '...' : ''}\n`
+      );
     }
     if (task.git?.branch) {
       line += chalk.dim(`   🌿 ${task.git.branch}\n`);
@@ -47,15 +49,15 @@ export function formatTask(task: Task, verbose = false): string {
     }
     if (task.review?.decision) {
       const decisionColors: Record<string, (s: string) => string> = {
-        'approved': chalk.green,
+        approved: chalk.green,
         'changes-requested': chalk.yellow,
-        'rejected': chalk.red,
+        rejected: chalk.red,
       };
       const color = decisionColors[task.review.decision] || chalk.white;
       line += color(`   ✓ ${task.review.decision}\n`);
     }
   }
-  
+
   return line;
 }
 

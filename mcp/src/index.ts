@@ -56,19 +56,19 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
   try {
     // Route to appropriate handler
-    if (taskTools.some(t => t.name === name)) {
+    if (taskTools.some((t) => t.name === name)) {
       return await handleTaskTool(name, args);
     }
-    if (agentTools.some(t => t.name === name)) {
+    if (agentTools.some((t) => t.name === name)) {
       return await handleAgentTool(name, args);
     }
-    if (automationTools.some(t => t.name === name)) {
+    if (automationTools.some((t) => t.name === name)) {
       return await handleAutomationTool(name, args);
     }
-    if (notificationTools.some(t => t.name === name)) {
+    if (notificationTools.some((t) => t.name === name)) {
       return await handleNotificationTool(name, args);
     }
-    if (summaryTools.some(t => t.name === name)) {
+    if (summaryTools.some((t) => t.name === name)) {
       return await handleSummaryTool(name, args);
     }
 
@@ -107,7 +107,7 @@ server.setRequestHandler(ListResourcesRequestSchema, async () => {
         description: 'Tasks that are in-progress or in review',
         mimeType: 'application/json',
       },
-      ...tasks.map(task => ({
+      ...tasks.map((task) => ({
         uri: `kanban://task/${task.id}`,
         name: task.title,
         description: `${task.type} task - ${task.status} - ${task.project || 'no project'}`,
@@ -136,7 +136,7 @@ server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
 
   if (uri === 'kanban://tasks/active') {
     const tasks = await api<Task[]>('/api/tasks');
-    const active = tasks.filter(t => t.status === 'in-progress' || t.status === 'review');
+    const active = tasks.filter((t) => t.status === 'in-progress' || t.status === 'blocked');
     return {
       contents: [
         {

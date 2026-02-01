@@ -5,10 +5,10 @@ import { getAttachmentService } from '../services/attachment-service.js';
 import type { FeatureSettings } from '@veritas-kanban/shared';
 import { FeatureSettingsPatchSchema } from '../schemas/feature-settings-schema.js';
 import { strictRateLimit } from '../middleware/rate-limit.js';
+import { asyncHandler } from '../middleware/async-handler.js';
+import { ValidationError } from '../middleware/error-handler.js';
 import { auditLog } from '../services/audit-service.js';
 import type { AuthenticatedRequest } from '../middleware/auth.js';
-import { createLogger } from '../lib/logger.js';
-const log = createLogger('settings');
 
 const router: RouterType = Router();
 const configService = new ConfigService();
@@ -36,32 +36,32 @@ export function syncSettingsToServices(settings: FeatureSettings): void {
 }
 
 // GET /api/settings/features — returns full feature settings with defaults merged
-router.get('/features', async (_req, res) => {
-  try {
+router.get(
+  '/features',
+  asyncHandler(async (_req, res) => {
     const features = await configService.getFeatureSettings();
     res.json(features);
-  } catch (error) {
-    log.error({ err: error }, 'Error getting feature settings');
-    res.status(500).json({ error: 'Failed to get feature settings' });
-  }
-});
+  })
+);
 
 // PATCH /api/settings/features — deep merge partial updates
 // strictRateLimit middleware: 10 req/min per IP
-router.patch('/features', strictRateLimit, async (req, res) => {
-  try {
+router.patch(
+  '/features',
+  strictRateLimit,
+  asyncHandler(async (req, res) => {
     // Validate with Zod — strips unknown keys, rejects dangerous ones
     const parseResult = FeatureSettingsPatchSchema.safeParse(req.body);
     if (!parseResult.success) {
-      return res.status(400).json({
-        error: 'Invalid settings payload',
-        details: parseResult.error.issues.map((i) => i.message),
-      });
+      throw new ValidationError(
+        'Invalid settings payload',
+        parseResult.error.issues.map((i) => i.message)
+      );
     }
     const patch = parseResult.data;
 
     if (Object.keys(patch).length === 0) {
-      return res.status(400).json({ error: 'No valid settings provided' });
+      throw new ValidationError('No valid settings provided');
     }
 
     const updated = await configService.updateFeatureSettings(patch);
@@ -77,10 +77,7 @@ router.patch('/features', strictRateLimit, async (req, res) => {
     });
 
     res.json(updated);
-  } catch (error) {
-    log.error({ err: error }, 'Error updating feature settings');
-    res.status(500).json({ error: 'Failed to update feature settings' });
-  }
-});
+  })
+);
 
 export { router as settingsRoutes };

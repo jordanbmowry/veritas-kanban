@@ -1,8 +1,8 @@
 import { Router, type Router as RouterType } from 'express';
 import { z } from 'zod';
 import { TemplateService } from '../services/template-service.js';
-import { createLogger } from '../lib/logger.js';
-const log = createLogger('templates');
+import { asyncHandler } from '../middleware/async-handler.js';
+import { NotFoundError, ValidationError } from '../middleware/error-handler.js';
 
 const router: RouterType = Router();
 const templateService = new TemplateService();
@@ -60,75 +60,75 @@ const updateTemplateSchema = z.object({
 });
 
 // GET /api/templates - List all templates
-router.get('/', async (_req, res) => {
-  try {
+router.get(
+  '/',
+  asyncHandler(async (_req, res) => {
     const templates = await templateService.getTemplates();
     res.json(templates);
-  } catch (error) {
-    log.error({ err: error }, 'Error listing templates');
-    res.status(500).json({ error: 'Failed to list templates' });
-  }
-});
+  })
+);
 
 // GET /api/templates/:id - Get single template
-router.get('/:id', async (req, res) => {
-  try {
-    const template = await templateService.getTemplate(req.params.id);
+router.get(
+  '/:id',
+  asyncHandler(async (req, res) => {
+    const template = await templateService.getTemplate(req.params.id as string);
     if (!template) {
-      return res.status(404).json({ error: 'Template not found' });
+      throw new NotFoundError('Template not found');
     }
     res.json(template);
-  } catch (error) {
-    log.error({ err: error }, 'Error getting template');
-    res.status(500).json({ error: 'Failed to get template' });
-  }
-});
+  })
+);
 
 // POST /api/templates - Create template
-router.post('/', async (req, res) => {
-  try {
-    const input = createTemplateSchema.parse(req.body);
+router.post(
+  '/',
+  asyncHandler(async (req, res) => {
+    let input;
+    try {
+      input = createTemplateSchema.parse(req.body);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        throw new ValidationError('Validation failed', error.errors);
+      }
+      throw error;
+    }
     const template = await templateService.createTemplate(input);
     res.status(201).json(template);
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return res.status(400).json({ error: 'Validation failed', details: error.errors });
-    }
-    log.error({ err: error }, 'Error creating template');
-    res.status(500).json({ error: 'Failed to create template' });
-  }
-});
+  })
+);
 
 // PATCH /api/templates/:id - Update template
-router.patch('/:id', async (req, res) => {
-  try {
-    const input = updateTemplateSchema.parse(req.body);
-    const template = await templateService.updateTemplate(req.params.id, input);
+router.patch(
+  '/:id',
+  asyncHandler(async (req, res) => {
+    let input;
+    try {
+      input = updateTemplateSchema.parse(req.body);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        throw new ValidationError('Validation failed', error.errors);
+      }
+      throw error;
+    }
+    const template = await templateService.updateTemplate(req.params.id as string, input);
     if (!template) {
-      return res.status(404).json({ error: 'Template not found' });
+      throw new NotFoundError('Template not found');
     }
     res.json(template);
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return res.status(400).json({ error: 'Validation failed', details: error.errors });
-    }
-    log.error({ err: error }, 'Error updating template');
-    res.status(500).json({ error: 'Failed to update template' });
-  }
-});
+  })
+);
 
 // DELETE /api/templates/:id - Delete template
-router.delete('/:id', async (req, res) => {
-  try {
-    const deleted = await templateService.deleteTemplate(req.params.id);
+router.delete(
+  '/:id',
+  asyncHandler(async (req, res) => {
+    const deleted = await templateService.deleteTemplate(req.params.id as string);
     if (!deleted) {
-      return res.status(404).json({ error: 'Template not found' });
+      throw new NotFoundError('Template not found');
     }
     res.status(204).send();
-  } catch (error) {
-    log.error({ err: error }, 'Error deleting template');
-    res.status(500).json({ error: 'Failed to delete template' });
-  }
-});
+  })
+);
 
 export default router;

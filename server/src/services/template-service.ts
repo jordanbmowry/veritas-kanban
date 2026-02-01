@@ -1,5 +1,5 @@
 import { readdir, readFile, writeFile, unlink, mkdir } from 'fs/promises';
-import { existsSync } from 'fs';
+import { fileExists } from '../storage/fs-helpers.js';
 import { join } from 'path';
 import matter from 'gray-matter';
 import type {
@@ -19,9 +19,7 @@ export class TemplateService {
   }
 
   private async ensureDir() {
-    if (!existsSync(this.templatesDir)) {
-      await mkdir(this.templatesDir, { recursive: true });
-    }
+    await mkdir(this.templatesDir, { recursive: true });
   }
 
   private slugify(name: string): string {
@@ -95,7 +93,7 @@ export class TemplateService {
   async getTemplate(id: string): Promise<TaskTemplate | null> {
     const path = this.templatePath(id);
 
-    if (!existsSync(path)) {
+    if (!(await fileExists(path))) {
       return null;
     }
 
@@ -162,7 +160,7 @@ export class TemplateService {
   async deleteTemplate(id: string): Promise<boolean> {
     const path = this.templatePath(id);
 
-    if (!existsSync(path)) {
+    if (!(await fileExists(path))) {
       return false;
     }
 

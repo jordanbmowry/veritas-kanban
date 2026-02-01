@@ -6,8 +6,8 @@ import { getTaskService } from '../services/task-service.js';
 import { getAttachmentService } from '../services/attachment-service.js';
 import { getTextExtractionService } from '../services/text-extraction-service.js';
 import type { Attachment } from '@veritas-kanban/shared';
-import { createLogger } from '../lib/logger.js';
-const log = createLogger('attachments');
+import { asyncHandler } from '../middleware/async-handler.js';
+import { NotFoundError, ValidationError, BadRequestError } from '../middleware/error-handler.js';
 
 const router: RouterType = Router();
 const taskService = getTaskService();
@@ -26,19 +26,21 @@ const upload = multer({
  * POST /api/tasks/:id/attachments
  * Upload one or more files
  */
-router.post('/:id/attachments', upload.array('files', 20), async (req: Request, res: Response) => {
-  try {
+router.post(
+  '/:id/attachments',
+  upload.array('files', 20),
+  asyncHandler(async (req: Request, res: Response) => {
     const taskId = req.params.id as string;
     const files = req.files as Express.Multer.File[];
 
     if (!files || files.length === 0) {
-      return res.status(400).json({ error: 'No files provided' });
+      throw new ValidationError('No files provided');
     }
 
     // Get current task
     const task = await taskService.getTask(taskId);
     if (!task) {
-      return res.status(404).json({ error: 'Task not found' });
+      throw new NotFoundError('Task not found');
     }
 
     const currentAttachments = task.attachments || [];
@@ -69,7 +71,6 @@ router.post('/:id/attachments', upload.array('files', 20), async (req: Request, 
         newAttachments.push(attachment);
       } catch (error) {
         const message = error instanceof Error ? error.message : 'Unknown error';
-        log.error({ err: message }, `Rejected file "${file.originalname}"`);
         rejectedFiles.push({ filename: file.originalname, error: message });
         // Continue with other files
       }
@@ -77,10 +78,7 @@ router.post('/:id/attachments', upload.array('files', 20), async (req: Request, 
 
     // If ALL files were rejected, return 400
     if (newAttachments.length === 0 && rejectedFiles.length > 0) {
-      return res.status(400).json({
-        error: 'All files were rejected',
-        rejected: rejectedFiles,
-      });
+      throw new BadRequestError('All files were rejected', { rejected: rejectedFiles });
     }
 
     // Update task with new attachments
@@ -89,81 +87,74 @@ router.post('/:id/attachments', upload.array('files', 20), async (req: Request, 
     });
 
     res.json({
-      success: true,
       attachments: newAttachments,
       task: updatedTask,
       // Include rejected files info if some were rejected
       ...(rejectedFiles.length > 0 && { rejected: rejectedFiles }),
     });
-  } catch (error) {
-    log.error({ err: error }, 'Upload error');
-    res.status(500).json({ error: 'Failed to upload attachments' });
-  }
-});
+  })
+);
 
 /**
  * GET /api/tasks/:id/attachments
  * List all attachments for a task
  */
-router.get('/:id/attachments', async (req: Request, res: Response) => {
-  try {
+router.get(
+  '/:id/attachments',
+  asyncHandler(async (req: Request, res: Response) => {
     const taskId = req.params.id as string;
 
     const task = await taskService.getTask(taskId);
     if (!task) {
-      return res.status(404).json({ error: 'Task not found' });
+      throw new NotFoundError('Task not found');
     }
 
     res.json(task.attachments || []);
-  } catch (error) {
-    log.error({ err: error }, 'List attachments error');
-    res.status(500).json({ error: 'Failed to list attachments' });
-  }
-});
+  })
+);
 
 /**
  * GET /api/tasks/:id/attachments/:attId
  * Get single attachment metadata
  */
-router.get('/:id/attachments/:attId', async (req: Request, res: Response) => {
-  try {
+router.get(
+  '/:id/attachments/:attId',
+  asyncHandler(async (req: Request, res: Response) => {
     const taskId = req.params.id as string;
     const attId = req.params.attId as string;
 
     const task = await taskService.getTask(taskId);
     if (!task) {
-      return res.status(404).json({ error: 'Task not found' });
+      throw new NotFoundError('Task not found');
     }
 
     const attachment = (task.attachments || []).find((a: Attachment) => a.id === attId);
     if (!attachment) {
-      return res.status(404).json({ error: 'Attachment not found' });
+      throw new NotFoundError('Attachment not found');
     }
 
     res.json(attachment);
-  } catch (error) {
-    log.error({ err: error }, 'Get attachment error');
-    res.status(500).json({ error: 'Failed to get attachment' });
-  }
-});
+  })
+);
 
 /**
  * GET /api/tasks/:id/attachments/:attId/download
  * Download attachment file
  */
-router.get('/:id/attachments/:attId/download', async (req: Request, res: Response) => {
-  try {
+router.get(
+  '/:id/attachments/:attId/download',
+  asyncHandler(async (req: Request, res: Response) => {
     const taskId = req.params.id as string;
     const attId = req.params.attId as string;
 
     const task = await taskService.getTask(taskId);
     if (!task) {
-      return res.status(404).json({ error: 'Task not found' });
+      throw new NotFoundError('Task not found');
     }
 
     const attachment = (task.attachments || []).find((a: Attachment) => a.id === attId);
     if (!attachment) {
-      return res.status(404).json({ error: 'Attachment not found' });
+      throw new NotFoundError('Attachment not found');
     }
 
     const filepath = attachmentService.getAttachmentPath(taskId, attachment.filename);
@@ -174,29 +165,27 @@ router.get('/:id/attachments/:attId/download', async (req: Request, res: Respons
       contentDisposition(attachment.originalName, { type: 'attachment' })
     );
     res.sendFile(filepath);
-  } catch (error) {
-    log.error({ err: error }, 'Download error');
-    res.status(500).json({ error: 'Failed to download attachment' });
-  }
-});
+  })
+);
 
 /**
  * GET /api/tasks/:id/attachments/:attId/text
  * Get extracted text for an attachment
  */
-router.get('/:id/attachments/:attId/text', async (req: Request, res: Response) => {
-  try {
+router.get(
+  '/:id/attachments/:attId/text',
+  asyncHandler(async (req: Request, res: Response) => {
     const taskId = req.params.id as string;
     const attId = req.params.attId as string;
 
     const task = await taskService.getTask(taskId);
     if (!task) {
-      return res.status(404).json({ error: 'Task not found' });
+      throw new NotFoundError('Task not found');
     }
 
     const attachment = (task.attachments || []).find((a: Attachment) => a.id === attId);
     if (!attachment) {
-      return res.status(404).json({ error: 'Attachment not found' });
+      throw new NotFoundError('Attachment not found');
     }
 
     const text = await attachmentService.getExtractedText(taskId, attId);
@@ -206,29 +195,27 @@ router.get('/:id/attachments/:attId/text', async (req: Request, res: Response) =
       text,
       hasText: text !== null,
     });
-  } catch (error) {
-    log.error({ err: error }, 'Get text error');
-    res.status(500).json({ error: 'Failed to get extracted text' });
-  }
-});
+  })
+);
 
 /**
  * DELETE /api/tasks/:id/attachments/:attId
  * Delete an attachment
  */
-router.delete('/:id/attachments/:attId', async (req: Request, res: Response) => {
-  try {
+router.delete(
+  '/:id/attachments/:attId',
+  asyncHandler(async (req: Request, res: Response) => {
     const taskId = req.params.id as string;
     const attId = req.params.attId as string;
 
     const task = await taskService.getTask(taskId);
     if (!task) {
-      return res.status(404).json({ error: 'Task not found' });
+      throw new NotFoundError('Task not found');
     }
 
     const attachment = (task.attachments || []).find((a: Attachment) => a.id === attId);
     if (!attachment) {
-      return res.status(404).json({ error: 'Attachment not found' });
+      throw new NotFoundError('Attachment not found');
     }
 
     // Delete file and extracted text
@@ -240,11 +227,8 @@ router.delete('/:id/attachments/:attId', async (req: Request, res: Response) => 
       attachments: updatedAttachments,
     });
 
-    res.json({ success: true });
-  } catch (error) {
-    log.error({ err: error }, 'Delete attachment error');
-    res.status(500).json({ error: 'Failed to delete attachment' });
-  }
-});
+    res.json({ deleted: true });
+  })
+);
 
 export default router;

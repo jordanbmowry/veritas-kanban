@@ -34,6 +34,30 @@ export class ConflictError extends AppError {
   }
 }
 
+export class UnauthorizedError extends AppError {
+  constructor(message = 'Authentication required') {
+    super(401, message, 'AUTH_REQUIRED');
+  }
+}
+
+export class ForbiddenError extends AppError {
+  constructor(message = 'Insufficient permissions', details?: unknown) {
+    super(403, message, 'FORBIDDEN', details);
+  }
+}
+
+export class BadRequestError extends AppError {
+  constructor(message: string, details?: unknown) {
+    super(400, message, 'BAD_REQUEST', details);
+  }
+}
+
+export class InternalError extends AppError {
+  constructor(message = 'Internal server error') {
+    super(500, message, 'INTERNAL_ERROR');
+  }
+}
+
 // Express error handling middleware (4 args)
 export function errorHandler(err: Error, req: Request, res: Response, _next: NextFunction) {
   const requestId: string | undefined = res.locals.requestId;

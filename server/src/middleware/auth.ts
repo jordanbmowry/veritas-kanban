@@ -304,11 +304,13 @@ export function authenticate(req: AuthenticatedRequest, res: Response, next: Nex
 
   // No valid auth found
   res.status(401).json({
-    error: 'Authentication required',
     code: 'AUTH_REQUIRED',
-    hint: passwordAuthEnabled
-      ? 'Please log in or provide an API key'
-      : 'Provide API key via Authorization header (Bearer <key>), X-API-Key header, or api_key query parameter',
+    message: 'Authentication required',
+    details: {
+      hint: passwordAuthEnabled
+        ? 'Please log in or provide an API key'
+        : 'Provide API key via Authorization header (Bearer <key>), X-API-Key header, or api_key query parameter',
+    },
   });
 }
 
@@ -319,8 +321,8 @@ export function authorize(...allowedRoles: AuthRole[]) {
   return (req: AuthenticatedRequest, res: Response, next: NextFunction): void => {
     if (!req.auth) {
       res.status(401).json({
-        error: 'Authentication required',
         code: 'AUTH_REQUIRED',
+        message: 'Authentication required',
       });
       return;
     }
@@ -332,10 +334,12 @@ export function authorize(...allowedRoles: AuthRole[]) {
 
     if (!allowedRoles.includes(req.auth.role)) {
       res.status(403).json({
-        error: 'Insufficient permissions',
         code: 'FORBIDDEN',
-        required: allowedRoles,
-        current: req.auth.role,
+        message: 'Insufficient permissions',
+        details: {
+          required: allowedRoles,
+          current: req.auth.role,
+        },
       });
       return;
     }
@@ -351,8 +355,8 @@ export function authorize(...allowedRoles: AuthRole[]) {
 export function authorizeWrite(req: AuthenticatedRequest, res: Response, next: NextFunction): void {
   if (!req.auth) {
     res.status(401).json({
-      error: 'Authentication required',
       code: 'AUTH_REQUIRED',
+      message: 'Authentication required',
     });
     return;
   }
@@ -369,9 +373,11 @@ export function authorizeWrite(req: AuthenticatedRequest, res: Response, next: N
   }
 
   res.status(403).json({
-    error: 'Write access denied',
     code: 'WRITE_FORBIDDEN',
-    hint: 'Your API key has read-only access',
+    message: 'Write access denied',
+    details: {
+      hint: 'Your API key has read-only access',
+    },
   });
 }
 

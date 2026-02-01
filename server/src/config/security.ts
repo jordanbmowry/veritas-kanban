@@ -1,4 +1,10 @@
-import fs from 'fs';
+import {
+  existsSync,
+  readFileSync,
+  writeFileSync,
+  mkdirSync,
+  renameSync,
+} from '../storage/fs-helpers.js';
 import path from 'path';
 import crypto from 'crypto';
 import { createLogger } from '../lib/logger.js';
@@ -66,8 +72,8 @@ export function getSecurityConfig(): SecurityConfig {
   }
 
   try {
-    if (fs.existsSync(SECURITY_CONFIG_PATH)) {
-      const data = fs.readFileSync(SECURITY_CONFIG_PATH, 'utf-8');
+    if (existsSync(SECURITY_CONFIG_PATH)) {
+      const data = readFileSync(SECURITY_CONFIG_PATH, 'utf-8');
       cachedConfig = JSON.parse(data);
       lastLoadTime = now;
       return cachedConfig!;
@@ -292,14 +298,14 @@ export function getJwtRotationStatus(): {
 export function saveSecurityConfig(config: SecurityConfig): void {
   try {
     // Ensure data directory exists
-    if (!fs.existsSync(DATA_DIR)) {
-      fs.mkdirSync(DATA_DIR, { recursive: true });
+    if (!existsSync(DATA_DIR)) {
+      mkdirSync(DATA_DIR, { recursive: true });
     }
 
     // Write atomically (write to temp, then rename)
     const tempPath = SECURITY_CONFIG_PATH + '.tmp';
-    fs.writeFileSync(tempPath, JSON.stringify(config, null, 2), 'utf-8');
-    fs.renameSync(tempPath, SECURITY_CONFIG_PATH);
+    writeFileSync(tempPath, JSON.stringify(config, null, 2), 'utf-8');
+    renameSync(tempPath, SECURITY_CONFIG_PATH);
 
     // Update cache
     cachedConfig = config;

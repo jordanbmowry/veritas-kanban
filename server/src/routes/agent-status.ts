@@ -1,7 +1,7 @@
 import { Router, type Router as RouterType } from 'express';
 import { z } from 'zod';
 import type { WebSocketServer, WebSocket } from 'ws';
-import fs from 'fs';
+import { existsSync, readFileSync, writeFileSync, mkdirSync } from '../storage/fs-helpers.js';
 import path from 'path';
 import { asyncHandler } from '../middleware/async-handler.js';
 import { ValidationError } from '../middleware/error-handler.js';
@@ -38,8 +38,8 @@ const STATUS_FILE = path.join(DATA_DIR, 'agent-status.json');
  */
 function loadPersistedStatus(): AgentStatus {
   try {
-    if (fs.existsSync(STATUS_FILE)) {
-      const raw = fs.readFileSync(STATUS_FILE, 'utf-8');
+    if (existsSync(STATUS_FILE)) {
+      const raw = readFileSync(STATUS_FILE, 'utf-8');
       const parsed = JSON.parse(raw) as AgentStatus;
       // Validate it has the expected shape
       if (parsed.status && typeof parsed.subAgentCount === 'number') {
@@ -65,10 +65,10 @@ function loadPersistedStatus(): AgentStatus {
 function persistStatus(status: AgentStatus): void {
   try {
     const dir = path.dirname(STATUS_FILE);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
+    if (!existsSync(dir)) {
+      mkdirSync(dir, { recursive: true });
     }
-    fs.writeFileSync(STATUS_FILE, JSON.stringify(status, null, 2), 'utf-8');
+    writeFileSync(STATUS_FILE, JSON.stringify(status, null, 2), 'utf-8');
   } catch (err) {
     log.warn({ data: err }, '[AgentStatus] Failed to persist status');
   }

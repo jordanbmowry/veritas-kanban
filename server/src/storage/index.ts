@@ -12,8 +12,28 @@
 import type { StorageProvider } from './interfaces.js';
 import { FileStorageProvider, type FileStorageOptions } from './file-storage.js';
 
-export type { TaskRepository, SettingsRepository, StorageProvider } from './interfaces.js';
-export { FileStorageProvider, FileTaskRepository, FileSettingsRepository } from './file-storage.js';
+export type {
+  TaskRepository,
+  SettingsRepository,
+  ActivityRepository,
+  TemplateRepository,
+  StatusHistoryRepository,
+  ManagedListRepository,
+  ManagedListProvider,
+  TelemetryRepository,
+  StorageProvider,
+} from './interfaces.js';
+export {
+  FileStorageProvider,
+  FileTaskRepository,
+  FileSettingsRepository,
+  FileActivityRepository,
+  FileTemplateRepository,
+  FileStatusHistoryRepository,
+  FileManagedListRepository,
+  FileManagedListProvider,
+  FileTelemetryRepository,
+} from './file-storage.js';
 export type { FileStorageOptions } from './file-storage.js';
 
 // ---------------------------------------------------------------------------

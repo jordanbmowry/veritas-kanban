@@ -1,6 +1,7 @@
 import { Router, type Router as RouterType } from 'express';
 import { getMetricsService } from '../services/metrics/index.js';
 import { asyncHandler } from '../middleware/async-handler.js';
+import { ValidationError } from '../middleware/error-handler.js';
 import { validate, type ValidatedRequest } from '../middleware/validate.js';
 import {
   MetricsQuerySchema,
@@ -121,8 +122,7 @@ router.get(
 
     // Validate period
     if (period !== '7d' && period !== '30d') {
-      res.status(400).json({ error: 'Period must be 7d or 30d' });
-      return;
+      throw new ValidationError('Period must be 7d or 30d');
     }
 
     const result = await metrics.getTrends(period, project);

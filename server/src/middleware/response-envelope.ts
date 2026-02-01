@@ -27,9 +27,17 @@ import { Request, Response, NextFunction } from 'express';
  * are not wrapped.
  */
 
+export interface PaginationMeta {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
 interface EnvelopeMeta {
   timestamp: string;
   requestId?: string;
+  pagination?: PaginationMeta;
 }
 
 interface SuccessEnvelope<T = unknown> {
@@ -110,6 +118,12 @@ export function responseEnvelopeMiddleware(_req: Request, res: Response, next: N
       meta.requestId = requestId;
     }
 
+    // Include pagination metadata if set by sendPaginated()
+    const pagination: PaginationMeta | undefined = res.locals.pagination;
+    if (pagination) {
+      meta.pagination = pagination;
+    }
+
     const statusCode = res.statusCode;
 
     if (statusCode < 400) {
@@ -132,4 +146,32 @@ export function responseEnvelopeMiddleware(_req: Request, res: Response, next: N
   };
 
   next();
+}
+
+/**
+ * Helper to send a paginated response with proper envelope metadata.
+ *
+ * Sets pagination info on res.locals so the envelope middleware
+ * can include it in the `meta` field. Then sends the items as `data`.
+ *
+ * Usage:
+ *   sendPaginated(res, items, { page: 1, limit: 50, total: 120 });
+ */
+export function sendPaginated<T>(
+  res: Response,
+  items: T[],
+  opts: { page: number; limit: number; total: number }
+): void {
+  const totalPages = Math.ceil(opts.total / opts.limit);
+
+  const pagination: PaginationMeta = {
+    page: opts.page,
+    limit: opts.limit,
+    total: opts.total,
+    totalPages,
+  };
+
+  // Store on res.locals so the envelope middleware picks it up
+  res.locals.pagination = pagination;
+  res.json(items);
 }

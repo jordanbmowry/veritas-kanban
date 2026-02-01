@@ -1,5 +1,5 @@
 import { readFile, writeFile, mkdir } from 'fs/promises';
-import { existsSync } from 'fs';
+import { fileExists } from '../storage/fs-helpers.js';
 import { join } from 'path';
 import { nanoid } from 'nanoid';
 import type { ManagedListItem } from '@veritas-kanban/shared';
@@ -31,11 +31,9 @@ export class ManagedListService<T extends ManagedListItem> {
   async init(): Promise<void> {
     const configDir = this.filePath.substring(0, this.filePath.lastIndexOf('/'));
 
-    if (!existsSync(configDir)) {
-      await mkdir(configDir, { recursive: true });
-    }
+    await mkdir(configDir, { recursive: true });
 
-    if (!existsSync(this.filePath)) {
+    if (!(await fileExists(this.filePath))) {
       // Seed with defaults
       this.items = [...this.defaults];
       await this.save();

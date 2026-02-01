@@ -1,5 +1,5 @@
 import { readFile, writeFile, mkdir } from 'fs/promises';
-import { existsSync } from 'fs';
+import { fileExists } from '../storage/fs-helpers.js';
 import { join } from 'path';
 import { createLogger } from '../lib/logger.js';
 const log = createLogger('status-history-service');
@@ -48,9 +48,7 @@ export class StatusHistoryService {
 
   private async ensureDir(): Promise<void> {
     const dir = join(process.cwd(), '.veritas-kanban');
-    if (!existsSync(dir)) {
-      await mkdir(dir, { recursive: true });
-    }
+    await mkdir(dir, { recursive: true });
   }
 
   private async loadLastEntry(): Promise<void> {
@@ -68,7 +66,7 @@ export class StatusHistoryService {
   async getHistory(limit: number = 100, offset: number = 0): Promise<StatusHistoryEntry[]> {
     await this.ensureDir();
 
-    if (!existsSync(this.historyFile)) {
+    if (!(await fileExists(this.historyFile))) {
       return [];
     }
 
@@ -114,7 +112,7 @@ export class StatusHistoryService {
 
     let entries: StatusHistoryEntry[] = [];
 
-    if (existsSync(this.historyFile)) {
+    if (await fileExists(this.historyFile)) {
       try {
         const content = await readFile(this.historyFile, 'utf-8');
         entries = JSON.parse(content);

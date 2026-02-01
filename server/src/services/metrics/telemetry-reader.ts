@@ -2,7 +2,7 @@
  * Telemetry file I/O utilities.
  * Handles reading NDJSON event files (plain and gzipped) with streaming support.
  */
-import { createReadStream } from 'fs';
+import { createReadStream } from '../../storage/fs-helpers.js';
 import fs from 'fs/promises';
 import path from 'path';
 import readline from 'readline';

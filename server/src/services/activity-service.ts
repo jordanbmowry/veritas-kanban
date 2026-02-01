@@ -1,5 +1,5 @@
 import { readFile, writeFile, mkdir } from 'fs/promises';
-import { existsSync } from 'fs';
+import { fileExists } from '../storage/fs-helpers.js';
 import { join } from 'path';
 import { createLogger } from '../lib/logger.js';
 const log = createLogger('activity-service');
@@ -41,15 +41,13 @@ export class ActivityService {
 
   private async ensureDir() {
     const dir = join(process.cwd(), '.veritas-kanban');
-    if (!existsSync(dir)) {
-      await mkdir(dir, { recursive: true });
-    }
+    await mkdir(dir, { recursive: true });
   }
 
   async getActivities(limit: number = 50): Promise<Activity[]> {
     await this.ensureDir();
 
-    if (!existsSync(this.activityFile)) {
+    if (!(await fileExists(this.activityFile))) {
       return [];
     }
 
@@ -82,7 +80,7 @@ export class ActivityService {
 
     let activities: Activity[] = [];
 
-    if (existsSync(this.activityFile)) {
+    if (await fileExists(this.activityFile)) {
       try {
         const content = await readFile(this.activityFile, 'utf-8');
         activities = JSON.parse(content);

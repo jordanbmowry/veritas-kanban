@@ -1,5 +1,5 @@
 import fs from 'fs/promises';
-import { createReadStream, createWriteStream } from 'fs';
+import { createReadStream, createWriteStream } from '../storage/fs-helpers.js';
 import path from 'path';
 import { createGzip, gunzipSync } from 'zlib';
 import { pipeline } from 'stream/promises';

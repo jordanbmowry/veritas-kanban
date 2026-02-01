@@ -1,5 +1,5 @@
 import fs from 'fs/promises';
-import { watch, type FSWatcher } from 'fs';
+import { watch, type FSWatcher } from '../storage/fs-helpers.js';
 import path from 'path';
 import matter from 'gray-matter';
 import { nanoid } from 'nanoid';
