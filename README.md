@@ -10,7 +10,7 @@ Built for developers who want a visual Kanban board that works with autonomous c
 
 [![CI](https://github.com/BradGroux/veritas-kanban/actions/workflows/ci.yml/badge.svg)](https://github.com/BradGroux/veritas-kanban/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.3.0-blue.svg)](CHANGELOG.md)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue.svg)](https://www.typescriptlang.org/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
@@ -92,7 +92,7 @@ Open [http://localhost:3000](http://localhost:3000) — that's it. The board aut
 
 ![Drag-and-drop Kanban demo](assets/demo-drag_drop.gif)
 
-- **Drag-and-drop Kanban** — Move tasks across To Do, In Progress, Review, Done
+- **Drag-and-drop Kanban** — Move tasks across To Do, In Progress, Blocked, Done
 - **Markdown storage** — Human-readable task files with YAML frontmatter
 - **Dark/light mode** — Toggle between dark and light themes in Settings
 
@@ -112,6 +112,12 @@ Open [http://localhost:3000](http://localhost:3000) — that's it. The board aut
 - **Built-in OpenClaw support** — Native integration with [OpenClaw](https://github.com/openclaw/openclaw) (formerly Clawdbot/Moltbot)
 - **Multiple attempts** — Retry with different agents, preserve history
 - **Running indicator** — Visual feedback when agents are working
+
+### 🔄 Visibility & Automation
+
+- **GitHub Issues sync** — Bidirectional sync between GitHub Issues and your board (inbound import, outbound status/comment push)
+- **Activity feed** — Full-page chronological activity feed with filtering by agent, type, and date; real-time WebSocket updates; compact/detailed toggle
+- **Daily standup summary** — Generate standup reports via API or CLI (`vk summary standup`) with completed, in-progress, blocked, and upcoming sections
 
 ### 🗂️ Organization
 
@@ -289,7 +295,14 @@ vk agents:complete <id> -s       # Mark agent complete
 
 # Utilities
 vk summary                       # Project stats
+vk summary standup               # Daily standup summary
 vk notify:pending                # Check notifications
+
+# GitHub sync
+vk github sync                   # Trigger manual sync
+vk github status                 # Show sync status
+vk github config                 # View/update configuration
+vk github mappings               # List issue↔task mappings
 ```
 
 ---
@@ -328,6 +341,20 @@ curl -X POST http://localhost:3001/api/agents/<id>/complete \
   -H "X-API-Key: $YOUR_KEY" \
   -d '{"success": true, "summary": "What was done"}'
 ```
+
+### GitHub Issues Sync
+
+```bash
+# Trigger a manual sync
+curl -X POST http://localhost:3001/api/github/sync \
+  -H "X-API-Key: $YOUR_KEY"
+
+# Check sync status
+curl http://localhost:3001/api/github/sync/status \
+  -H "X-API-Key: $YOUR_KEY"
+```
+
+Issues with the `kanban` label are imported as tasks. Status changes push back (done → close, reopen on todo/in-progress/blocked). Labels like `priority:high` and `type:story` map to task fields. Configure in `.veritas-kanban/integrations.json`.
 
 ### OpenClaw (Native)
 

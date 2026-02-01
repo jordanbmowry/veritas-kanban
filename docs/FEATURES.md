@@ -11,6 +11,9 @@ Complete feature reference for Veritas Kanban. For a quick overview, see the [RE
 - [Sprint Management](#sprint-management)
 - [Code Workflow](#code-workflow)
 - [AI Agent Integration](#ai-agent-integration)
+- [GitHub Issues Sync](#github-issues-sync)
+- [Activity Feed](#activity-feed)
+- [Daily Standup](#daily-standup)
 - [CLI](#cli)
 - [MCP Server](#mcp-server)
 - [Security](#security)
@@ -19,6 +22,7 @@ Complete feature reference for Veritas Kanban. For a quick overview, see the [RE
 - [Settings & Customization](#settings--customization)
 - [API](#api)
 - [Notifications](#notifications)
+- [Storage & Architecture](#storage--architecture)
 - [Infrastructure & DevOps](#infrastructure--devops)
 - [Testing](#testing)
 - [Accessibility](#accessibility)
@@ -162,6 +166,63 @@ First-class support for autonomous coding agents.
 
 ---
 
+## GitHub Issues Sync
+
+Bidirectional sync between GitHub Issues and your Kanban board.
+
+- **Inbound sync** — Issues with the `kanban` label are automatically imported as tasks
+- **Outbound sync** — Status changes push back to GitHub: done → close issue, reopen on todo/in-progress/blocked
+- **Comment sync** — Comments are synced between GitHub Issues and task comments
+- **Label mapping** — GitHub labels map to task fields: `priority:high` → priority, `type:story` → type
+- **Circuit breaker** — Automatic failure detection and backoff for GitHub API calls
+- **Polling** — Configurable polling interval for checking new/updated issues
+- **Configuration** — Stored in `.veritas-kanban/integrations.json`; sync state in `.veritas-kanban/github-sync.json`
+- **`TaskGitHub` interface** — Shared type with `{issueNumber, repo, syncedAt?}` fields on synced tasks
+- **API endpoints:**
+  - `POST /api/github/sync` — Trigger manual sync
+  - `GET /api/github/sync/status` — Last sync info (timestamp, counts, errors)
+  - `GET /api/github/sync/config` — Get sync configuration
+  - `PUT /api/github/sync/config` — Update sync configuration
+  - `GET /api/github/sync/mappings` — List issue↔task mappings
+- **CLI commands:** `vk github sync`, `vk github status`, `vk github config`, `vk github mappings`
+
+---
+
+## Activity Feed
+
+Full-page chronological activity feed for project-wide visibility.
+
+- **Dedicated page** — Accessible from header nav (ListOrdered icon) via `ViewContext` for board ↔ activity navigation
+- **Day grouping** — Activities grouped by day with clear date headers
+- **15 activity type icons** — Visual icons for each activity type (created, updated, status changed, agent started, etc.)
+- **Filter bar** — Combinable filters: agent, type, taskId, date range (since/until)
+- **Filter dropdowns** — Populated from `GET /api/activity/filters` (distinct agents and types)
+- **Compact/detailed toggle** — Switch between compact summary view and detailed expanded view
+- **Infinite scroll** — Loads more activities on scroll via IntersectionObserver
+- **Real-time updates** — New activities appear live via WebSocket
+- **Agent field** — Activities include the `agent` field for filtering by which agent performed the action
+- **Capacity** — MAX_ACTIVITIES increased from 1,000 to 5,000
+
+---
+
+## Daily Standup
+
+Generate daily standup summary reports via API or CLI.
+
+- **Standup endpoint** — `GET /api/summary/standup?date=YYYY-MM-DD&format=json|markdown|text`
+- **Report sections:** Completed (tasks done that day), In-Progress (active work), Blocked (with reasons), Upcoming (next priorities), Stats (counts and velocity)
+- **Multiple formats:**
+  - `json` — Structured data for programmatic consumption
+  - `markdown` — Formatted markdown via `generateStandupMarkdown()`
+  - `text` — Plain text via `generateStandupText()`
+- **CLI:** `vk summary standup` with flags:
+  - `--yesterday` — Generate for previous day
+  - `--date YYYY-MM-DD` — Generate for a specific date
+  - `--json` — JSON output
+  - `--text` — Plain text output
+
+---
+
 ## CLI
 
 The `vk` command-line tool for terminal-first workflows.
@@ -194,14 +255,24 @@ The `vk` command-line tool for terminal-first workflows.
 | `vk automation:start <id>`    | `as`  | Start an automation task           |
 | `vk automation:complete <id>` | `ac`  | Mark automation complete or failed |
 
+### GitHub Sync Commands
+
+| Command              | Description                                       |
+| -------------------- | ------------------------------------------------- |
+| `vk github sync`     | Trigger a manual GitHub Issues sync               |
+| `vk github status`   | Show last sync status (timestamp, counts, errors) |
+| `vk github config`   | View or update GitHub sync configuration          |
+| `vk github mappings` | List issue↔task mappings                          |
+
 ### Utility Commands
 
-| Command               | Description                                                         |
-| --------------------- | ------------------------------------------------------------------- |
-| `vk summary`          | Project stats: status counts, project progress, high-priority items |
-| `vk notify <message>` | Create a notification (`--type`, `--title`, `--task` options)       |
-| `vk notify:check`     | Check for tasks that need notifications                             |
-| `vk notify:pending`   | Get pending notifications formatted for Teams                       |
+| Command               | Description                                                                    |
+| --------------------- | ------------------------------------------------------------------------------ |
+| `vk summary`          | Project stats: status counts, project progress, high-priority items            |
+| `vk summary standup`  | Daily standup summary (`--yesterday`, `--date YYYY-MM-DD`, `--json`, `--text`) |
+| `vk notify <message>` | Create a notification (`--type`, `--title`, `--task` options)                  |
+| `vk notify:check`     | Check for tasks that need notifications                                        |
+| `vk notify:pending`   | Get pending notifications formatted for Teams                                  |
 
 All commands support `--json` output for machine consumption.
 
@@ -405,35 +476,38 @@ RESTful API designed for both human and AI agent consumption.
 
 ### Endpoints
 
-| Route Prefix                    | Description                                     |
-| ------------------------------- | ----------------------------------------------- |
-| `/api/v1/tasks`                 | Task CRUD, listing, reordering                  |
-| `/api/v1/tasks/archived`        | Archive listing, restore                        |
-| `/api/v1/tasks/:id/time`        | Time tracking (start, stop, entries)            |
-| `/api/v1/tasks/:id/comments`    | Comments (add, edit, delete)                    |
-| `/api/v1/tasks/:id/subtasks`    | Subtask management                              |
-| `/api/v1/tasks/:id/attachments` | File attachments (upload, download, delete)     |
-| `/api/v1/config`                | Board configuration                             |
-| `/api/v1/settings`              | Feature settings                                |
-| `/api/v1/agents`                | Agent start, stop, status, attempts, completion |
-| `/api/v1/agent/status`          | Global agent status indicator                   |
-| `/api/v1/automation`            | Automation task lifecycle                       |
-| `/api/v1/diff`                  | Diff summaries and file diffs                   |
-| `/api/v1/conflicts`             | Merge conflict status and resolution            |
-| `/api/v1/github`                | GitHub PR creation                              |
-| `/api/v1/summary`               | Project summary and memory-formatted summary    |
-| `/api/v1/notifications`         | Notification CRUD and Teams-formatted pending   |
-| `/api/v1/templates`             | Task template management                        |
-| `/api/v1/task-types`            | Custom task type management                     |
-| `/api/v1/projects`              | Project list management                         |
-| `/api/v1/sprints`               | Sprint list management                          |
-| `/api/v1/activity`              | Activity log                                    |
-| `/api/v1/status-history`        | Task status history and daily summary           |
-| `/api/v1/preview`               | Markdown preview rendering                      |
-| `/api/v1/telemetry`             | Telemetry event recording and querying          |
-| `/api/v1/metrics`               | Dashboard metrics and task-level metrics        |
-| `/api/v1/traces`                | Request traces                                  |
-| `/api/v1/digest`                | Daily digest generation                         |
+| Route Prefix                    | Description                                                   |
+| ------------------------------- | ------------------------------------------------------------- |
+| `/api/v1/tasks`                 | Task CRUD, listing, reordering                                |
+| `/api/v1/tasks/archived`        | Archive listing, restore                                      |
+| `/api/v1/tasks/:id/time`        | Time tracking (start, stop, entries)                          |
+| `/api/v1/tasks/:id/comments`    | Comments (add, edit, delete)                                  |
+| `/api/v1/tasks/:id/subtasks`    | Subtask management                                            |
+| `/api/v1/tasks/:id/attachments` | File attachments (upload, download, delete)                   |
+| `/api/v1/config`                | Board configuration                                           |
+| `/api/v1/settings`              | Feature settings                                              |
+| `/api/v1/agents`                | Agent start, stop, status, attempts, completion               |
+| `/api/v1/agent/status`          | Global agent status indicator                                 |
+| `/api/v1/automation`            | Automation task lifecycle                                     |
+| `/api/v1/diff`                  | Diff summaries and file diffs                                 |
+| `/api/v1/conflicts`             | Merge conflict status and resolution                          |
+| `/api/v1/github`                | GitHub PR creation and Issues sync                            |
+| `/api/v1/github/sync`           | GitHub Issues sync (trigger, status, config, mappings)        |
+| `/api/v1/summary`               | Project summary, memory-formatted summary, and standup        |
+| `/api/v1/summary/standup`       | Daily standup summary (json, markdown, text)                  |
+| `/api/v1/notifications`         | Notification CRUD and Teams-formatted pending                 |
+| `/api/v1/templates`             | Task template management                                      |
+| `/api/v1/task-types`            | Custom task type management                                   |
+| `/api/v1/projects`              | Project list management                                       |
+| `/api/v1/sprints`               | Sprint list management                                        |
+| `/api/v1/activity`              | Activity log with filtering (agent, type, taskId, date range) |
+| `/api/v1/activity/filters`      | Distinct agents and types for activity filter dropdowns       |
+| `/api/v1/status-history`        | Task status history and daily summary                         |
+| `/api/v1/preview`               | Markdown preview rendering                                    |
+| `/api/v1/telemetry`             | Telemetry event recording and querying                        |
+| `/api/v1/metrics`               | Dashboard metrics and task-level metrics                      |
+| `/api/v1/traces`                | Request traces                                                |
+| `/api/v1/digest`                | Daily digest generation                                       |
 
 ### Authentication Methods
 
@@ -453,7 +527,56 @@ RESTful API designed for both human and AI agent consumption.
 
 ### Response Format
 
-- JSON responses with consistent error format
+All responses use a standardized envelope format:
+
+**Success:**
+
+```json
+{
+  "success": true,
+  "data": { ... },
+  "meta": {
+    "timestamp": "2026-02-01T00:00:00.000Z",
+    "requestId": "uuid-v4"
+  }
+}
+```
+
+**Error:**
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "NOT_FOUND",
+    "message": "Task not found",
+    "details": { ... }
+  },
+  "meta": {
+    "timestamp": "2026-02-01T00:00:00.000Z",
+    "requestId": "uuid-v4"
+  }
+}
+```
+
+**Pagination** (on paginated endpoints via `sendPaginated` helper):
+
+```json
+{
+  "success": true,
+  "data": [ ... ],
+  "meta": {
+    "timestamp": "...",
+    "requestId": "...",
+    "page": 1,
+    "limit": 25,
+    "total": 142,
+    "totalPages": 6
+  }
+}
+```
+
+- 4 typed error classes: `UnauthorizedError`, `ForbiddenError`, `BadRequestError`, `InternalError`
 - `X-API-Version` header on all responses
 - `X-Request-Id` header for request tracing
 - `Last-Modified` headers for cache validation
@@ -471,6 +594,18 @@ Event-driven notifications with Teams integration.
 - **Auto-detection** — `notify:check` scans for tasks needing notification (review-ready, agent failures, etc.)
 - **Per-event toggles** — Enable/disable notifications per event type in the Notifications settings tab
 - **Notification enrichment** — Task title and project automatically attached when task ID provided
+
+---
+
+## Storage & Architecture
+
+Abstract storage layer that decouples business logic from the filesystem.
+
+- **Repository pattern** — 5 repository interfaces abstract data access: `ActivityRepository`, `TemplateRepository`, `StatusHistoryRepository`, `ManagedListRepository`, `TelemetryRepository`
+- **StorageProvider** — Central provider extended with all repository implementations; services depend on interfaces, not filesystem calls
+- **`fs-helpers.ts`** — Centralized filesystem access module; the only file in the codebase that imports `fs` directly
+- **Service migration** — All 10 services migrated off direct `fs` imports to use the repository interfaces
+- **Extensibility** — Repository interfaces enable future storage backends (database, cloud storage) without changing service logic
 
 ---
 
@@ -569,4 +704,4 @@ Working toward WCAG 2.1 AA compliance.
 
 ---
 
-_Last updated: 2026-01-30 · [Back to README](../README.md)_
+_Last updated: 2026-02-01 · [Back to README](../README.md)_

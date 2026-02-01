@@ -9,6 +9,98 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.3.0] - 2026-02-01
+
+### ✨ Highlights
+
+- **GitHub Issues Bidirectional Sync** — Import issues with the `kanban` label and push status changes back to GitHub
+- **Activity Feed** — Full-page chronological activity feed with filtering, real-time updates, and compact/detailed toggle
+- **Daily Standup Summary** — Generate standup reports via API or CLI with completed, in-progress, blocked, and upcoming sections
+
+### Added
+
+#### GitHub Issues Sync (#21)
+
+- `GitHubSyncService` (464 lines) with polling, label-based field mapping, and circuit breaker
+- Inbound: import issues with `kanban` label as tasks
+- Outbound: push status changes (done → close issue, reopen on todo/in-progress/blocked) and comments
+- Label mapping: `priority:high` → priority field, `type:story` → type field
+- Config: `.veritas-kanban/integrations.json`, state: `.veritas-kanban/github-sync.json`
+- `TaskGitHub` interface in shared types: `{issueNumber, repo, syncedAt?}`
+- New API endpoints:
+  - `POST /api/github/sync` — trigger manual sync
+  - `GET /api/github/sync/status` — last sync info
+  - `GET /api/github/sync/config` — get config
+  - `PUT /api/github/sync/config` — update config
+  - `GET /api/github/sync/mappings` — list issue↔task mappings
+- New CLI commands: `vk github sync`, `vk github status`, `vk github config`, `vk github mappings`
+
+#### Activity Feed (#33)
+
+- Full-page chronological activity feed accessible from header nav (ListOrdered icon)
+- `agent` field added to Activity interface
+- `ActivityFilters` for combinable filtering (agent, type, taskId, since, until)
+- `GET /api/activity` enhanced with query params: `?agent=X&type=Y&taskId=Z&since=ISO&until=ISO`
+- `GET /api/activity/filters` — distinct agents and types for filter dropdowns
+- `ActivityFeed.tsx` component with day grouping, 15 activity type icons, filter bar, compact/detailed toggle
+- Infinite scroll via IntersectionObserver
+- Real-time WebSocket updates
+- `ViewContext` for board ↔ activity navigation
+
+#### Daily Standup Summary (#34)
+
+- `GET /api/summary/standup?date=YYYY-MM-DD&format=json|markdown|text`
+- Sections: completed, in-progress, blocked, upcoming, stats
+- `generateStandupMarkdown()` and `generateStandupText()` in SummaryService
+- CLI: `vk summary standup` with `--yesterday`, `--date YYYY-MM-DD`, `--json`, `--text` flags
+- 12 new tests
+
+### Changed
+
+- MAX_ACTIVITIES increased from 1,000 to 5,000
+
+---
+
+## [1.2.0] - 2026-02-01
+
+### ✨ Highlights
+
+- **Standardized API Response Envelope** — All endpoints return a consistent `{success, data, meta}` format with typed error classes
+- **Abstract File Storage** — Repository pattern decouples services from the filesystem
+- **Blocked Task Status** — Full support for blocked tasks across MCP, CLI, and board
+
+### Added
+
+#### Standardize API Response Envelope (#2)
+
+- 4 new error classes: `UnauthorizedError`, `ForbiddenError`, `BadRequestError`, `InternalError` (in `middleware/error-handler.ts`)
+- `sendPaginated(res, items, {page, limit, total})` helper for pagination metadata in envelope
+- Response envelope format:
+  - Success: `{success: true, data, meta: {timestamp, requestId}}`
+  - Error: `{success: false, error: {code, message, details?}, meta}`
+  - Pagination: `meta` includes `{page, limit, total, totalPages}` on paginated endpoints
+
+#### Abstract File Storage (#6)
+
+- 5 new repository interfaces: `ActivityRepository`, `TemplateRepository`, `StatusHistoryRepository`, `ManagedListRepository`, `TelemetryRepository`
+- `StorageProvider` extended with new repositories
+- `fs-helpers.ts` — centralized filesystem access (only file that imports `fs`)
+
+#### Blocked Task Status (#32)
+
+- MCP tools Zod/JSON schema definitions updated for blocked status
+- MCP active tasks filter updated to include blocked
+- CLI help text updated
+- CLI status color: blocked = red
+
+### Changed
+
+- All 11 route files standardized — zero ad-hoc `{error: "..."}` patterns
+- Auth middleware errors standardized to use typed error classes
+- All 10 services migrated off direct `fs` imports to use `fs-helpers.ts`
+
+---
+
 ## [1.1.0] - 2026-01-31
 
 ### ✨ Highlights
@@ -242,6 +334,8 @@ Veritas Kanban is an AI-native project management board built for developers and
 
 _Built by [Digital Meld](https://digitalmeld.io) — AI-driven enterprise automation._
 
-[unreleased]: https://github.com/BradGroux/veritas-kanban/compare/v1.1.0...HEAD
+[unreleased]: https://github.com/BradGroux/veritas-kanban/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/BradGroux/veritas-kanban/compare/v1.2.0...v1.3.0
+[1.2.0]: https://github.com/BradGroux/veritas-kanban/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/BradGroux/veritas-kanban/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/BradGroux/veritas-kanban/releases/tag/v1.0.0
