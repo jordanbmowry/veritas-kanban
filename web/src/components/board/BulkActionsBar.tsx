@@ -64,6 +64,7 @@ export function BulkActionsBar({ tasks }: BulkActionsBarProps) {
 
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [moveTarget, setMoveTarget] = useState<TaskStatus | null>(null);
 
   // Group task IDs by status
   const taskIdsByStatus = useMemo(() => {
@@ -109,13 +110,17 @@ export function BulkActionsBar({ tasks }: BulkActionsBarProps) {
     return someSelected && !allSelectedInGroup;
   };
 
-  const handleMoveToStatus = async (status: TaskStatus) => {
+  const handleMoveToStatus = async () => {
+    if (!moveTarget) return;
     setIsProcessing(true);
     try {
       await Promise.all(
-        Array.from(selectedIds).map((id) => updateTask.mutateAsync({ id, input: { status } }))
+        Array.from(selectedIds).map((id) =>
+          updateTask.mutateAsync({ id, input: { status: moveTarget } })
+        )
       );
       clearSelection();
+      setMoveTarget(null);
     } finally {
       setIsProcessing(false);
     }
@@ -210,16 +215,20 @@ export function BulkActionsBar({ tasks }: BulkActionsBarProps) {
 
         {selectedCount > 0 && (
           <div className="flex items-center gap-2">
-            {/* Move to status */}
+            {/* Move to status — two-step: pick target → confirm */}
             <Select
-              value=""
-              onValueChange={(value) => handleMoveToStatus(value as TaskStatus)}
+              value={moveTarget ?? ''}
+              onValueChange={(value) => setMoveTarget(value as TaskStatus)}
               disabled={isProcessing}
             >
               <SelectTrigger className="w-[140px]">
                 <div className="flex items-center gap-1">
                   <ArrowRight className="h-4 w-4" />
-                  <span>Move to...</span>
+                  <span>
+                    {moveTarget
+                      ? (STATUS_BUTTONS.find((s) => s.id === moveTarget)?.label ?? 'Move to...')
+                      : 'Move to...'}
+                  </span>
                 </div>
               </SelectTrigger>
               <SelectContent>
@@ -230,6 +239,17 @@ export function BulkActionsBar({ tasks }: BulkActionsBarProps) {
                 <SelectItem value="done">Done</SelectItem>
               </SelectContent>
             </Select>
+
+            {moveTarget && (
+              <Button
+                variant="default"
+                size="sm"
+                onClick={handleMoveToStatus}
+                disabled={isProcessing}
+              >
+                {isProcessing ? 'Moving...' : 'Move'}
+              </Button>
+            )}
 
             {/* Archive */}
             <Button
