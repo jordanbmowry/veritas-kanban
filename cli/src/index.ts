@@ -6,6 +6,11 @@ import { registerAutomationCommands } from './commands/automation.js';
 import { registerNotificationCommands } from './commands/notifications.js';
 import { registerSummaryCommands } from './commands/summary.js';
 import { registerGitHubCommands } from './commands/github.js';
+import { registerTimeCommands } from './commands/time.js';
+import { registerCommentCommands } from './commands/comments.js';
+import { registerAgentStatusCommands } from './commands/agent-status.js';
+import { registerProjectCommands } from './commands/projects.js';
+import { registerWorkflowCommands } from './commands/workflow.js';
 
 const program = new Command();
 
@@ -21,5 +26,10 @@ registerAutomationCommands(program);
 registerNotificationCommands(program);
 registerSummaryCommands(program);
 registerGitHubCommands(program);
+registerTimeCommands(program);
+registerCommentCommands(program);
+registerAgentStatusCommands(program);
+registerProjectCommands(program);
+registerWorkflowCommands(program);
 
 program.parse();
