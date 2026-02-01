@@ -66,17 +66,18 @@ RUN addgroup -g 1001 -S nodejs && \
 
 WORKDIR /app
 
-# Copy workspace config for pnpm
+# Copy workspace config for pnpm (include real web/package.json for lockfile integrity)
 COPY pnpm-workspace.yaml package.json pnpm-lock.yaml ./
 COPY shared/package.json ./shared/
 COPY server/package.json ./server/
-
-# Create a minimal web package.json so pnpm workspace resolves
-# (we don't install web deps in production — only need the built assets)
-RUN mkdir -p web && echo '{"name":"@veritas-kanban/web","version":"0.1.0","private":true}' > web/package.json
+COPY web/package.json ./web/
 
 # Install production-only dependencies
-RUN pnpm install --frozen-lockfile --prod && \
+# --ignore-scripts: skip husky prepare hook (not needed in container)
+# Note: web deps get installed to satisfy the lockfile, but we remove them
+# since the frontend is pre-built as static assets
+RUN pnpm install --frozen-lockfile --prod --ignore-scripts && \
+    rm -rf web/node_modules && \
     pnpm store prune
 
 # Copy built artifacts
@@ -84,8 +85,9 @@ COPY --from=build-shared /app/shared/dist ./shared/dist
 COPY --from=build-server /app/server/dist ./server/dist
 COPY --from=build-web /app/web/dist ./web/dist
 
-# Create data directory for persistent storage
-RUN mkdir -p /app/data && chown -R veritas:nodejs /app/data
+# Create data directories for persistent storage and runtime config
+RUN mkdir -p /app/data /app/.veritas-kanban && \
+    chown -R veritas:nodejs /app/data /app/.veritas-kanban
 
 # Switch to non-root user
 USER veritas
