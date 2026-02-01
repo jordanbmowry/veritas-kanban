@@ -247,6 +247,7 @@ export function BulkActionsBar({ tasks }: BulkActionsBarProps) {
                 onClick={handleMoveToStatus}
                 disabled={isProcessing}
               >
+                <ArrowRight className="h-4 w-4 mr-1" />
                 {isProcessing ? 'Moving...' : 'Move'}
               </Button>
             )}
