@@ -1,5 +1,10 @@
 import type { WebSocketServer, WebSocket } from 'ws';
 import type { AnyTelemetryEvent } from '@veritas-kanban/shared';
+import {
+  notifyTaskChange,
+  notifyChatMessage,
+  type TaskContext,
+} from './clawdbot-webhook-service.js';
 
 /**
  * Simple broadcast service that sends task change events to all connected WebSocket clients.
@@ -34,8 +39,14 @@ export interface TelemetryBroadcastEvent {
 /**
  * Broadcast a task change to all connected WebSocket clients.
  * Clients can listen for 'task:changed' messages and invalidate their query caches.
+ *
+ * @param taskContext - Optional enriched context for the webhook payload (title, status, etc.)
  */
-export function broadcastTaskChange(changeType: TaskChangeType, taskId?: string): void {
+export function broadcastTaskChange(
+  changeType: TaskChangeType,
+  taskId?: string,
+  taskContext?: TaskContext
+): void {
   if (!wssRef) return;
 
   const message: TaskChangeEvent = {
@@ -53,6 +64,9 @@ export function broadcastTaskChange(changeType: TaskChangeType, taskId?: string)
       client.send(payload);
     }
   });
+
+  // Also notify via webhook (fire-and-forget)
+  notifyTaskChange(changeType, taskId, taskContext);
 }
 
 export interface ChatBroadcastEvent {
@@ -76,6 +90,13 @@ export function broadcastChatMessage(sessionId: string, event: ChatBroadcastEven
       client.send(payload);
     }
   });
+
+  // Also notify via webhook (fire-and-forget)
+  notifyChatMessage(
+    sessionId,
+    event.type as 'chat:message' | 'chat:delta' | 'chat:error',
+    typeof event.text === 'string' ? event.text : undefined
+  );
 }
 
 /**

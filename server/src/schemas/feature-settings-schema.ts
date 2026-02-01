@@ -77,6 +77,7 @@ const NotificationSettingsSchema = z
     onAgentFailure: z.boolean().optional(),
     onReviewNeeded: z.boolean().optional(),
     channel: z.string().max(200).optional(),
+    webhookUrl: z.string().url().optional(),
   })
   .strict()
   .optional();
