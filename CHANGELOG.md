@@ -7,6 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### ✨ Highlights
+
+- **CLI Workflow Commands** — Two-command task lifecycle (`vk begin` / `vk done`) plus time tracking, comments, agent status, and project management from the terminal
+- Inspired by Boris Cherny's (Claude Code creator) "automate everything you do twice" philosophy
+
+### Added
+
+#### CLI Workflow Commands (#44)
+
+- **Composite workflows** — Complete task lifecycle in single commands:
+  - `vk begin <id>` — Sets in-progress + starts timer + updates agent status to working
+  - `vk done <id> "summary"` — Stops timer + sets done + adds comment + sets agent idle
+  - `vk block <id> "reason"` — Sets blocked + adds comment with reason
+  - `vk unblock <id>` — Sets in-progress + restarts timer
+- **Time tracking CLI** — Full time management from terminal:
+  - `vk time start <id>` — Start time tracker
+  - `vk time stop <id>` — Stop time tracker
+  - `vk time entry <id> <seconds> "description"` — Add manual time entry
+  - `vk time show <id>` — Display time tracking summary (total, running status, entries)
+- **Comments CLI** — `vk comment <id> "text"` with optional `--author` flag
+- **Agent status CLI** — Manage agent presence:
+  - `vk agent status` — Show current agent status
+  - `vk agent working <id>` — Set to working (auto-fetches task title)
+  - `vk agent idle` — Set to idle
+  - `vk agent sub-agent <count>` — Set sub-agent mode with count
+- **Project management CLI** — `vk project list` and `vk project create "name"` with `--color` and `--description` flags
+- All commands support `--json` for scripting and automation
+- 5 new command modules, 18 subcommands, 651 lines added
+
 ---
 
 ## [1.3.0] - 2026-02-01

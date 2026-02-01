@@ -225,7 +225,22 @@ Generate daily standup summary reports via API or CLI.
 
 ## CLI
 
-The `vk` command-line tool for terminal-first workflows.
+The `vk` command-line tool for terminal-first workflows. Manage your entire task lifecycle from the terminal.
+
+> 📖 **Full CLI guide:** [CLI-GUIDE.md](CLI-GUIDE.md) — installation, every command, scripting examples, and tips.
+
+### Workflow Commands
+
+Composite commands that orchestrate multiple API calls into a single action. Added in v1.4 (#44).
+
+| Command                  | Description                                                        |
+| ------------------------ | ------------------------------------------------------------------ |
+| `vk begin <id>`          | Sets in-progress + starts timer + updates agent status to working  |
+| `vk done <id> "summary"` | Stops timer + sets done + adds comment + sets agent status to idle |
+| `vk block <id> "reason"` | Sets blocked + adds comment with the block reason                  |
+| `vk unblock <id>`        | Sets in-progress + restarts timer                                  |
+
+**Under the hood**, `vk begin` orchestrates three API calls (PATCH status, POST time/start, POST agent/status) and `vk done` orchestrates four (POST time/stop, PATCH status, POST comments, POST agent/status). What previously required 6+ curl commands now takes 2.
 
 ### Task Commands
 
@@ -235,6 +250,46 @@ The `vk` command-line tool for terminal-first workflows.
 | `vk show <id>`      |       | Show task details (supports partial ID matching)                   |
 | `vk create <title>` |       | Create a new task with `--type`, `--priority`, `--project` options |
 | `vk update <id>`    |       | Update task fields (`--status`, `--title`, `--priority`, etc.)     |
+
+### Time Tracking Commands
+
+Full time management from the terminal. Added in v1.4 (#44).
+
+| Command                                      | Description                                                    |
+| -------------------------------------------- | -------------------------------------------------------------- |
+| `vk time start <id>`                         | Start the time tracker for a task                              |
+| `vk time stop <id>`                          | Stop the time tracker                                          |
+| `vk time entry <id> <seconds> "description"` | Add a manual time entry (duration in seconds)                  |
+| `vk time show <id>`                          | Display time tracking summary (total, running status, entries) |
+
+### Comment Commands
+
+Add comments to tasks from the terminal. Added in v1.4 (#44).
+
+| Command                               | Description                                    |
+| ------------------------------------- | ---------------------------------------------- |
+| `vk comment <id> "text"`              | Add a comment to a task                        |
+| `vk comment <id> "text" --author Bot` | Add a comment with a custom author attribution |
+
+### Agent Status Commands
+
+Manage the global agent status indicator from the terminal. Added in v1.4 (#44).
+
+| Command                      | Description                                             |
+| ---------------------------- | ------------------------------------------------------- |
+| `vk agent status`            | Show current agent status (idle, working, sub-agent)    |
+| `vk agent working <id>`      | Set to working on a task (auto-fetches task title)      |
+| `vk agent idle`              | Set agent status to idle                                |
+| `vk agent sub-agent <count>` | Set sub-agent mode with the number of active sub-agents |
+
+### Project Commands
+
+Manage projects from the terminal. Added in v1.4 (#44).
+
+| Command                                                        | Description                                              |
+| -------------------------------------------------------------- | -------------------------------------------------------- |
+| `vk project list`                                              | List all projects                                        |
+| `vk project create "name" --color "#hex" --description "desc"` | Create a new project with optional color and description |
 
 ### Agent Commands
 
@@ -275,6 +330,23 @@ The `vk` command-line tool for terminal-first workflows.
 | `vk notify:pending`   | Get pending notifications formatted for Teams                                  |
 
 All commands support `--json` output for machine consumption.
+
+### Workflow Example
+
+A complete task lifecycle from the terminal:
+
+```bash
+# Create a new task
+vk create "Implement OAuth" --type code --project my-app
+
+# Start working — sets in-progress, starts timer, marks agent working
+vk begin <id>
+
+# Work happens...
+
+# Complete with summary — stops timer, sets done, adds comment, marks agent idle
+vk done <id> "Added OAuth2 with Google and GitHub providers"
+```
 
 ---
 

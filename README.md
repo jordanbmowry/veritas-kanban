@@ -277,33 +277,113 @@ curl -H "X-API-Version: v1" http://localhost:3001/api/tasks
 
 ## 💻 CLI
 
+> 📖 **Comprehensive CLI guide:** [docs/CLI-GUIDE.md](docs/CLI-GUIDE.md) — installation, every command, scripting examples, and tips.
+
+Manage your entire task lifecycle with two commands.
+
 ```bash
 # Install globally
 cd cli && npm link
+```
 
-# Task management
+### Workflow Commands (NEW — v1.4)
+
+The `vk begin` and `vk done` commands replace multi-step API workflows with single commands. Inspired by Boris Cherny's (Claude Code creator) philosophy: _"automate everything you do twice."_
+
+**Before (6 separate curl calls):**
+
+```bash
+curl -X PATCH http://localhost:3001/api/tasks/<id> -H "Content-Type: application/json" -d '{"status":"in-progress"}'
+curl -X POST http://localhost:3001/api/tasks/<id>/time/start
+curl -X POST http://localhost:3001/api/agent/status -H "Content-Type: application/json" -d '{"status":"working","taskId":"<id>","taskTitle":"Title"}'
+# ... work happens ...
+curl -X POST http://localhost:3001/api/tasks/<id>/time/stop
+curl -X PATCH http://localhost:3001/api/tasks/<id> -H "Content-Type: application/json" -d '{"status":"done"}'
+curl -X POST http://localhost:3001/api/tasks/<id>/comments -H "Content-Type: application/json" -d '{"author":"agent","text":"summary"}'
+```
+
+**After (2 commands):**
+
+```bash
+vk begin <id>                    # → in-progress + timer + agent working
+vk done <id> "Added OAuth"       # → timer stop + done + comment + agent idle
+```
+
+| Command                  | What It Does                                                 |
+| ------------------------ | ------------------------------------------------------------ |
+| `vk begin <id>`          | Sets in-progress + starts timer + agent status → working     |
+| `vk done <id> "summary"` | Stops timer + sets done + adds comment + agent status → idle |
+| `vk block <id> "reason"` | Sets blocked + adds comment with reason                      |
+| `vk unblock <id>`        | Sets in-progress + restarts timer                            |
+
+### Basic Task Management
+
+```bash
 vk list                          # List all tasks
 vk list --status in-progress     # Filter by status
 vk show <id>                     # Task details
 vk create "Title" --type code    # Create task
 vk update <id> --status review   # Update task
+```
 
-# Agent commands
-vk agents:pending                # List pending agent requests
-vk agents:status <id>            # Check if agent running
-vk agents:complete <id> -s       # Mark agent complete
+### Time Tracking
 
-# Utilities
-vk summary                       # Project stats
-vk summary standup               # Daily standup summary
-vk notify:pending                # Check notifications
+```bash
+vk time start <id>               # Start time tracker
+vk time stop <id>                # Stop time tracker
+vk time entry <id> 3600 "desc"   # Add manual entry (seconds)
+vk time show <id>                # Display time summary
+```
 
-# GitHub sync
+### Comments
+
+```bash
+vk comment <id> "Fixed the bug"           # Add comment
+vk comment <id> "Done" --author Veritas    # With author
+```
+
+### Agent Status
+
+```bash
+vk agent status                  # Show current agent status
+vk agent working <id>            # Set to working (auto-fetches title)
+vk agent idle                    # Set to idle
+vk agent sub-agent 3             # Set sub-agent mode with count
+```
+
+### Project Management
+
+```bash
+vk project list                  # List all projects
+vk project create "my-app" --color "#7c3aed" --description "Main app"
+```
+
+### GitHub Sync
+
+```bash
 vk github sync                   # Trigger manual sync
 vk github status                 # Show sync status
 vk github config                 # View/update configuration
 vk github mappings               # List issue↔task mappings
 ```
+
+### Agent Commands
+
+```bash
+vk agents:pending                # List pending agent requests
+vk agents:status <id>            # Check if agent running
+vk agents:complete <id> -s       # Mark agent complete
+```
+
+### Utilities
+
+```bash
+vk summary                       # Project stats
+vk summary standup               # Daily standup summary
+vk notify:pending                # Check notifications
+```
+
+All commands support `--json` for scripting and machine consumption.
 
 ---
 
@@ -323,6 +403,8 @@ Built and tested with [OpenClaw](https://github.com/openclaw/openclaw) (formerly
 6. **Task Updates** — Status moves to Review, notifications sent
 
 ### Any Platform (REST API)
+
+> 💡 **Using the CLI?** Skip the curl commands — `vk begin <id>` and `vk done <id> "summary"` handle the full lifecycle in one shot. See the [CLI Guide](docs/CLI-GUIDE.md) for details.
 
 ```bash
 # Create a task
@@ -449,6 +531,7 @@ pnpm test:e2e   # E2E tests (Playwright)
 | Document                                   | Description                      |
 | ------------------------------------------ | -------------------------------- |
 | [Features](docs/FEATURES.md)               | Complete feature reference       |
+| [CLI Guide](docs/CLI-GUIDE.md)             | Comprehensive CLI usage guide    |
 | [Deployment](docs/DEPLOYMENT.md)           | Docker, bare metal, env config   |
 | [Troubleshooting](docs/TROUBLESHOOTING.md) | Common issues & solutions        |
 | [Contributing](CONTRIBUTING.md)            | How to contribute, PR guidelines |
