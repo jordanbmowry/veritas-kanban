@@ -265,11 +265,12 @@ router.post(
       }));
     }
 
-    // Clear activeTask, errorMessage, and agents when going idle
+    // Clear everything when going idle
     if (update.status === 'idle') {
       newStatus.activeTask = undefined;
       newStatus.errorMessage = undefined;
       newStatus.activeAgents = [];
+      newStatus.subAgentCount = 0;
     }
 
     const result = updateAgentStatus(newStatus);
