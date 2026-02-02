@@ -59,10 +59,7 @@ function MainContent() {
           </div>
         }
       >
-        <BacklogPage
-          onBack={() => setView('board')}
-          onTaskClick={(taskId) => navigateToTask(taskId)}
-        />
+        <BacklogPage onBack={() => setView('board')} />
       </Suspense>
     );
   }

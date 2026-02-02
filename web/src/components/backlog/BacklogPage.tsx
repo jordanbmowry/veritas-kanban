@@ -34,14 +34,14 @@ import { cn } from '@/lib/utils';
 
 interface BacklogPageProps {
   onBack: () => void;
-  onTaskClick?: (taskId: string) => void;
 }
 
-export function BacklogPage({ onBack, onTaskClick }: BacklogPageProps) {
+export function BacklogPage({ onBack }: BacklogPageProps) {
   const [search, setSearch] = useState('');
   const [projectFilter, setProjectFilter] = useState<string>('all');
   const [typeFilter, setTypeFilter] = useState<string>('all');
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [expandedTaskId, setExpandedTaskId] = useState<string | null>(null);
 
   const { toast } = useToast();
   const { data: tasks = [], isLoading } = useBacklogTasks();
@@ -240,10 +240,11 @@ export function BacklogPage({ onBack, onTaskClick }: BacklogPageProps) {
               key={task.id}
               task={task}
               isSelected={selectedIds.has(task.id)}
+              isExpanded={expandedTaskId === task.id}
               onToggleSelect={() => handleToggleSelect(task.id)}
               onPromote={() => handlePromote(task.id)}
               onDelete={() => handleDelete(task.id)}
-              onClick={onTaskClick}
+              onClick={() => setExpandedTaskId(expandedTaskId === task.id ? null : task.id)}
               priorityColors={priorityColors}
             />
           ))}
@@ -256,16 +257,18 @@ export function BacklogPage({ onBack, onTaskClick }: BacklogPageProps) {
 interface BacklogTaskCardProps {
   task: Task;
   isSelected: boolean;
+  isExpanded: boolean;
   onToggleSelect: () => void;
   onPromote: () => void;
   onDelete: () => void;
-  onClick?: (taskId: string) => void;
+  onClick: () => void;
   priorityColors: Record<string, string>;
 }
 
 function BacklogTaskCard({
   task,
   isSelected,
+  isExpanded,
   onToggleSelect,
   onPromote,
   onDelete,
@@ -276,7 +279,8 @@ function BacklogTaskCard({
     <div
       className={cn(
         'p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors cursor-pointer',
-        isSelected && 'ring-2 ring-primary'
+        isSelected && 'ring-2 ring-primary',
+        isExpanded && 'ring-2 ring-accent'
       )}
     >
       <div className="flex items-start gap-3">
@@ -287,11 +291,11 @@ function BacklogTaskCard({
           className="mt-1"
         />
 
-        <div className="flex-1 min-w-0" onClick={() => onClick?.(task.id)}>
+        <div className="flex-1 min-w-0" onClick={onClick}>
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1 min-w-0">
               <h3 className="font-medium truncate">{task.title}</h3>
-              {task.description && (
+              {!isExpanded && task.description && (
                 <p className="text-sm text-muted-foreground line-clamp-2 mt-1">
                   {task.description}
                 </p>
@@ -347,6 +351,45 @@ function BacklogTaskCard({
               </Badge>
             )}
           </div>
+
+          {/* Expanded detail view */}
+          {isExpanded && (
+            <div className="mt-4 pt-4 border-t space-y-3">
+              {task.description && (
+                <div>
+                  <h4 className="text-sm font-medium mb-1">Description</h4>
+                  <p className="text-sm text-muted-foreground whitespace-pre-wrap">
+                    {task.description}
+                  </p>
+                </div>
+              )}
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <span className="text-muted-foreground">Created:</span>{' '}
+                  {new Date(task.created).toLocaleDateString()}
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Updated:</span>{' '}
+                  {new Date(task.updated).toLocaleDateString()}
+                </div>
+                {task.agent && (
+                  <div>
+                    <span className="text-muted-foreground">Agent:</span> {task.agent}
+                  </div>
+                )}
+              </div>
+              {task.comments && task.comments.length > 0 && (
+                <div>
+                  <h4 className="text-sm font-medium mb-1">Comments ({task.comments.length})</h4>
+                  {task.comments.slice(-3).map((comment, i) => (
+                    <div key={i} className="text-sm text-muted-foreground mt-1 pl-2 border-l-2">
+                      {typeof comment === 'string' ? comment : comment.text}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
