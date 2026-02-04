@@ -86,8 +86,14 @@ COPY --from=build-server /app/server/dist ./server/dist
 COPY --from=build-web /app/web/dist ./web/dist
 
 # Create data directories for persistent storage and runtime config
-RUN mkdir -p /app/data /app/.veritas-kanban && \
-    chown -R veritas:nodejs /app/data /app/.veritas-kanban
+RUN mkdir -p /app/data /app/.veritas-kanban /app/tasks/active /app/tasks/archive && \
+    chown -R veritas:nodejs /app/data /app/.veritas-kanban /app/tasks
+
+# Set working directory to server so code finds tasks/ in parent (/app)
+WORKDIR /app/server
+
+# Fix permissions: server directory needs to be writable by veritas user
+RUN chown -R veritas:nodejs /app/server
 
 # Switch to non-root user
 USER veritas
