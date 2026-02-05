@@ -18,9 +18,11 @@ if (error) log.error({ err: error }, 'Failed to cleanup old telemetry events');
 
 ### 2. WebSocket Authentication Error ✅
 
-**Problem**: WebSocket connections were being rejected with "Authentication required" error
+**Problem**: WebSocket connections were being rejected with "Authentication required" error even when `VERITAS_AUTH_ENABLED=false`
 
-**Solution**: Disable authentication for free tier deployment (or configure properly for production)
+**Root Cause**: The `security.json` file in the data directory had `authEnabled: true`, and the code required BOTH the env var AND the file to have auth disabled.
+
+**Solution**: Made `VERITAS_AUTH_ENABLED` env var take priority over `security.json` file configuration
 
 ## Updated Environment Variables for Render
 
