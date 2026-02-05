@@ -117,14 +117,18 @@ router.get(
   '/status',
   asyncHandler(async (req: Request, res: Response) => {
     const config = getSecurityConfig();
-    const needsSetup = !config.passwordHash;
+
+    // Check if auth is disabled via env var (takes priority)
+    const authDisabledByEnv = process.env.VERITAS_AUTH_ENABLED === 'false';
+    const authEnabled = !authDisabledByEnv && config.authEnabled !== false;
+    const needsSetup = authEnabled && !config.passwordHash;
 
     // Check for existing JWT
     let authenticated = false;
     let sessionExpiry: string | null = null;
 
     const token = req.cookies?.veritas_session;
-    if (token && !needsSetup) {
+    if (token && !needsSetup && authEnabled) {
       try {
         const decoded = jwt.verify(token, getJwtSecret()) as jwt.JwtPayload;
         authenticated = true;
@@ -140,7 +144,7 @@ router.get(
       needsSetup,
       authenticated,
       sessionExpiry,
-      authEnabled: config.authEnabled !== false,
+      authEnabled,
     });
   })
 );
