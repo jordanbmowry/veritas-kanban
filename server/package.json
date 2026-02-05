@@ -16,6 +16,7 @@
     "reset-password": "tsx src/scripts/reset-password.ts"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.94.1",
     "@veritas-kanban/shared": "workspace:*",
     "bcrypt": "^6.0.0",
     "compression": "^1.8.1",

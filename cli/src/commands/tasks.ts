@@ -11,10 +11,7 @@ export function registerTaskCommands(program: Command): void {
     .command('list')
     .alias('ls')
     .description('List tasks')
-    .option(
-      '-s, --status <status>',
-      'Filter by status (todo, in-progress, blocked, done)'
-    )
+    .option('-s, --status <status>', 'Filter by status (todo, in-progress, blocked, done)')
     .option('-t, --type <type>', 'Filter by type (code, research, content, automation)')
     .option('-p, --project <project>', 'Filter by project')
     .option('-v, --verbose', 'Show more details')
@@ -25,13 +22,13 @@ export function registerTaskCommands(program: Command): void {
 
         let filtered = tasks;
         if (options.status) {
-          filtered = filtered.filter((t) => t.status === options.status);
+          filtered = filtered?.filter((t) => t.status === options.status);
         }
         if (options.type) {
-          filtered = filtered.filter((t) => t.type === options.type);
+          filtered = filtered?.filter((t) => t.type === options.type);
         }
         if (options.project) {
-          filtered = filtered.filter((t) => t.project === options.project);
+          filtered = filtered?.filter((t) => t.project === options.project);
         }
 
         if (options.json) {

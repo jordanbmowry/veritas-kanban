@@ -11,6 +11,7 @@
 
 import type { StorageProvider } from './interfaces.js';
 import { FileStorageProvider, type FileStorageOptions } from './file-storage.js';
+import { SupabaseStorageProvider } from './supabase-storage.js';
 
 export type {
   TaskRepository,
@@ -35,11 +36,12 @@ export {
   FileTelemetryRepository,
 } from './file-storage.js';
 export type { FileStorageOptions } from './file-storage.js';
+export { SupabaseStorageProvider } from './supabase-storage.js';
 
 // ---------------------------------------------------------------------------
 // Supported backend types (extend this union as new backends are added)
 // ---------------------------------------------------------------------------
-export type StorageType = 'file';
+export type StorageType = 'file' | 'supabase';
 
 // ---------------------------------------------------------------------------
 // Module-level singleton
@@ -49,7 +51,7 @@ let activeProvider: StorageProvider | null = null;
 /**
  * Initialise the storage layer.
  *
- * @param type    Backend type – currently only `'file'`.
+ * @param type    Backend type – 'file' (default) or 'supabase'.
  * @param options Backend-specific options forwarded to the provider.
  */
 export async function initStorage(
@@ -65,6 +67,9 @@ export async function initStorage(
   switch (type) {
     case 'file':
       activeProvider = new FileStorageProvider(options);
+      break;
+    case 'supabase':
+      activeProvider = new SupabaseStorageProvider();
       break;
     default: {
       // Exhaustive check – compile error if a new StorageType is added

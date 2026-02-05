@@ -136,7 +136,7 @@ server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
 
   if (uri === 'kanban://tasks/active') {
     const tasks = await api<Task[]>('/api/tasks');
-    const active = tasks.filter((t) => t.status === 'in-progress' || t.status === 'blocked');
+    const active = tasks?.filter((t) => t.status === 'in-progress' || t.status === 'blocked');
     return {
       contents: [
         {

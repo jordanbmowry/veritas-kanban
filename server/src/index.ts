@@ -44,6 +44,7 @@ import {
 } from './middleware/auth.js';
 import authRoutes from './routes/auth.js';
 import { checkJwtSecretConfig } from './config/security.js';
+import { initializeStorageBackend } from './config/storage-config.js';
 import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from './config/swagger.js';
 import { apiRateLimit, authRateLimit } from './middleware/rate-limit.js';
@@ -442,6 +443,9 @@ let configService: ConfigService | null = null;
 // Initialize services on startup
 (async () => {
   try {
+    // 0. Initialize storage backend (file or Supabase)
+    await initializeStorageBackend();
+
     // 1. Backup + integrity checks on the data directory
     const dataDir =
       process.env.VERITAS_DATA_DIR || path.join(process.cwd(), '..', '.veritas-kanban');

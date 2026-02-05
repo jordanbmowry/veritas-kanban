@@ -62,5 +62,8 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/BradGroux/veritas-kanban.git"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.94.1"
   }
 }
