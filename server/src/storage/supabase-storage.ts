@@ -116,13 +116,21 @@ class SupabaseTaskRepository implements TaskRepository {
   }
 
   private rowToTask(row: any): Task {
+    // Map priority numbers back to strings
+    const priorityMap: Record<number, string> = {
+      1: 'low',
+      2: 'medium',
+      3: 'high',
+      4: 'critical',
+    };
+
     return {
       id: row.id,
       title: row.title,
       description: row.description || '',
       status: row.status || 'todo',
       type: row.type || 'task',
-      priority: row.priority,
+      priority: row.priority ? priorityMap[row.priority] : undefined,
       sprint: row.sprint_id,
       project: row.project_id,
       created: row.created_at,
@@ -132,16 +140,26 @@ class SupabaseTaskRepository implements TaskRepository {
   }
 
   private taskToRow(task: any): Record<string, any> {
+    // Map priority strings to numbers for database
+    const priorityMap: Record<string, number> = {
+      low: 1,
+      medium: 2,
+      high: 3,
+      critical: 4,
+    };
+
     return {
       id: task.id,
       title: task.title,
-      description: task.description,
+      description: task.description || '',
       status: task.status,
       type: task.type,
-      priority: task.priority,
-      sprint_id: task.sprint,
-      project_id: task.project,
-      metadata: {},
+      priority: task.priority ? priorityMap[task.priority] || null : null,
+      sprint_id: task.sprint || null,
+      project_id: task.project || null,
+      metadata: task.metadata || {},
+      created_at: task.created,
+      updated_at: task.updated,
     };
   }
 }
