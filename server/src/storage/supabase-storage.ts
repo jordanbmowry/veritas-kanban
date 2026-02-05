@@ -487,10 +487,11 @@ class SupabaseManagedListRepository<T extends ManagedListItem> implements Manage
 
     const order = (maxOrderResult.data?.order || 0) + 1;
 
+    const itemId = input.id || `${this.listType}_${nanoid(8)}`;
     const item = {
-      id: input.id || `${this.listType}_${nanoid(8)}`,
-      list_type: this.listType,
       ...input,
+      id: itemId,
+      list_type: this.listType,
       order,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
@@ -576,7 +577,7 @@ class SupabaseManagedListRepository<T extends ManagedListItem> implements Manage
       order: row.order,
       created: row.created_at,
       updated: row.updated_at,
-    } as T;
+    } as unknown as T;
   }
 }
 
@@ -586,7 +587,9 @@ class SupabaseManagedListRepository<T extends ManagedListItem> implements Manage
 
 class SupabaseManagedListProvider implements ManagedListProvider {
   create<T extends ManagedListItem>(config: ManagedListServiceConfig<T>): ManagedListRepository<T> {
-    return new SupabaseManagedListRepository<T>(config.name);
+    // Extract list type from filename (e.g., 'projects.json' -> 'project')
+    const listType = config.filename.replace('.json', '').replace(/s$/, '');
+    return new SupabaseManagedListRepository<T>(listType);
   }
 }
 
@@ -607,7 +610,7 @@ class SupabaseTelemetryRepository implements TelemetryRepository {
       .delete()
       .lt('created_at', retentionDate.toISOString());
 
-    if (error) log.error('Failed to cleanup old telemetry events', error);
+    if (error) log.error({ err: error }, 'Failed to cleanup old telemetry events');
   }
 
   async emit<T extends TelemetryEvent>(event: Omit<T, 'id' | 'timestamp'>): Promise<T> {
@@ -627,7 +630,7 @@ class SupabaseTelemetryRepository implements TelemetryRepository {
       },
     ]);
 
-    if (error) log.error('Failed to emit telemetry event', error);
+    if (error) log.error({ err: error }, 'Failed to emit telemetry event');
     return fullEvent;
   }
 
