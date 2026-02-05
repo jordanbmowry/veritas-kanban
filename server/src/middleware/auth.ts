@@ -284,8 +284,8 @@ export function authenticate(req: AuthenticatedRequest, res: Response, next: Nex
   // If password auth not set up yet, check API key auth
   const passwordAuthEnabled = securityConfig.authEnabled && securityConfig.passwordHash;
 
-  // Auth disabled via env var - allow all requests
-  if (!config.enabled && !passwordAuthEnabled) {
+  // Auth disabled via env var - allow all requests (takes priority over security.json)
+  if (!config.enabled) {
     req.auth = { role: 'admin', isLocalhost };
     return next();
   }
@@ -437,8 +437,8 @@ export function authenticateWebSocket(req: IncomingMessage): WebSocketAuthResult
 
   const passwordAuthEnabled = securityConfig.authEnabled && securityConfig.passwordHash;
 
-  // Auth disabled via env var
-  if (!config.enabled && !passwordAuthEnabled) {
+  // Auth disabled via env var (takes priority over security.json)
+  if (!config.enabled) {
     return { authenticated: true, role: 'admin', isLocalhost };
   }
 
