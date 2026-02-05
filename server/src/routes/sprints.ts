@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { z } from 'zod';
 import { SprintService } from '../services/sprint-service.js';
-import { getTaskService } from '../services/task-service.js';
+import { getFileTaskService } from '../services/task-service.js';
 import { createManagedListRouter } from './managed-list-routes.js';
 import { createLogger } from '../lib/logger.js';
 const log = createLogger('sprints');
@@ -19,7 +19,7 @@ const updateSprintSchema = z.object({
 });
 
 // Create service instances
-const taskService = getTaskService();
+const taskService = getFileTaskService();
 const sprintService = new SprintService(taskService);
 
 // Initialize service

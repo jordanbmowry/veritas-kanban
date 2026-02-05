@@ -381,6 +381,20 @@ export class TaskService {
     return this.cacheGet(id) ?? null;
   }
 
+  /**
+   * Search tasks by query string
+   */
+  async searchTasks(query: string): Promise<Task[]> {
+    const allTasks = await this.listTasks();
+    const lowerQuery = query.toLowerCase();
+
+    return allTasks.filter(
+      (task) =>
+        task.title.toLowerCase().includes(lowerQuery) ||
+        task.description.toLowerCase().includes(lowerQuery)
+    );
+  }
+
   async createTask(input: CreateTaskInput): Promise<Task> {
     const now = new Date().toISOString();
 
@@ -871,10 +885,41 @@ export class TaskService {
   }
 }
 
-// Singleton instance
-let taskServiceInstance: TaskService | null = null;
+// Import storage adapter and interface
+import { StorageTaskAdapter } from './storage-task-adapter.js';
+import type { ITaskService } from './task-service-interface.js';
 
-export function getTaskService(): TaskService {
+// Singleton instances
+let taskServiceInstance: TaskService | null = null;
+let storageTaskAdapterInstance: StorageTaskAdapter | null = null;
+
+/**
+ * Get the task service based on STORAGE_BACKEND env var.
+ * Returns ITaskService interface to work with both backends.
+ */
+export function getTaskService(): ITaskService {
+  const storageBackend = process.env.STORAGE_BACKEND || 'file';
+
+  if (storageBackend === 'supabase') {
+    if (!storageTaskAdapterInstance) {
+      log.info('Creating storage-based task service (Supabase)');
+      storageTaskAdapterInstance = new StorageTaskAdapter();
+    }
+    return storageTaskAdapterInstance;
+  } else {
+    if (!taskServiceInstance) {
+      log.info('Creating file-based task service');
+      taskServiceInstance = new TaskService();
+    }
+    return taskServiceInstance as unknown as ITaskService;
+  }
+}
+
+/**
+ * Get the file-based TaskService instance.
+ * Use this for services that need file-specific features.
+ */
+export function getFileTaskService(): TaskService {
   if (!taskServiceInstance) {
     taskServiceInstance = new TaskService();
   }
@@ -886,5 +931,9 @@ export function disposeTaskService(): void {
   if (taskServiceInstance) {
     taskServiceInstance.dispose();
     taskServiceInstance = null;
+  }
+  if (storageTaskAdapterInstance) {
+    storageTaskAdapterInstance.dispose();
+    storageTaskAdapterInstance = null;
   }
 }

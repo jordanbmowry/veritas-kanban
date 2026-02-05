@@ -7,7 +7,7 @@
 import { nanoid } from 'nanoid';
 import type { Task, CreateTaskInput } from '@veritas-kanban/shared';
 import { getBacklogRepository } from '../storage/backlog-repository.js';
-import { getTaskService } from './task-service.js';
+import { getFileTaskService } from './task-service.js';
 import { activityService } from './activity-service.js';
 import { getTelemetryService } from './telemetry-service.js';
 import type { TaskTelemetryEvent } from '@veritas-kanban/shared';
@@ -26,7 +26,7 @@ export interface BacklogFilterOptions {
 
 export class BacklogService {
   private backlogRepo = getBacklogRepository();
-  private taskService = getTaskService();
+  private taskService = getFileTaskService();
   private telemetry = getTelemetryService();
 
   /**

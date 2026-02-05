@@ -14,7 +14,7 @@ import { execFile } from 'child_process';
 import { promisify } from 'util';
 import { fileExists } from '../storage/fs-helpers.js';
 import { getBreaker } from './circuit-registry.js';
-import { getTaskService, type TaskService } from './task-service.js';
+import { getFileTaskService, type TaskService } from './task-service.js';
 import { createLogger } from '../lib/logger.js';
 import type { Task, TaskStatus, TaskPriority } from '@veritas-kanban/shared';
 
@@ -90,7 +90,7 @@ export class GitHubSyncService {
   private pollTimer: ReturnType<typeof setInterval> | null = null;
 
   constructor() {
-    this.taskService = getTaskService();
+    this.taskService = getFileTaskService();
   }
 
   // ── Config persistence ────────────────────────────────────

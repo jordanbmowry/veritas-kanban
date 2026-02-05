@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { z } from 'zod';
 import { TaskTypeService } from '../services/task-type-service.js';
-import { getTaskService } from '../services/task-service.js';
+import { getFileTaskService } from '../services/task-service.js';
 import { createManagedListRouter } from './managed-list-routes.js';
 import { createLogger } from '../lib/logger.js';
 const log = createLogger('task-types');
@@ -21,7 +21,7 @@ const updateTaskTypeSchema = z.object({
 });
 
 // Create service instances
-const taskService = getTaskService();
+const taskService = getFileTaskService();
 const taskTypeService = new TaskTypeService(taskService);
 
 // Initialize service

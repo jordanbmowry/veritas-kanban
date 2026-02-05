@@ -284,5 +284,7 @@ healthRouter.get('/', (_req, res) => {
   res.json({
     status: 'ok',
     timestamp: new Date().toISOString(),
+    storageBackend: process.env.STORAGE_BACKEND || 'file',
+    supabaseConfigured: !!(process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY),
   });
 });
